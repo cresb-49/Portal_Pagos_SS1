@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+model Usuario {
+    id_usuario     Int             @id @default(autoincrement())
+    nombre_usuario String
+    email          String          @unique
+    estado         String // Ej: activo, inactivo, bloqueado, etc.
+    fecha_registro DateTime        @default(now())
+    cuentas        Cuenta_Portal[] // Relación uno a muchos con cuentas
+
+    @@map("usuario")
+}
+
+model Cuenta_Portal {
+    id_cuenta_portal Int      @id @default(autoincrement())
+    nombre_cuenta    String // Ej: nombre_usuario{código_empresa}@nombre_empresa.com
+    saldo            Float    @default(0.0)
+    tipo_cuenta      String // Ej: "bancaria" o "tarjeta de crédito"
+    fecha_creacion   DateTime @default(now())
+    estado_cuenta    String // Ej: activa, inactiva, bloqueada
+
+    usuario_id Int
+    usuario    Usuario @relation(fields: [usuario_id], references: [id_usuario])
+
+    financiera_id Int
+    financiera    Entidad_Financiera @relation(fields: [financiera_id], references: [id_financiera])
+
+    transacciones  Transaccion[] // Relación uno a muchos con transacciones
+    movilizaciones Movilizacion_Fondos[] // Relación uno a muchos con movilizaciones
+
+    @@map("cuenta_portal")
+}
+
+model Entidad_Financiera {
+    id_financiera     Int    @id @default(autoincrement())
+    nombre_financiera String
+    tipo_financiera   String // Ej: banco o tarjeta de crédito
+    codigo_empresa    String // Código de la empresa financiera
+
+    cuentas             Cuenta_Portal[] // Relación uno a muchos con cuentas
+    Movilizacion_Fondos Movilizacion_Fondos[]
+
+    @@map("entidad_financiera")
+}
+
+model Transaccion {
+    id_transaccion     Int      @id @default(autoincrement())
+    monto              Float
+    tipo_transaccion   String // Ej: ingreso o egreso
+    fecha_transaccion  DateTime @default(now())
+    descripcion        String
+    estado_transaccion String // Ej: exitosa, fallida, pendiente
+
+    cuenta_portal_id Int
+    cuenta_portal    Cuenta_Portal @relation(fields: [cuenta_portal_id], references: [id_cuenta_portal])
+
+    @@map("transaccion")
+}
+
+model Movilizacion_Fondos {
+    id_movilizacion    Int      @id @default(autoincrement())
+    monto              Float
+    comision           Float    @default(0.013)
+    fecha_movilizacion DateTime @default(now())
+
+    cuenta_portal_id Int
+    cuenta_portal    Cuenta_Portal @relation(fields: [cuenta_portal_id], references: [id_cuenta_portal])
+
+    financiera_id Int
+    financiera    Entidad_Financiera @relation(fields: [financiera_id], references: [id_financiera])
+
+    @@map("movilizacion_fondos")
+}

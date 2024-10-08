@@ -1,0 +1,37 @@
+# EditorConfig ayuda a mantener estilos de codificación consistentes entre diferentes editores y IDEs.
+# Ver http://editorconfig.org para más detalles.
+
+root = true
+
+# Aplicar a todos los archivos
+[*]
+charset = utf-8           # Codificación de caracteres
+end_of_line = crlf        # Usar saltos de línea compatibles con Windows y Linux
+insert_final_newline = true  # Insertar una nueva línea al final del archivo
+indent_style = space      # Usar espacios en lugar de tabuladores
+indent_size = 4           # Tamaño del indentado de 4 espacios
+trim_trailing_whitespace = true  # Eliminar espacios en blanco al final de cada línea
+
+# Configuración específica para archivos TypeScript
+[*.ts]
+indent_style = space
+indent_size = 4
+
+# Configuración específica para archivos JSON
+[*.json]
+indent_style = space
+indent_size = 2  # Los archivos JSON suelen seguir la convención de 2 espacios
+
+# Configuración específica para archivos Markdown
+[*.md]
+trim_trailing_whitespace = false  # Mantener los espacios al final de las líneas en Markdown
+
+# Configuración específica para archivos YAML
+[*.yml, *.yaml]
+indent_style = space
+indent_size = 2  # Los archivos YAML suelen seguir la convención de 2 espacios
+
+# Configuración específica para archivos de configuración (.env, .editorconfig, etc.)
+[*.env, .editorconfig]
+indent_style = space
+indent_size = 4
