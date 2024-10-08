@@ -1,4 +1,4 @@
-import { UserToken } from '.././src/models/user';
+import { UserToken } from '../src/models/usuario';
 
 // Extiende la interfaz Request para incluir la propiedad 'user'
 declare global {
