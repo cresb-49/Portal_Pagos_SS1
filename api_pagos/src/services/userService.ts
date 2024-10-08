@@ -59,6 +59,39 @@ export const register = async (user: UserRegister) => {
     }
 };
 
+export const registrarUsuarioAdmin = async (user: UserRegister) => {
+    try {
+        const hashedPassword = await encrypt(user.password);
+        // Iniciar una transacción
+        const result = await prisma.$transaction(async (prismaTransaction) => {
+            // Crear el nuevo usuario dentro de la transacción
+            const newUser: CrearUsuario = {
+                nombre_usuario: user.nombreUsuario,
+                email: user.email,
+                apellidos: user.apellidos,
+                nombres: user.nombres,
+                id_rol: RolType.ADMINISTRADOR,
+                password: hashedPassword,
+                id_estado_usuario: null,
+            };
+            const usuarioCreado = await crearUsuarioCliente(newUser, prismaTransaction);
+            const responseUser: UsuarioResponse = {
+                id_usuario: usuarioCreado.id_usuario,
+                nombres: usuarioCreado.nombres,
+                apellidos: usuarioCreado.apellidos,
+                nombre_usuario: usuarioCreado.nombre_usuario,
+                email: usuarioCreado.email,
+                id_rol: usuarioCreado.id_rol,
+                id_estado_usuario: usuarioCreado.id_estado_usuario,
+            }
+            return responseUser; // Devolver el usuario creado al final de la transacción
+        });
+        return result; // Devuelve el resultado de la transacción
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const IniciarSession = async (nombreUsuario: string, password: string) => {
     const usuario = await obtenerUsuariosPorNombreUsuario(nombreUsuario, prisma);
     if (!usuario) {

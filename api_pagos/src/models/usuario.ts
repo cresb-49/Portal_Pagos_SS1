@@ -25,7 +25,7 @@ export interface UsuarioResponse {
     nombre_usuario: string;
     email: string;
     id_rol: number | null;
-    id_estado_usuario: number | null;
+    id_estado_usuario?: number | null;
     token?: string;
 }
 

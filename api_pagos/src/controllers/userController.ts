@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getAllUsers, IniciarSession, register } from '../services/userService';
+import { getAllUsers, IniciarSession, register, registrarUsuarioAdmin } from '../services/userService';
 import { apiResponse } from '../response/apiResponse';
 import { UserRegister } from '../models/usuario';
 import { HttpStatusCode } from '../utils/httpStatusCodes';
@@ -35,3 +35,12 @@ export const login = async (req: Request, res: Response): Promise<any> => {
     }
 }
 
+export const registrarAdmin = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const user: UserRegister = req.body;
+        const usuario_registrado = await registrarUsuarioAdmin(user);
+        return apiResponse(res, HttpStatusCode.OK, 'User signed up', usuario_registrado);
+    } catch (error: Error | any) {
+        return apiResponse(res, HttpStatusCode.INTERNAL_SERVER_ERROR, 'Error signing up', null, error.message ?? 'Unknown error');
+    }
+}
