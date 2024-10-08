@@ -37,6 +37,7 @@ export const login = async (req: Request, res: Response): Promise<any> => {
 
 export const registrarAdmin = async (req: Request, res: Response): Promise<any> => {
     try {
+        console.log("UserToken:", req.usuario);
         const user: UserRegister = req.body;
         const usuario_registrado = await registrarUsuarioAdmin(user);
         return apiResponse(res, HttpStatusCode.OK, 'User signed up', usuario_registrado);
