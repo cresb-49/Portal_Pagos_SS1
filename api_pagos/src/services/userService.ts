@@ -1,11 +1,12 @@
 import { compare } from 'bcrypt';
 import { encrypt } from '../utils/encryptUtil';
-import { CrearUsuario, UserRegister } from '../models/usuario';
+import { CrearUsuario, UserRegister, UserToken, UsuarioResponse } from '../models/usuario';
 import { RolType } from '../enums/rolType';
 import { CrearCuenta } from '../models/cuenta';
 import { PrismaClient } from '@prisma/client'
 import { crearUsuarioCliente, obtenerUsuarioPorId, obtenerUsuarios, obtenerUsuariosPorNombreUsuario } from '../repository/usuarioRepository';
 import { crearCuenta } from '../repository/cuentaRepository';
+import { generateToken } from '../middlewares/authMiddleware';
 const prisma = new PrismaClient()
 
 export const getAllUsers = async () => {
@@ -41,7 +42,16 @@ export const register = async (user: UserRegister) => {
                 saldo: 0,
             };
             await crearCuenta(cuenta, prismaTransaction);
-            return usuarioCreado; // Devolver el usuario creado al final de la transacción
+            const responseUser: UsuarioResponse = {
+                id_usuario: usuarioCreado.id_usuario,
+                nombres: usuarioCreado.nombres,
+                apellidos: usuarioCreado.apellidos,
+                nombre_usuario: usuarioCreado.nombre_usuario,
+                email: usuarioCreado.email,
+                id_rol: usuarioCreado.id_rol,
+                id_estado_usuario: usuarioCreado.id_estado_usuario,
+            }
+            return responseUser; // Devolver el usuario creado al final de la transacción
         });
         return result; // Devuelve el resultado de la transacción
     } catch (error) {
@@ -58,5 +68,24 @@ export const IniciarSession = async (nombreUsuario: string, password: string) =>
     if (!isPasswordCorrect) {
         throw new Error('Contraseña incorrecta');
     }
-    return usuario;
+    // Generar un token para el usuario
+    const userToken = {
+        id: usuario.id_usuario.toString(),
+        nombreUsuario: usuario.nombre_usuario,
+        email: usuario.email,
+        idRol: usuario.id_rol?.toString() ?? '',
+    } as UserToken;
+
+    const token = generateToken(userToken);
+    const userResponse: UsuarioResponse = {
+        id_usuario: usuario.id_usuario,
+        nombres: usuario.nombres,
+        apellidos: usuario.apellidos,
+        nombre_usuario: usuario.nombre_usuario,
+        email: usuario.email,
+        id_rol: usuario.id_rol,
+        id_estado_usuario: usuario.id_estado_usuario,
+        token: token,  // Incluir el token generado
+    };
+    return userResponse;
 }

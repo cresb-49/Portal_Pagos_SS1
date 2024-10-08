@@ -27,7 +27,7 @@ export const obtenerUsuarioPorId = async (id: number, prisma: any): Promise<any>
     });
 };
 
-export const obtenerUsuariosPorNombreUsuario = async (nombreUsuario: string, prisma: any): Promise<any> => {
+export const obtenerUsuariosPorNombreUsuario = async (nombreUsuario: string, prisma: any): Promise<Usuario> => {
     return await prisma.usuario.findFirst({
         where: {
             nombre_usuario: nombreUsuario

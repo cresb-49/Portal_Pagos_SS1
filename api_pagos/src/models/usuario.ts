@@ -18,6 +18,17 @@ export interface UserRegister {
     idEmpresa?: number;
 }
 
+export interface UsuarioResponse {
+    id_usuario: number;
+    nombres: string;
+    apellidos: string;
+    nombre_usuario: string;
+    email: string;
+    id_rol: number | null;
+    id_estado_usuario: number | null;
+    token?: string;
+}
+
 export interface CrearUsuario {
     nombres: string;
     apellidos: string;

@@ -20,3 +20,7 @@ export const authenticateJWT = (req: Request, res: Response, next: NextFunction)
         res.sendStatus(401);  // Token no proporcionado
     }
 };
+
+export const generateToken = (user: UserToken) => {
+    return jwt.sign(user, secret);
+}
