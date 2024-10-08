@@ -13,74 +13,129 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+model Empresa {
+    id_empresa Int       @id @default(autoincrement())
+    nombre     String
+    create_at  DateTime  @default(now())
+    update_at  DateTime  @default(now())
+    delete_at  DateTime?
+
+    cuentas_asociadas Cuenta? //Una empresa puede tener muchas cuentas
+
+    @@map("empresa")
+}
+
+model EstadoUsuario {
+    id_estado_usuario Int       @id @default(autoincrement())
+    nombre            String
+    create_at         DateTime  @default(now())
+    update_at         DateTime  @default(now())
+    delete_at         DateTime?
+
+    usuarios_asociados Usuario[] //Un estado de usuario puede tener muchos usuarios
+
+    @@map("estado_usuario")
+}
+
 model Usuario {
-    id_usuario     Int             @id @default(autoincrement())
-    nombre_usuario String
-    email          String          @unique
-    estado         String // Ej: activo, inactivo, bloqueado, etc.
-    fecha_registro DateTime        @default(now())
-    cuentas        Cuenta_Portal[] // Relación uno a muchos con cuentas
+    id_usuario        Int            @id @default(autoincrement())
+    nombre_usuario    String         @unique
+    //-----------------------------------------------------------------------------------
+    id_estado_usuario Int?
+    estado_usuario    EstadoUsuario? @relation(fields: [id_estado_usuario], references: [id_estado_usuario])
+    //-----------------------------------------------------------------------------------
+    email             String         @unique
+    nombres           String
+    apellidos         String
+    create_at         DateTime       @default(now())
+    update_at         DateTime       @default(now())
+    delete_at         DateTime?
+    cuenta            Cuenta?
 
     @@map("usuario")
 }
 
-model Cuenta_Portal {
-    id_cuenta_portal Int      @id @default(autoincrement())
-    nombre_cuenta    String // Ej: nombre_usuario{código_empresa}@nombre_empresa.com
-    saldo            Float    @default(0.0)
-    tipo_cuenta      String // Ej: "bancaria" o "tarjeta de crédito"
-    fecha_creacion   DateTime @default(now())
-    estado_cuenta    String // Ej: activa, inactiva, bloqueada
+model Cuenta {
+    id_cuenta             Int               @id @default(autoincrement())
+    //-----------------------------------------------------------------------------------
+    id_usuario            Int               @unique
+    usuario               Usuario           @relation(fields: [id_usuario], references: [id_usuario])
+    //-----------------------------------------------------------------------------------
+    //La cuenta pertece a una entidad financiera
+    id_entidad_financiera Int
+    entidad_financiera    EntidadFinanciera @relation(fields: [id_entidad_financiera], references: [id_entidad_financiera])
+    //-----------------------------------------------------------------------------------
+    //La cuenta puede pertenecer a una empresa
+    id_empresa            Int?              @unique
+    empresa               Empresa?          @relation(fields: [id_empresa], references: [id_empresa])
+    //-----------------------------------------------------------------------------------
+    numero_cuenta         String
+    saldo                 Float
+    create_at             DateTime          @default(now())
+    update_at             DateTime          @default(now())
+    delete_at             DateTime?
 
-    usuario_id Int
-    usuario    Usuario @relation(fields: [usuario_id], references: [id_usuario])
+    cuenta_origen  Transaccion[] @relation("cuenta_origen")
+    cuenta_destino Transaccion[] @relation("cuenta_cestino")
 
-    financiera_id Int
-    financiera    Entidad_Financiera @relation(fields: [financiera_id], references: [id_financiera])
-
-    transacciones  Transaccion[] // Relación uno a muchos con transacciones
-    movilizaciones Movilizacion_Fondos[] // Relación uno a muchos con movilizaciones
-
-    @@map("cuenta_portal")
+    @@map("cuenta")
 }
 
-model Entidad_Financiera {
-    id_financiera     Int    @id @default(autoincrement())
-    nombre_financiera String
-    tipo_financiera   String // Ej: banco o tarjeta de crédito
-    codigo_empresa    String // Código de la empresa financiera
+model EntidadFinanciera {
+    id_entidad_financiera Int       @id @default(autoincrement())
+    nombre                String
+    codigo                String
+    create_at             DateTime  @default(now())
+    update_at             DateTime  @default(now())
+    delete_at             DateTime?
 
-    cuentas             Cuenta_Portal[] // Relación uno a muchos con cuentas
-    Movilizacion_Fondos Movilizacion_Fondos[]
+    cuentas_asociadas Cuenta[] //Una entidad financiera puede tener muchas cuentas
 
     @@map("entidad_financiera")
 }
 
-model Transaccion {
-    id_transaccion     Int      @id @default(autoincrement())
-    monto              Float
-    tipo_transaccion   String // Ej: ingreso o egreso
-    fecha_transaccion  DateTime @default(now())
-    descripcion        String
-    estado_transaccion String // Ej: exitosa, fallida, pendiente
+model TipoTransaccion {
+    id_tipo_transaccion Int       @id @default(autoincrement())
+    nombre              String
+    create_at           DateTime  @default(now())
+    update_at           DateTime  @default(now())
+    delete_at           DateTime?
 
-    cuenta_portal_id Int
-    cuenta_portal    Cuenta_Portal @relation(fields: [cuenta_portal_id], references: [id_cuenta_portal])
+    transacciones_asociadas Transaccion[] //Un tipo de transaccion puede tener muchas transacciones
 
-    @@map("transaccion")
+    @@map("tipo_transaccion")
 }
 
-model Movilizacion_Fondos {
-    id_movilizacion    Int      @id @default(autoincrement())
-    monto              Float
-    comision           Float    @default(0.013)
-    fecha_movilizacion DateTime @default(now())
+model EstadoTransaccion {
+    id_estado_transaccion Int       @id @default(autoincrement())
+    nombre                String
+    create_at             DateTime  @default(now())
+    update_at             DateTime  @default(now())
+    delete_at             DateTime?
 
-    cuenta_portal_id Int
-    cuenta_portal    Cuenta_Portal @relation(fields: [cuenta_portal_id], references: [id_cuenta_portal])
+    transacciones_asociadas Transaccion[]
+}
 
-    financiera_id Int
-    financiera    Entidad_Financiera @relation(fields: [financiera_id], references: [id_financiera])
+model Transaccion {
+    id_transaccion        Int               @id @default(autoincrement())
+    //-----------------------------------------------------------------------------------
+    id_tipo_transaccion   Int
+    tipo_transaccion      TipoTransaccion   @relation(fields: [id_tipo_transaccion], references: [id_tipo_transaccion])
+    //-----------------------------------------------------------------------------------
+    id_cuenta_origen      Int
+    cuenta_origen         Cuenta            @relation(fields: [id_cuenta_origen], references: [id_cuenta], name: "cuenta_origen") //Relacion con la cuenta origen
+    //-----------------------------------------------------------------------------------
+    id_cuenta_destino     Int
+    cuenta_destino        Cuenta            @relation(fields: [id_cuenta_destino], references: [id_cuenta], name: "cuenta_cestino") //Relacion con la cuenta destino
+    //-----------------------------------------------------------------------------------
+    id_estado_transaccion Int
+    estado_transaccion    EstadoTransaccion @relation(fields: [id_estado_transaccion], references: [id_estado_transaccion])
+    //-----------------------------------------------------------------------------------
+    monto                 Float
+    descripcion           String
+    create_at             DateTime          @default(now())
+    update_at             DateTime          @default(now())
+    delete_at             DateTime?
 
-    @@map("movilizacion_fondos")
+    @@map("transaccion")
 }
