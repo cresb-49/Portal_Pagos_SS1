@@ -9,6 +9,7 @@
     "generate:models": "npx prisma generate",
     "migrate:first-init": "npx prisma migrate dev --name init",
     "migrate:new": "npx prisma migrate dev --name",
+    "migrate:seed": "ts-node prisma/seed.ts",
     "migrate:clean": "npx prisma migrate reset --force",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

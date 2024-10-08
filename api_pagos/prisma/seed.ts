@@ -8,52 +8,75 @@ async function main() {
 
     //Entidades Financieras
     await prisma.entidadFinanciera.create({
-        data:{
+        data: {
             nombre: "Financiera A",
             codigo: "A",
         }
     })
     await prisma.entidadFinanciera.create({
-        data:{
+        data: {
             nombre: "Financiera B",
             codigo: "B",
         }
     })
     // Tipos de Transacciones
     await prisma.tipoTransaccion.create({
-        data:{
+        data: {
             nombre: "Credito",
         }
     });
     await prisma.tipoTransaccion.create({
-        data:{
+        data: {
             nombre: "Debito",
         }
     });
     await prisma.tipoTransaccion.create({
-        data:{
+        data: {
             nombre: "Retiro",
         }
     });
     //Estados de Transacciones
     await prisma.estadoTransaccion.create({
-        data:{
+        data: {
             nombre: "Exitoso",
         }
     });
     await prisma.estadoTransaccion.create({
-        data:{
+        data: {
             nombre: "Fallido",
         }
     });
     await prisma.estadoTransaccion.create({
-        data:{
+        data: {
             nombre: "Pendiente",
         }
     });
-
-
-
+    //Estado de Usuario [Activo, Inactivo, Bloqueado, Pendiente de Verificacion,Suspendido]
+    await prisma.estadoUsuario.create({
+        data: {
+            nombre: "Activo",
+        }
+    });
+    await prisma.estadoUsuario.create({
+        data: {
+            nombre: "Inactivo",
+        }
+    });
+    await prisma.estadoUsuario.create({
+        data: {
+            nombre: "Bloqueado",
+        }
+    });
+    await prisma.estadoUsuario.create({
+        data: {
+            nombre: "Pendiente de Verificacion",
+        }
+    });
+    await prisma.estadoUsuario.create({
+        data: {
+            nombre: "Suspendido",
+        }
+    });
     console.log("Seeding finished.");
 }
 

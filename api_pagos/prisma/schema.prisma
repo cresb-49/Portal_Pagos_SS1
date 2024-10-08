@@ -114,6 +114,7 @@ model EstadoTransaccion {
     delete_at             DateTime?
 
     transacciones_asociadas Transaccion[]
+    @@map("estado_transaccion")
 }
 
 model Transaccion {
