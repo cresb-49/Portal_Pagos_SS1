@@ -1,6 +1,17 @@
-export interface User {
+export interface UserToken {
     id: string;
-    name: string;
+    nombreUsuario: string;
+    email: string;
+    idRol: string;
+}
+
+export interface UserRegister {
+    nombreUsuario: string;
     email: string;
     password: string;
+    nombres: string;
+    apellidos: string;
+    numeroCuenta: string;
+    idEntidadFinanciera: number;
+    idEmpresa?: number;
 }

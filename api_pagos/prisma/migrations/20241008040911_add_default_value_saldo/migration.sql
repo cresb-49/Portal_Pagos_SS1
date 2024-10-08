@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `cuenta` MODIFY `saldo` DOUBLE NOT NULL DEFAULT 0;

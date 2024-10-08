@@ -1,12 +1,28 @@
-import { User } from '../models/user';
+import { getUsers, getUsersByNombreUsuario } from '../repositories/userRepository';
+import { compare } from 'bcrypt';
+import { encrypt } from '../utils/encryptUtil';
+import { UserRegister } from '../models/user';
 
-const users: User[] = [
-    { id: '1', name: 'John Doe', email: 'john@example.com', password: 'hashedpassword' },
-    // otros usuarios...
-];
+export const getAllUsers = async () => {
+    return await getUsers();
+}
 
-export const getUsers = async (): Promise<User[]> => {
-    return users;
+export const register = async (user: UserRegister) => {
+    // Encriptar la contraseña antes de guardarla
+    const hashedPassword = await encrypt(user.password);
+
+    // Guardar el usuario en la base de datos (con la contraseña encriptada)
+
 };
 
-export default { getUsers };
+export const login = async (nombreUsuario: string, password: string) => {
+    const usuario = await getUsersByNombreUsuario(nombreUsuario);
+    if (!usuario) {
+        throw new Error('Usuario no encontrado');
+    }
+    const isPasswordCorrect = await compare(password, usuario.password);
+    if (!isPasswordCorrect) {
+        throw new Error('Contraseña incorrecta');
+    }
+    return usuario;
+}

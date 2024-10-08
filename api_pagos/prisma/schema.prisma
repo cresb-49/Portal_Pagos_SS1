@@ -60,6 +60,7 @@ model Usuario {
     rol               Rol?           @relation(fields: [id_rol], references: [id_rol])
     //-----------------------------------------------------------------------------------
     email             String         @unique
+    password          String
     nombres           String
     apellidos         String
     create_at         DateTime       @default(now())
@@ -84,8 +85,8 @@ model Cuenta {
     id_empresa            Int?              @unique
     empresa               Empresa?          @relation(fields: [id_empresa], references: [id_empresa])
     //-----------------------------------------------------------------------------------
-    numero_cuenta         String
-    saldo                 Float
+    numero_cuenta         String            @unique
+    saldo                 Float             @default(0)
     create_at             DateTime          @default(now())
     update_at             DateTime          @default(now())
     delete_at             DateTime?
