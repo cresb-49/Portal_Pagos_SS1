@@ -4,7 +4,7 @@ import { CrearUsuario, UserRegister } from '../models/usuario';
 import { RolType } from '../enums/rolType';
 import { CrearCuenta } from '../models/cuenta';
 import { PrismaClient } from '@prisma/client'
-import { crearUsuarioCliente, obtenerUsuarioPorId, obtenerUsuarios } from '../repository/usuarioRepository';
+import { crearUsuarioCliente, obtenerUsuarioPorId, obtenerUsuarios, obtenerUsuariosPorNombreUsuario } from '../repository/usuarioRepository';
 import { crearCuenta } from '../repository/cuentaRepository';
 const prisma = new PrismaClient()
 
@@ -49,14 +49,14 @@ export const register = async (user: UserRegister) => {
     }
 };
 
-export const login = async (nombreUsuario: string, password: string) => {
-    // const usuario = await userRepository.getUsersByNombreUsuario(nombreUsuario);
-    // if (!usuario) {
-    //     throw new Error('Usuario no encontrado');
-    // }
-    // const isPasswordCorrect = await compare(password, usuario.password);
-    // if (!isPasswordCorrect) {
-    //     throw new Error('Contraseña incorrecta');
-    // }
-    // return usuario;
+export const IniciarSession = async (nombreUsuario: string, password: string) => {
+    const usuario = await obtenerUsuariosPorNombreUsuario(nombreUsuario, prisma);
+    if (!usuario) {
+        throw new Error('Usuario no encontrado');
+    }
+    const isPasswordCorrect = await compare(password, usuario.password);
+    if (!isPasswordCorrect) {
+        throw new Error('Contraseña incorrecta');
+    }
+    return usuario;
 }
