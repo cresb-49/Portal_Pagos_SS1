@@ -37,12 +37,27 @@ model EstadoUsuario {
     @@map("estado_usuario")
 }
 
+model Rol{
+    id_rol    Int      @id @default(autoincrement())
+    nombre    String
+    create_at DateTime @default(now())
+    update_at DateTime @default(now())
+    delete_at DateTime?
+
+    usuarios_asociados Usuario[] //Un rol puede tener muchos usuarios
+
+    @@map("rol")
+}
+
 model Usuario {
     id_usuario        Int            @id @default(autoincrement())
     nombre_usuario    String         @unique
     //-----------------------------------------------------------------------------------
     id_estado_usuario Int?
     estado_usuario    EstadoUsuario? @relation(fields: [id_estado_usuario], references: [id_estado_usuario])
+    //-----------------------------------------------------------------------------------
+    id_rol            Int?
+    rol               Rol?           @relation(fields: [id_rol], references: [id_rol])
     //-----------------------------------------------------------------------------------
     email             String         @unique
     nombres           String

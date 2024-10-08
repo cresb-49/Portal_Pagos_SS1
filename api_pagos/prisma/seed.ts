@@ -77,6 +77,23 @@ async function main() {
             nombre: "Suspendido",
         }
     });
+    // Roles de Usuario
+    // Administrador, Cliente, Empleado
+    await prisma.rol.create({
+        data: {
+            nombre: "Administrador",
+        }
+    });
+    await prisma.rol.create({
+        data: {
+            nombre: "Cliente",
+        }
+    });
+    await prisma.rol.create({
+        data: {
+            nombre: "Empleado",
+        }
+    });
     console.log("Seeding finished.");
 }
 
