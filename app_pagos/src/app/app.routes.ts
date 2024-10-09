@@ -8,6 +8,8 @@ import { VerUsuariosComponent } from './views/ver-usuarios/ver-usuarios.componen
 import { CrearModificarUsuarioComponent } from './components/crear-modificar-usuario/crear-modificar-usuario.component';
 import { CrearUsuarioComponent } from './views/crear-usuario/crear-usuario.component';
 import { ModificarUsuarioComponent } from './views/modificar-usuario/modificar-usuario.component';
+import { RegistroUsuarioComponent } from './views/registro-usuario/registro-usuario.component';
+import { RegistroEmpresaComponent } from './views/registro-empresa/registro-empresa.component';
 
 export const routes: Routes = [
   {
@@ -35,7 +37,10 @@ export const routes: Routes = [
     component: CleanViewComponent,
     children: [
       {
-        path: 'signup', component: SignupComponent
+        path: 'signup', component: RegistroUsuarioComponent
+      },
+      {
+        path: 'signup/empresa', component: RegistroEmpresaComponent
       }
     ]
   }

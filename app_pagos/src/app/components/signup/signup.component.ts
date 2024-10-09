@@ -1,17 +1,18 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
+import { Router, RouterModule } from '@angular/router';
 @Component({
   selector: 'app-signup',
   standalone: true,
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css'],
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterModule],
   encapsulation: ViewEncapsulation.None
 })
 export class SignupComponent implements OnInit {
+  @Input() registroEmpresa: boolean = false;
   signupForm: FormGroup;
 
   constructor(private fb: FormBuilder, private router: Router, private authService: AuthService) {

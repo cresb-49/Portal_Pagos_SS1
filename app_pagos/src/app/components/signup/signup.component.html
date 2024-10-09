@@ -2,7 +2,7 @@
   <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
     <div class="text-center mb-6">
       <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
-        Registrate
+        {{registroEmpresa ?"Registro de Empresa":"Registrate" }}
       </h2>
     </div>
     <!-- Cambia a grid y utiliza clases responsivas -->
@@ -12,79 +12,87 @@
         <input formControlName="nombres" id="nombres" type="text" required
           class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="Ingrese sus nombres" />
-          <div *ngIf="signupForm.get('nombres')?.hasError('required')" class="text-red-500 text-sm mt-1">
-            Este campo es requerido.
-          </div>
+        <div *ngIf="signupForm.get('nombres')?.hasError('required')" class="text-red-500 text-sm mt-1">
+          Este campo es requerido.
+        </div>
       </div>
       <div class="flex flex-col">
         <label for="apellidos" class="text-gray-700 dark:text-gray-300 mb-1">Apellidos</label>
         <input formControlName="apellidos" id="apellidos" type="text" required
           class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="Ingrese sus apellidos" />
-          <div *ngIf="signupForm.get('apellidos')?.hasError('required')" class="text-red-500 text-sm mt-1">
-            Este campo es requerido.
-          </div>
+        <div *ngIf="signupForm.get('apellidos')?.hasError('required')" class="text-red-500 text-sm mt-1">
+          Este campo es requerido.
+        </div>
       </div>
       <div class="flex flex-col">
         <label for="email" class="text-gray-700 dark:text-gray-300 mb-1">Correo Electrónico</label>
         <input formControlName="email" id="email" type="email" required
           class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="Ingrese su correo" />
-          <div *ngIf="signupForm.get('email')?.hasError('required')" class="text-red-500 text-sm mt-1">
-            Este campo es requerido.
-          </div>
+        <div *ngIf="signupForm.get('email')?.hasError('required')" class="text-red-500 text-sm mt-1">
+          Este campo es requerido.
+        </div>
       </div>
       <div class="flex flex-col">
         <label for="cui" class="text-gray-700 dark:text-gray-300 mb-1">CUI</label>
         <input formControlName="cui" id="cui" type="text" required
           class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="Ingrese su CUI" />
-          <div *ngIf="signupForm.get('cui')?.hasError('required')" class="text-red-500 text-sm mt-1">
-            Este campo es requerido.
-          </div>
+        <div *ngIf="signupForm.get('cui')?.hasError('required')" class="text-red-500 text-sm mt-1">
+          Este campo es requerido.
+        </div>
       </div>
       <div class="flex flex-col">
         <label for="nit" class="text-gray-700 dark:text-gray-300 mb-1">NIT</label>
         <input formControlName="nit" id="nit" type="text" required
           class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="Ingrese su NIT" />
-          <div *ngIf="signupForm.get('nit')?.hasError('required')" class="text-red-500 text-sm mt-1">
-            Este campo es requerido.
-          </div>
+        <div *ngIf="signupForm.get('nit')?.hasError('required')" class="text-red-500 text-sm mt-1">
+          Este campo es requerido.
+        </div>
       </div>
       <div class="flex flex-col">
         <label for="telefono" class="text-gray-700 dark:text-gray-300 mb-1">Teléfono</label>
         <input formControlName="telefono" id="telefono" type="text" required
           class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="Ingrese su teléfono" />
-          <div *ngIf="signupForm.get('telefono')?.hasError('required')" class="text-red-500 text-sm mt-1">
-            Este campo es requerido.
-          </div>
+        <div *ngIf="signupForm.get('telefono')?.hasError('required')" class="text-red-500 text-sm mt-1">
+          Este campo es requerido.
+        </div>
       </div>
       <div class="flex flex-col">
         <label for="password" class="text-gray-700 dark:text-gray-300 mb-1">Contraseña</label>
         <input formControlName="password" id="password" type="password" required
           class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="Ingrese su contraseña" />
-          <div *ngIf="signupForm.get('password')?.hasError('required')" class="text-red-500 text-sm mt-1">
-            Este campo es requerido.
-          </div>
+        <div *ngIf="signupForm.get('password')?.hasError('required')" class="text-red-500 text-sm mt-1">
+          Este campo es requerido.
+        </div>
       </div>
       <div class="flex flex-col">
         <label for="confirmPassword" class="text-gray-700 dark:text-gray-300 mb-1">Confirmar Contraseña</label>
         <input formControlName="confirmPassword" id="confirmPassword" type="password" required
           class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="Confirme su contraseña" />
-          <div *ngIf="signupForm.get('confirmPassword')?.hasError('required')" class="text-red-500 text-sm mt-1">
-            Este campo es requerido.
-          </div>
+        <div *ngIf="signupForm.get('confirmPassword')?.hasError('required')" class="text-red-500 text-sm mt-1">
+          Este campo es requerido.
+        </div>
       </div>
     </div>
     <div class="mt-6">
       <button type="submit"
         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full transition-colors duration-200">
-        Registrarse
+        {{registroEmpresa ?"Registra tu Empresa":"Registrarse" }}
       </button>
+    </div>
+    <!-- Opción de Registro -->
+    <div class="text-center mt-4" *ngIf="!registroEmpresa">
+      <span class="text-gray-600 dark:text-gray-400 text-sm">
+        ¿Quieres registrar tu empresa?
+        <a routerLink="/signup/empresa"
+          class="text-blue-500 hover:text-blue-700 font-medium transition-colors duration-200">Regístrate</a>
+      </span>
     </div>
   </form>
 </div>
