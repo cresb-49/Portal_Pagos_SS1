@@ -1,7 +1,7 @@
 import { RouterModule, Routes } from '@angular/router';
-import { DefaultViewComponent } from './views/default-view/default-view.component';
+import { DefaultViewComponent } from './layout/default-view/default-view.component';
 import { HomeComponent } from './views/home/home.component';
-import { CleanViewComponent } from './views/clean-view/clean-view.component';
+import { CleanViewComponent } from './layout/clean-view/clean-view.component';
 import { SignupComponent } from './components/signup/signup.component';
 import { NgModule } from '@angular/core';
 import { VerUsuariosComponent } from './views/ver-usuarios/ver-usuarios.component';
