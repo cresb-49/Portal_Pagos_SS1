@@ -10,6 +10,7 @@ import { CrearUsuarioComponent } from './views/crear-usuario/crear-usuario.compo
 import { ModificarUsuarioComponent } from './views/modificar-usuario/modificar-usuario.component';
 import { RegistroUsuarioComponent } from './views/registro-usuario/registro-usuario.component';
 import { RegistroEmpresaComponent } from './views/registro-empresa/registro-empresa.component';
+import { PaymentDashboardComponent } from './views/payment-dashboard/payment-dashboard.component';
 
 export const routes: Routes = [
   {
@@ -19,6 +20,9 @@ export const routes: Routes = [
     children: [
       {
         path: '', component: HomeComponent
+      },
+      {
+        path: 'home', component: PaymentDashboardComponent
       },
       {
         path: 'ver-usuarios', component: VerUsuariosComponent
