@@ -13,6 +13,8 @@ import { RegistroEmpresaComponent } from './views/registro-empresa/registro-empr
 import { PaymentDashboardComponent } from './views/payment-dashboard/payment-dashboard.component';
 import { AdminDashboardComponent } from './layout/admin-dashboard/admin-dashboard.component';
 import { ClearViewContentComponent } from './views/clear-view-content/clear-view-content.component';
+import { InfoServiciosComponent } from './views/info-servicios/info-servicios.component';
+import { RetirosComponent } from './views/retiros/retiros.component';
 
 export const routes: Routes = [
   {
@@ -34,6 +36,12 @@ export const routes: Routes = [
       },
       {
         path: 'modificar-usuario/:id', component: ModificarUsuarioComponent
+      },
+      {
+        path: 'info-servicio', component: InfoServiciosComponent
+      },
+      {
+        path: 'retiros', component: RetirosComponent
       }
     ]
   },
