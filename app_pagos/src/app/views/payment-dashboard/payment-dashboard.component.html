@@ -1,51 +1,55 @@
 <div class="px-20">
   <!-- payment-dashboard.component.html -->
-<div class="container mx-auto p-6">
-  <div class="text-center mb-6">
-    <h1 class="text-2xl font-bold">Mi Cuenta</h1>
-    <p class="text-gray-600">Aquí puedes ver tu saldo y transacciones</p>
-  </div>
+  <div class="container mx-auto p-6">
+    <div class="text-center mb-6">
+      <h1 class="text-2xl font-bold">Mi Cuenta</h1>
+      <p class="text-gray-600">Aquí puedes ver tu saldo y transacciones</p>
+    </div>
 
-  <!-- Saldo actual -->
-  <div class="bg-blue-100 p-6 rounded-lg mb-6">
-    <h2 class="text-2xl font-semibold text-blue-600">Saldo Actual</h2>
-    <p class="text-3xl font-bold text-blue-800">{{ currentBalance | currency }}</p>
-  </div>
+    <!-- Saldo actual -->
+    <div class="bg-blue-100 p-6 rounded-lg mb-6">
+      <h2 class="text-2xl font-semibold text-blue-600">Saldo Actual</h2>
+      <p class="text-3xl font-bold text-blue-800">{{ currentBalance | currency:'GTQ' }}</p>
+    </div>
 
-  <!-- Transacciones -->
-  <div class="bg-white shadow-md rounded-lg overflow-hidden">
-    <table class="min-w-full table-auto">
-      <thead class="bg-gray-100 text-gray-600">
-        <tr>
-          <th class="px-6 py-3 text-left">Fecha</th>
-          <th class="px-6 py-3 text-left">Descripción</th>
-          <th class="px-6 py-3 text-right">Monto</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let transaction of transactions" class="border-b">
-          <td class="px-6 py-4">{{ transaction.date }}</td>
-          <td class="px-6 py-4">{{ transaction.description }}</td>
-          <td class="px-6 py-4 text-right" [ngClass]="transaction.amount < 0 ? 'text-red-600' : 'text-green-600'">
-            {{ transaction.amount | currency }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <!-- Transacciones -->
+    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+      <table class="min-w-full table-auto">
+        <thead class="bg-gray-100 text-gray-600">
+          <tr>
+            <th class="px-6 py-3 text-left">Fecha</th>
+            <th class="px-6 py-3 text-left">Descripción</th>
+            <th class="px-6 py-3 text-left">Tipo</th>
+            <th class="px-6 py-3 text-right">Monto</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let transaction of transactions" class="border-b">
+            <td class="px-6 py-4">{{ transaction.date }}</td>
+            <td class="px-6 py-4">{{ transaction.description }}</td>
+            <td class="px-6 py-4">{{ transaction.type }}</td>
+            <td class="px-6 py-4 text-right" [ngClass]="transaction.amount < 0 ? 'text-red-600' : 'text-green-600'">
+              {{ transaction.amount | currency:'GTQ' }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-  <!-- Botones de acciones -->
-  <div class="mt-6 flex space-x-4">
-    <button type="button" class="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-      Acción 1
-    </button>
-    <button type="button" class="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-      Acción 2
-    </button>
-    <button type="button" class="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-      Acción 3
-    </button>
+    <!-- Botones de acciones -->
+    <div class="mt-6 gap-6 grid sm:grid-cols-1 md:grid-cols-4 lg:grid-cols-4">
+      <button type="button"
+        class="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+        Acción 1
+      </button>
+      <button type="button"
+        class="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+        Acción 2
+      </button>
+      <button type="button"
+        class="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+        Acción 3
+      </button>
+    </div>
   </div>
-</div>
-
 </div>

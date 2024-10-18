@@ -11,9 +11,9 @@ import { CommonModule } from '@angular/common';
 export class PaymentDashboardComponent implements OnInit {
   currentBalance: number = 1500.75;
   transactions = [
-    { date: '2024-10-01', description: 'Pago en Supermercado', amount: -45.00 },
-    { date: '2024-10-10', description: 'Ingreso por Transferencia', amount: 500.00 },
-    { date: '2024-10-15', description: 'Compra de Electrónica', amount: -120.00 },
+    { date: '2024-10-01', description: 'Pago en Ecommerse', type: 'Debito', amount: -45.00 },
+    { date: '2024-10-10', description: 'Ingreso por Transferencia', type: 'Credito', amount: 500.00 },
+    { date: '2024-10-15', description: 'Retiro a Banca', type: 'Retiro', amount: -120.00 },
   ];
   constructor() { }
 

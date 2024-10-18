@@ -11,6 +11,8 @@ import { ModificarUsuarioComponent } from './views/modificar-usuario/modificar-u
 import { RegistroUsuarioComponent } from './views/registro-usuario/registro-usuario.component';
 import { RegistroEmpresaComponent } from './views/registro-empresa/registro-empresa.component';
 import { PaymentDashboardComponent } from './views/payment-dashboard/payment-dashboard.component';
+import { AdminDashboardComponent } from './layout/admin-dashboard/admin-dashboard.component';
+import { ClearViewContentComponent } from './views/clear-view-content/clear-view-content.component';
 
 export const routes: Routes = [
   {
@@ -32,6 +34,15 @@ export const routes: Routes = [
       },
       {
         path: 'modificar-usuario/:id', component: ModificarUsuarioComponent
+      }
+    ]
+  },
+  {
+    path: '',
+    component: AdminDashboardComponent,
+    children: [
+      {
+        path: 'dashboard', component: ClearViewContentComponent
       }
     ]
   },
