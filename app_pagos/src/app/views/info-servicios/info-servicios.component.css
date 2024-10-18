@@ -1,0 +1,15 @@
+.container {
+  max-width: 1200px;
+}
+
+.shadow-md {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.bg-white {
+  background-color: white;
+}
+
+.border {
+  border-width: 1px;
+}
