@@ -1,4 +1,4 @@
-<div class="px-20">
+<div class="px-10 sm:px-10 md:px-20 lg:px-20">
   <!-- payment-dashboard.component.html -->
   <div class="container mx-auto p-6">
     <div class="text-center mb-6">
@@ -13,43 +13,70 @@
     </div>
 
     <!-- Transacciones -->
-    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-      <table class="min-w-full table-auto">
-        <thead class="bg-gray-100 text-gray-600">
-          <tr>
-            <th class="px-6 py-3 text-left">Fecha</th>
-            <th class="px-6 py-3 text-left">Descripción</th>
-            <th class="px-6 py-3 text-left">Tipo</th>
-            <th class="px-6 py-3 text-right">Monto</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let transaction of transactions" class="border-b">
-            <td class="px-6 py-4">{{ transaction.date }}</td>
-            <td class="px-6 py-4">{{ transaction.description }}</td>
-            <td class="px-6 py-4">{{ transaction.type }}</td>
-            <td class="px-6 py-4 text-right" [ngClass]="transaction.amount < 0 ? 'text-red-600' : 'text-green-600'">
-              {{ transaction.amount | currency:'GTQ' }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <div>
+      <div class="bg-white shadow-md rounded-lg overflow-x-auto">
+        <!-- Tabla con encabezado fijo y scroll horizontal -->
+        <table class="min-w-full table-auto">
+          <thead class="bg-gray-100 text-gray-600">
+            <tr>
+              <th class="px-6 py-3 text-left">Fecha</th>
+              <th class="px-6 py-3 text-left">Descripción</th>
+              <th class="px-6 py-3 text-left">Tipo</th>
+              <th class="px-6 py-3 text-right">Monto</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let transaction of transactions" class="border-b">
+              <td class="px-6 py-4">{{ transaction.date }}</td>
+              <td class="px-6 py-4">{{ transaction.description }}</td>
+              <td class="px-6 py-4">{{ transaction.type }}</td>
+              <td class="px-6 py-4 text-right" [ngClass]="transaction.amount < 0 ? 'text-red-600' : 'text-green-600'">
+                {{ transaction.amount | currency:'GTQ' }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-    <!-- Botones de acciones -->
-    <div class="mt-6 gap-6 grid sm:grid-cols-1 md:grid-cols-4 lg:grid-cols-4">
+      <!-- Botones de paginación -->
+      <div class="flex justify-center mt-4">
+        <!-- Botón Anterior -->
+        <a href="#" class="flex items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+           [class.opacity-50]="currentPage === 1" [class.pointer-events-none]="currentPage === 1"
+           (click)="previousPage()">
+          <svg class="w-3.5 h-3.5 me-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5H1m0 0 4 4M1 5l4-4"/>
+          </svg>
+          Anterior
+        </a>
+
+        <!-- Botón Siguiente -->
+        <a href="#" class="flex items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+           [class.opacity-50]="currentPage === totalPages" [class.pointer-events-none]="currentPage === totalPages"
+           (click)="nextPage()">
+          Siguiente
+          <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+          </svg>
+        </a>
+      </div>
+
+
+    </div>
+    <!-- Botones de acciones
+    <div class="mt-6 gap-6 grid sm:grid-cols-1 md:grid-cols-4 lg:grid-cols-6">
       <button type="button"
         class="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-        Acción 1
+        Exportar Transacciones
       </button>
       <button type="button"
         class="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-        Acción 2
+        Retirar
       </button>
       <button type="button"
         class="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
         Acción 3
       </button>
-    </div>
+    </div> -->
   </div>
 </div>

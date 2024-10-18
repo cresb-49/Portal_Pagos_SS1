@@ -10,6 +10,8 @@ import { CommonModule } from '@angular/common';
 })
 export class PaymentDashboardComponent implements OnInit {
   currentBalance: number = 1500.75;
+  currentPage: number = 1;
+  totalPages: number = 1;
   transactions = [
     { date: '2024-10-01', description: 'Pago en Ecommerse', type: 'Debito', amount: -45.00 },
     { date: '2024-10-10', description: 'Ingreso por Transferencia', type: 'Credito', amount: 500.00 },
@@ -18,6 +20,19 @@ export class PaymentDashboardComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+
+  // Retroceder página
+  previousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
   }
 
 }
