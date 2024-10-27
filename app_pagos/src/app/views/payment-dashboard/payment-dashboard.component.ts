@@ -18,66 +18,66 @@ export class PaymentDashboardComponent implements OnInit {
   totalPages: number = 1;
   cuenta: any;
   transactions: Transaccion[] = [
-    {
-      id_transaccion: 1,
-      id_tipo_transaccion: 1,
-      id_cuenta_origen: 1,
-      id_cuenta_destino: 2,
-      id_estado_transaccion: 1,
-      monto: -250,
-      descripcion: "Pago de Servicio de Luz",
-      create_at: "2024-10-27T10:17:53.562Z",
-      update_at: "2024-10-27T10:17:53.562Z",
-      delete_at: null
-    },
-    {
-      id_transaccion: 2,
-      id_tipo_transaccion: 2,
-      id_cuenta_origen: 1,
-      id_cuenta_destino: 3,
-      id_estado_transaccion: 2,
-      monto: 500,
-      descripcion: "Depósito en cuenta",
-      create_at: "2024-10-27T11:25:30.124Z",
-      update_at: "2024-10-27T11:25:30.124Z",
-      delete_at: null
-    },
-    {
-      id_transaccion: 3,
-      id_tipo_transaccion: 1,
-      id_cuenta_origen: 2,
-      id_cuenta_destino: 1,
-      id_estado_transaccion: 3,
-      monto: -100,
-      descripcion: "Pago de Internet",
-      create_at: "2024-10-26T14:45:10.987Z",
-      update_at: "2024-10-26T14:45:10.987Z",
-      delete_at: null
-    },
-    {
-      id_transaccion: 4,
-      id_tipo_transaccion: 3,
-      id_cuenta_origen: 1,
-      id_cuenta_destino: 4,
-      id_estado_transaccion: 1,
-      monto: -350.75,
-      descripcion: "Pago de alquiler",
-      create_at: "2024-10-25T09:12:00.523Z",
-      update_at: "2024-10-25T09:12:00.523Z",
-      delete_at: null
-    },
-    {
-      id_transaccion: 5,
-      id_tipo_transaccion: 2,
-      id_cuenta_origen: 3,
-      id_cuenta_destino: 1,
-      id_estado_transaccion: 2,
-      monto: 1500,
-      descripcion: "Transferencia recibida",
-      create_at: "2024-10-24T17:30:25.912Z",
-      update_at: "2024-10-24T17:30:25.912Z",
-      delete_at: null
-    }
+    // {
+    //   id_transaccion: 1,
+    //   id_tipo_transaccion: 1,
+    //   id_cuenta_origen: 1,
+    //   id_cuenta_destino: 2,
+    //   id_estado_transaccion: 1,
+    //   monto: -250,
+    //   descripcion: "Pago de Servicio de Luz",
+    //   create_at: "2024-10-27T10:17:53.562Z",
+    //   update_at: "2024-10-27T10:17:53.562Z",
+    //   delete_at: null
+    // },
+    // {
+    //   id_transaccion: 2,
+    //   id_tipo_transaccion: 2,
+    //   id_cuenta_origen: 1,
+    //   id_cuenta_destino: 3,
+    //   id_estado_transaccion: 2,
+    //   monto: 500,
+    //   descripcion: "Depósito en cuenta",
+    //   create_at: "2024-10-27T11:25:30.124Z",
+    //   update_at: "2024-10-27T11:25:30.124Z",
+    //   delete_at: null
+    // },
+    // {
+    //   id_transaccion: 3,
+    //   id_tipo_transaccion: 1,
+    //   id_cuenta_origen: 2,
+    //   id_cuenta_destino: 1,
+    //   id_estado_transaccion: 3,
+    //   monto: -100,
+    //   descripcion: "Pago de Internet",
+    //   create_at: "2024-10-26T14:45:10.987Z",
+    //   update_at: "2024-10-26T14:45:10.987Z",
+    //   delete_at: null
+    // },
+    // {
+    //   id_transaccion: 4,
+    //   id_tipo_transaccion: 3,
+    //   id_cuenta_origen: 1,
+    //   id_cuenta_destino: 4,
+    //   id_estado_transaccion: 1,
+    //   monto: -350.75,
+    //   descripcion: "Pago de alquiler",
+    //   create_at: "2024-10-25T09:12:00.523Z",
+    //   update_at: "2024-10-25T09:12:00.523Z",
+    //   delete_at: null
+    // },
+    // {
+    //   id_transaccion: 5,
+    //   id_tipo_transaccion: 2,
+    //   id_cuenta_origen: 3,
+    //   id_cuenta_destino: 1,
+    //   id_estado_transaccion: 2,
+    //   monto: 1500,
+    //   descripcion: "Transferencia recibida",
+    //   create_at: "2024-10-24T17:30:25.912Z",
+    //   update_at: "2024-10-24T17:30:25.912Z",
+    //   delete_at: null
+    // }
   ];
 
   displayedTransactions: Transaccion[] = [];
