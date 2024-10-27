@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { CuentaService } from '../../services/cuenta/cuenta.service';
+import { ApiResponse } from '../../services/http/http.service';
 
 @Component({
   standalone: true,
@@ -17,9 +19,28 @@ export class PaymentDashboardComponent implements OnInit {
     { date: '2024-10-10', description: 'Ingreso por Transferencia', type: 'Credito', amount: 500.00 },
     { date: '2024-10-15', description: 'Retiro a Banca', type: 'Retiro', amount: -120.00 },
   ];
-  constructor() { }
+  constructor(
+    private cuentaService: CuentaService,
+  ) { }
 
   ngOnInit() {
+    this.cuentaService.getCuenta().subscribe({
+      next: (response: ApiResponse) => {
+        console.log('response:', response.data);
+      },
+      error: (error: ApiResponse) => {
+        console.log('Error:', error);
+      }
+    });
+
+    this.cuentaService.getTRansacciones().subscribe({
+      next: (response: ApiResponse) => {
+        console.log('response:', response.data);
+      },
+      error: (error: ApiResponse) => {
+        console.log('Error:', error);
+      }
+    });
   }
 
   nextPage() {

@@ -3,12 +3,16 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import userRoutes from './routes/useRoutes';
 import pdfRoutes from './routes/pdfRoutes';
+import transaccionRoutes from './routes/transaccionRoutes';
+import otherRoutes from './routes/otherRoutes';
 
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use('/api', userRoutes);
-app.use('/api',pdfRoutes);
+app.use('/api', pdfRoutes);
+app.use('/api', transaccionRoutes);
+app.use('/api', otherRoutes);
 
 export default app;

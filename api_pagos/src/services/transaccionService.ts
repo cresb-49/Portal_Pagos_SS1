@@ -3,7 +3,7 @@ import path from "path";
 import { generateTransactionPDF, TransactionData } from "./pdfGenerator";
 import { getUsuarioByEmail, getUsusaurioById } from "./userService";
 import { UserToken } from "../models/usuario";
-import { crearTransaccion, TransaccionModel } from "../repository/transaccionRepository";
+import { crearTransaccion, obtenerTransaccionesPorIdCuenta, TransaccionModel } from "../repository/transaccionRepository";
 import { TipoTransaccionType } from "../enums/tipoTransaccionType";
 import { EstadoTransaccionType } from "../enums/estadoTransaccionType";
 
@@ -51,7 +51,7 @@ export const makePayment = async (payload: RealizarPago, usuario_creador: UserTo
         //Generamos una transacción de credito para el receptor
 
         const payloadTransaccion: TransaccionModel = {
-            monto: payload.cantidad,
+            monto: -Number(payload.cantidad),
             descripcion: payload.concepto,
             id_tipo_transaccion: TipoTransaccionType.DEBITO,
             id_cuenta_origen: cuenta_emisor.id_cuenta,
@@ -87,4 +87,22 @@ export const makePayment = async (payload: RealizarPago, usuario_creador: UserTo
         await generateTransactionPDF(transactionData, outputPath);
         return outputPath;
     });
+}
+
+export const obtenerTransaccionesUsuario = async (id_usuario: number) => {
+    const usuario = await getUsusaurioById(id_usuario, true);
+    const cuenta = usuario?.cuenta;
+    if (!cuenta) {
+        throw new Error('Cuenta no encontrada');
+    }
+    return await obtenerTransaccionesPorIdCuenta(cuenta.id_cuenta, prisma);
+}
+
+export const obtenerCuentaPorIdCliente = async (id_usuario: number) => {
+    const usuario = await getUsusaurioById(id_usuario, true);
+    const cuenta = usuario?.cuenta;
+    if (!cuenta) {
+        throw new Error('Cuenta no encontrada');
+    }
+    return cuenta;
 }
