@@ -128,18 +128,80 @@ async function main() {
             nombres: "Cliente",
             apellidos: "Cliente",
             email: "cliente@cliente.com",
-            password: await encrypt("cliente"),
+            password: await encrypt("12345"),
             id_estado_usuario: EstadoUsuarioType.ACTIVO,
             id_rol: RolType.CLIENTE,
         }
     });
     //Creamos un acuenta asociada al cliente
-    await prisma.cuenta.create({
+    let cuenta = await prisma.cuenta.create({
         data: {
             numero_cuenta: "123456789",
             saldo: 1000,
             id_usuario: cliente.id_usuario,
             id_entidad_financiera: 1,
+        }
+    });
+    //Creamos un usuario cliente para las pruebas
+    let cliente2 = await prisma.usuario.create({
+        data: {
+            nombre_usuario: "cliente2",
+            nombres: "Cliente2",
+            apellidos: "Cliente2",
+            email: "cliente2@cliente2.com",
+            password: await encrypt("12345"),
+            id_estado_usuario: EstadoUsuarioType.ACTIVO,
+            id_rol: RolType.CLIENTE,
+        }
+    });
+    //Creamos un acuenta asociada al cliente
+    let cuenta2 = await prisma.cuenta.create({
+        data: {
+            numero_cuenta: "123456709",
+            saldo: 10000,
+            id_usuario: cliente2.id_usuario,
+            id_entidad_financiera: 1,
+        }
+    });
+    //Creamos unas transacciones de ejemplo
+    await prisma.transaccion.create({
+        data: {
+            monto: -100,
+            descripcion: "Pago de Servicio 1",
+            id_tipo_transaccion: 2,
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_estado_transaccion: 1,
+        }
+    });
+    await prisma.transaccion.create({
+        data: {
+            monto: 100,
+            descripcion: "Pago de Servicio 2",
+            id_tipo_transaccion: 1,
+            id_cuenta_origen: cuenta2.id_cuenta,
+            id_cuenta_destino: cuenta.id_cuenta,
+            id_estado_transaccion: 1,
+        }
+    });
+    await prisma.transaccion.create({
+        data: {
+            monto: -100,
+            descripcion: "Pago de Servicio 3",
+            id_tipo_transaccion: 3,
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: null,
+            id_estado_transaccion: 1,
+        }
+    });
+    await prisma.transaccion.create({
+        data: {
+            monto: -100,
+            descripcion: "Pago de Servicio 3",
+            id_tipo_transaccion: 3,
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: null,
+            id_estado_transaccion: 1,
         }
     });
     //Se asocia la cuenta de la empresa 1 a la entidad financiera A o B

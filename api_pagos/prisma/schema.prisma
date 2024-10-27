@@ -142,8 +142,8 @@ model Transaccion {
     id_cuenta_origen      Int
     cuenta_origen         Cuenta            @relation(fields: [id_cuenta_origen], references: [id_cuenta], name: "cuenta_origen") //Relacion con la cuenta origen
     //-----------------------------------------------------------------------------------
-    id_cuenta_destino     Int
-    cuenta_destino        Cuenta            @relation(fields: [id_cuenta_destino], references: [id_cuenta], name: "cuenta_cestino") //Relacion con la cuenta destino
+    id_cuenta_destino     Int?
+    cuenta_destino        Cuenta?            @relation(fields: [id_cuenta_destino], references: [id_cuenta], name: "cuenta_cestino") //Relacion con la cuenta destino
     //-----------------------------------------------------------------------------------
     id_estado_transaccion Int
     estado_transaccion    EstadoTransaccion @relation(fields: [id_estado_transaccion], references: [id_estado_transaccion])

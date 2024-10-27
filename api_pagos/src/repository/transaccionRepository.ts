@@ -35,6 +35,6 @@ export const obtenerTransaccionesPorIdCuenta = async (id_cuenta: number, prisma:
                     id_cuenta_destino: id_cuenta
                 }
             ]
-        },
+        }
     });
 }
