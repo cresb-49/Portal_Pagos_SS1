@@ -1,0 +1,76 @@
+<div class="container mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
+  <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Lista de Empresas</h2>
+
+  <!-- Tabla de Empresas -->
+  <table class="w-full text-left text-gray-800 dark:text-gray-200">
+    <thead>
+      <tr class="border-b dark:border-gray-700">
+        <th class="p-4">ID</th>
+        <th class="p-4">Nombre</th>
+        <th class="p-4">Creado el</th>
+        <th class="p-4">Actualizado el</th>
+        <th class="p-4">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let empresa of empresasPaginadas" class="border-b dark:border-gray-700">
+        <td class="p-4">{{ empresa.id_empresa }}</td>
+        <td class="p-4">{{ empresa.nombre }}</td>
+        <td class="p-4">{{ empresa.create_at | date:'short' }}</td>
+        <td class="p-4">{{ empresa.update_at | date:'short' }}</td>
+        <td class="p-4">
+          <button (click)="iniciarEdicion(empresa)" class="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-3 rounded">
+            Editar
+          </button>
+          <button (click)="eliminarEmpresa(empresa.id_empresa)" class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded">
+            Eliminar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Paginación -->
+  <div class="flex justify-center mt-4">
+    <button *ngFor="let page of [1, 2, 3, 4]" (click)="cambiarPagina(page)"
+      [class.bg-blue-500]="currentPage === page" [class.bg-gray-300]="currentPage !== page"
+      class="mx-1 px-3 py-1 rounded text-white hover:bg-blue-700">
+      {{ page }}
+    </button>
+  </div>
+
+  <!-- Formulario de Creación de Empresa (Oculto durante la edición) -->
+  <div *ngIf="!enEdicion">
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 mt-10">Crear Nueva Empresa</h2>
+    <form [formGroup]="empresaForm" (ngSubmit)="crearEmpresa()">
+      <div class="flex flex-col mb-4">
+        <label for="nombre" class="text-gray-700 dark:text-gray-300 mb-1">Nombre de la Empresa</label>
+        <input formControlName="nombre" id="nombre" type="text" placeholder="Nombre de la Empresa"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <div *ngIf="empresaForm.get('nombre')?.hasError('required') && empresaForm.get('nombre')?.touched"
+          class="text-red-500 text-sm mt-1">Este campo es requerido.</div>
+      </div>
+
+      <button type="submit" class="w-full bg-green-500 hover:bg-green-700 text-white py-2 rounded-md">Crear Empresa</button>
+    </form>
+  </div>
+
+  <!-- Formulario de Edición de Empresa (Visible solo durante la edición) -->
+  <div *ngIf="enEdicion">
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 mt-10">Editar Empresa</h2>
+    <form [formGroup]="editForm" (ngSubmit)="guardarEdicion()">
+      <div class="flex flex-col mb-4">
+        <label for="nombre" class="text-gray-700 dark:text-gray-300 mb-1">Nombre de la Empresa</label>
+        <input formControlName="nombre" id="nombre" type="text" placeholder="Nuevo nombre de la Empresa"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <div *ngIf="editForm.get('nombre')?.hasError('required') && editForm.get('nombre')?.touched"
+          class="text-red-500 text-sm mt-1">Este campo es requerido.</div>
+      </div>
+
+      <div class="flex gap-4">
+        <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white py-2 rounded-md">Guardar Cambios</button>
+        <button type="button" (click)="cancelarEdicion()" class="w-full bg-gray-500 hover:bg-gray-700 text-white py-2 rounded-md">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>

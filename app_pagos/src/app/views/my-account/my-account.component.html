@@ -1,62 +1,97 @@
-<div>
-  <div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden p-6">
-    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Editar Perfil de Usuario</h2>
+<div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden p-6">
+  <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Editar Perfil de Usuario</h2>
 
-    <!-- Formulario de edición de datos del usuario -->
-    <form [formGroup]="userForm" (ngSubmit)="onSubmitUserForm()">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="flex flex-col">
-          <label for="nombre_usuario" class="text-gray-700 dark:text-gray-300 mb-1">Nombre de Usuario</label>
-          <input formControlName="nombre_usuario" id="nombre_usuario" type="text"
-            class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-        </div>
-        <div class="flex flex-col">
-          <label for="email" class="text-gray-700 dark:text-gray-300 mb-1">Correo Electrónico</label>
-          <input formControlName="email" id="email" type="email"
-            class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-        </div>
-        <div class="flex flex-col">
-          <label for="nombres" class="text-gray-700 dark:text-gray-300 mb-1">Nombres</label>
-          <input formControlName="nombres" id="nombres" type="text"
-            class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-        </div>
-        <div class="flex flex-col">
-          <label for="apellidos" class="text-gray-700 dark:text-gray-300 mb-1">Apellidos</label>
-          <input formControlName="apellidos" id="apellidos" type="text"
-            class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-        </div>
+  <!-- Formulario de edición de datos del usuario -->
+  <form [formGroup]="userForm" (ngSubmit)="onSubmitUserForm()">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex flex-col">
+        <label for="nombre_usuario" class="text-gray-700 dark:text-gray-300 mb-1">Nombre de Usuario</label>
+        <input formControlName="nombre_usuario" id="nombre_usuario" type="text"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
       </div>
-      <div class="mt-6">
-        <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-700">Guardar
-          Cambios</button>
+      <div class="flex flex-col">
+        <label for="email" class="text-gray-700 dark:text-gray-300 mb-1">Correo Electrónico</label>
+        <input formControlName="email" id="email" type="email"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
       </div>
-    </form>
+      <div class="flex flex-col">
+        <label for="nombres" class="text-gray-700 dark:text-gray-300 mb-1">Nombres</label>
+        <input formControlName="nombres" id="nombres" type="text"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+      </div>
+      <div class="flex flex-col">
+        <label for="apellidos" class="text-gray-700 dark:text-gray-300 mb-1">Apellidos</label>
+        <input formControlName="apellidos" id="apellidos" type="text"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+      </div>
+    </div>
+    <div class="mt-6">
+      <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-700">Guardar Cambios</button>
+    </div>
+  </form>
 
-    <!-- Formulario de cambio de contraseña -->
-    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 mt-10">Cambiar Contraseña</h2>
-    <form [formGroup]="passwordForm" (ngSubmit)="onSubmitPasswordForm()">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="flex flex-col col-span-2">
-          <label for="currentPassword" class="text-gray-700 dark:text-gray-300 mb-1">Contraseña Actual</label>
-          <input formControlName="currentPassword" id="currentPassword" type="password"
-            class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-        </div>
-        <div class="flex flex-col">
-          <label for="newPassword" class="text-gray-700 dark:text-gray-300 mb-1">Nueva Contraseña</label>
-          <input formControlName="newPassword" id="newPassword" type="password"
-            class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-        </div>
-        <div class="flex flex-col">
-          <label for="confirmPassword" class="text-gray-700 dark:text-gray-300 mb-1">Confirmar Nueva Contraseña</label>
-          <input formControlName="confirmPassword" id="confirmPassword" type="password"
-            class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-        </div>
+  <!-- Formulario de edición de datos de la cuenta -->
+  <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 mt-10">Editar Datos de la Cuenta</h2>
+  <form [formGroup]="accountForm" (ngSubmit)="onSubmitAccountForm()">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex flex-col">
+        <label for="numero_cuenta" class="text-gray-700 dark:text-gray-300 mb-1">Número de Cuenta</label>
+        <input formControlName="numero_cuenta" id="numero_cuenta" type="text"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
       </div>
-      <div class="mt-6">
-        <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-700">Actualizar
-          Contraseña</button>
-      </div>
-    </form>
-  </div>
 
+      <!-- Selección de Entidad Financiera -->
+      <div class="flex flex-col">
+        <label for="id_entidad_financiera" class="text-gray-700 dark:text-gray-300 mb-1">Entidad Financiera</label>
+        <select formControlName="id_entidad_financiera" id="id_entidad_financiera"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          <option *ngFor="let entidad of entidadesFinancieras" [value]="entidad.id">
+            {{ entidad.nombre }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Selección de Empresa -->
+      <div class="flex flex-col">
+        <label for="id_empresa" class="text-gray-700 dark:text-gray-300 mb-1">Empresa (Opcional)</label>
+        <select formControlName="id_empresa" id="id_empresa"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          <option value="">Seleccione una Empresa</option>
+          <option *ngFor="let empresa of empresas" [value]="empresa.id">
+            {{ empresa.nombre }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="mt-6">
+      <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-700">Guardar Cambios</button>
+    </div>
+  </form>
+
+
+  <!-- Formulario de cambio de contraseña -->
+  <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 mt-10">Cambiar Contraseña</h2>
+  <form [formGroup]="passwordForm" (ngSubmit)="onSubmitPasswordForm()">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex flex-col col-span-2">
+        <label for="currentPassword" class="text-gray-700 dark:text-gray-300 mb-1">Contraseña Actual</label>
+        <input formControlName="currentPassword" id="currentPassword" type="password"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+      </div>
+      <div class="flex flex-col">
+        <label for="newPassword" class="text-gray-700 dark:text-gray-300 mb-1">Nueva Contraseña</label>
+        <input formControlName="newPassword" id="newPassword" type="password"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+      </div>
+      <div class="flex flex-col">
+        <label for="confirmPassword" class="text-gray-700 dark:text-gray-300 mb-1">Confirmar Nueva Contraseña</label>
+        <input formControlName="confirmPassword" id="confirmPassword" type="password"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+      </div>
+    </div>
+    <div class="mt-6">
+      <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-700">Actualizar Contraseña</button>
+    </div>
+  </form>
 </div>
