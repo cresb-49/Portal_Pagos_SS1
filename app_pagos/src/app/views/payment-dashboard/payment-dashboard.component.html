@@ -25,7 +25,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let transaction of transactions" class="border-b">
+            <tr *ngFor="let transaction of displayedTransactions" class="border-b">
               <td class="px-6 py-4">{{ formatFecha(transaction.create_at) }}</td>
               <td class="px-6 py-4">{{ transaction.descripcion }}</td>
               <td class="px-6 py-4">{{ getEquivalenteTipoTransaccion(transaction.id_tipo_transaccion) }}</td>
@@ -40,7 +40,7 @@
       <!-- Botones de paginación -->
       <div class="flex justify-center mt-4">
         <!-- Botón Anterior -->
-        <a href="#"
+        <a href="javascript:void(0)"
           class="flex items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
           [class.opacity-50]="currentPage === 1" [class.pointer-events-none]="currentPage === 1"
           (click)="previousPage()">
@@ -53,7 +53,7 @@
         </a>
 
         <!-- Botón Siguiente -->
-        <a href="#"
+        <a href="javascript:void(0)"
           class="flex items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
           [class.opacity-50]="currentPage === totalPages" [class.pointer-events-none]="currentPage === totalPages"
           (click)="nextPage()">

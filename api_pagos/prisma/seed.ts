@@ -171,6 +171,7 @@ async function main() {
             id_tipo_transaccion: 2,
             id_cuenta_origen: cuenta.id_cuenta,
             id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta.id_cuenta,
             id_estado_transaccion: 1,
         }
     });
@@ -179,8 +180,9 @@ async function main() {
             monto: 100,
             descripcion: "Pago de Servicio 2",
             id_tipo_transaccion: 1,
-            id_cuenta_origen: cuenta2.id_cuenta,
-            id_cuenta_destino: cuenta.id_cuenta,
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta2.id_cuenta,
             id_estado_transaccion: 1,
         }
     });
@@ -191,6 +193,7 @@ async function main() {
             id_tipo_transaccion: 3,
             id_cuenta_origen: cuenta.id_cuenta,
             id_cuenta_destino: null,
+            id_cuenta_owner: cuenta.id_cuenta,
             id_estado_transaccion: 1,
         }
     });
@@ -201,6 +204,7 @@ async function main() {
             id_tipo_transaccion: 3,
             id_cuenta_origen: cuenta.id_cuenta,
             id_cuenta_destino: null,
+            id_cuenta_owner: cuenta.id_cuenta,
             id_estado_transaccion: 1,
         }
     });

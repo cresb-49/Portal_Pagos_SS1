@@ -93,6 +93,7 @@ model Cuenta {
 
     cuenta_origen  Transaccion[] @relation("cuenta_origen")
     cuenta_destino Transaccion[] @relation("cuenta_cestino")
+    cuenta_owner   Transaccion[] @relation("cuenta_owner")
 
     @@map("cuenta")
 }
@@ -147,6 +148,12 @@ model Transaccion {
     //-----------------------------------------------------------------------------------
     id_estado_transaccion Int
     estado_transaccion    EstadoTransaccion @relation(fields: [id_estado_transaccion], references: [id_estado_transaccion])
+    //-----------------------------------------------------------------------------------
+    //Como puede existir la transaccion igual en la cuenta origen y destino, debido que para
+    //una cuenta puede ser una transaccion de ingreso y para otra una transaccion de egreso
+    //Se debe de asociar la la cuenta de vista de informacion como cuenta_owner
+    id_cuenta_owner       Int
+    cuenta_owner          Cuenta            @relation(fields: [id_cuenta_owner], references: [id_cuenta], name: "cuenta_owner")
     //-----------------------------------------------------------------------------------
     monto                 Float
     descripcion           String

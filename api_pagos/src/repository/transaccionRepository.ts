@@ -25,16 +25,10 @@ export const crearTransaccion = async (transaccion: TransaccionModel, prisma: an
 
 export const obtenerTransaccionesPorIdCuenta = async (id_cuenta: number, prisma: any): Promise<Transaccion[]> => {
     //Obtenemos aquellos registros del lado de id_cuenta_origen y id_cuenta_destino
+    //Ordenamos por fecha de creación mas reciente primero
     return await prisma.transaccion.findMany({
         where: {
-            OR: [
-                {
-                    id_cuenta_origen: id_cuenta
-                },
-                {
-                    id_cuenta_destino: id_cuenta
-                }
-            ]
+            id_cuenta_owner: id_cuenta
         }
     });
 }

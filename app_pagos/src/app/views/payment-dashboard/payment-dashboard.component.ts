@@ -14,7 +14,7 @@ import { ToastrService } from 'ngx-toastr';
 export class PaymentDashboardComponent implements OnInit {
   currentBalance: number = 1500.75;
   currentPage: number = 1;
-  itemsPerPage: number = 2; // Número de transacciones por página
+  itemsPerPage: number = 10; // Número de transacciones por página
   totalPages: number = 1;
   cuenta: any;
   transactions: Transaccion[] = [
@@ -122,7 +122,7 @@ export class PaymentDashboardComponent implements OnInit {
   }
 
   getTransactions() {
-    this.cuentaService.getTransacciones().subscribe({
+    this.cuentaService.getTRansacciones().subscribe({
       next: (response: ApiResponse) => {
         this.transactions = response.data;
         this.updatePagination();
