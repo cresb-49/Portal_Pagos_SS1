@@ -15,6 +15,7 @@ import { AdminDashboardComponent } from './layout/admin-dashboard/admin-dashboar
 import { ClearViewContentComponent } from './views/clear-view-content/clear-view-content.component';
 import { InfoServiciosComponent } from './views/info-servicios/info-servicios.component';
 import { RetirosComponent } from './views/retiros/retiros.component';
+import { MyAccountComponent } from './views/my-account/my-account.component';
 
 export const routes: Routes = [
   {
@@ -42,6 +43,9 @@ export const routes: Routes = [
       },
       {
         path: 'retiros', component: RetirosComponent
+      },
+      {
+        path: 'mi-perfil', component: MyAccountComponent
       }
     ]
   },
