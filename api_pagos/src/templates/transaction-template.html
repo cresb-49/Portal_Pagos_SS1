@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Comprobante de Transacción</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #5a5a5a;
+        }
+
+        .content {
+            margin-bottom: 20px;
+        }
+
+        .content p {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Comprobante de Transacción</h1>
+            <h2>{{storeName}}</h2>
+        </div>
+        <div class="content">
+            <p><strong>Monto:</strong> Q{{amount}}</p>
+            <p><strong>Correo del Emisor:</strong> {{senderEmail}}</p>
+            <p><strong>Correo del Receptor:</strong> {{receiverEmail}}</p>
+            <p class="amount">Total: Q{{amount}}</p>
+        </div>
+        <div class="footer">
+            <p>Gracias por confiar en {{storeName}}. Transacción realizada con éxito.</p>
+        </div>
+    </div>
+</body>
+
+</html>

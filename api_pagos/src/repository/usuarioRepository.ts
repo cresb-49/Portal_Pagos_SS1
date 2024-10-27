@@ -34,3 +34,11 @@ export const obtenerUsuariosPorNombreUsuario = async (nombreUsuario: string, pri
         }
     });
 }
+
+export const obtenerUsuarioPorEmail = async (email: string, prisma: any): Promise<Usuario> => {
+    return await prisma.usuario.findFirst({
+        where: {
+            email: email
+        }
+    });
+}

@@ -1,4 +1,7 @@
 import { PrismaClient } from "@prisma/client";
+import { EstadoUsuarioType } from "./../src/enums/estadoUsuarioType";
+import { encrypt } from "./../src/utils/encryptUtil"
+import { RolType } from "./../src/enums/rolType"
 
 const prisma = new PrismaClient();
 
@@ -94,6 +97,19 @@ async function main() {
             nombre: "Empleado",
         }
     });
+    //Cracion de un usuario cliente empresa 1
+    await prisma.usuario.create({
+        data: {
+            nombre_usuario: "Electric-Shop",
+            nombres: " Electric-Shop",
+            apellidos: "Cliente",
+            email: "electricShop@gmail.com",
+            password: await encrypt("12345"),
+            id_estado_usuario: EstadoUsuarioType.ACTIVO,
+            id_rol: RolType.CLIENTE,
+        }
+    });
+    //Se asocia la cuenta de la empresa 1 a la entidad financiera A o B
     console.log("Seeding finished.");
 }
 

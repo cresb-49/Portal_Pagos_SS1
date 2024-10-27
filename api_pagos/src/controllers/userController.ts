@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import { getAllUsers, IniciarSession, register, registrarUsuarioAdmin } from '../services/userService';
+import { Response, Request } from "express";
+import { getAllUsers, IniciarSession, makePayment, RealizarPago, register, registrarUsuarioAdmin } from '../services/userService';
 import { apiResponse } from '../response/apiResponse';
 import { UserRegister } from '../models/usuario';
 import { HttpStatusCode } from '../utils/httpStatusCodes';
@@ -43,5 +43,33 @@ export const registrarAdmin = async (req: Request, res: Response): Promise<any> 
         return apiResponse(res, HttpStatusCode.OK, 'User signed up', usuario_registrado);
     } catch (error: Error | any) {
         return apiResponse(res, HttpStatusCode.INTERNAL_SERVER_ERROR, 'Error signing up', null, error.message ?? 'Unknown error');
+    }
+}
+
+export const loginAPI = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const { email, password } = req.body;
+        const response = await IniciarSession(email, password);
+        res.status(200).json(response);
+    } catch (error: Error | any) {
+        res.status(500).json(error.message ?? 'Error inesperado');
+    }
+}
+
+export const realizarPago = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const { cantidad, correoReceptor, concepto, nombreTienda, identificadorTienda } = req.body;
+        const payload: RealizarPago = {
+            cantidad,
+            correoReceptor,
+            concepto,
+            nombreTienda,
+            identificadorTienda
+        }
+        //El identificado de la tienda solo puede ser a 0 b
+        const response = await makePayment(payload);
+        res.status(200).json(response);
+    } catch (error: Error | any) {
+        res.status(500).json(error.message ?? 'Error inesperado');
     }
 }

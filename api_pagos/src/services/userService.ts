@@ -4,7 +4,7 @@ import { CrearUsuario, UserRegister, UserToken, UsuarioResponse } from '../model
 import { RolType } from '../enums/rolType';
 import { CrearCuenta } from '../models/cuenta';
 import { PrismaClient } from '@prisma/client'
-import { crearUsuarioCliente, obtenerUsuarioPorId, obtenerUsuarios, obtenerUsuariosPorNombreUsuario } from '../repository/usuarioRepository';
+import { crearUsuarioCliente, obtenerUsuarioPorEmail, obtenerUsuarioPorId, obtenerUsuarios, obtenerUsuariosPorNombreUsuario } from '../repository/usuarioRepository';
 import { crearCuenta } from '../repository/cuentaRepository';
 import { generateToken } from '../middlewares/authMiddleware';
 const prisma = new PrismaClient()
@@ -121,4 +121,69 @@ export const IniciarSession = async (nombreUsuario: string, password: string) =>
         token: token,  // Incluir el token generado
     };
     return userResponse;
+}
+
+export const existeEmail = async (email: string) => {
+    const usuario = await obtenerUsuarioPorEmail(email, prisma);
+    return { tieneCuenta: usuario !== null };
+}
+
+export const LoginApi = async (nombreUsuario: string, password: string) => {
+    const usuario = await obtenerUsuariosPorNombreUsuario(nombreUsuario, prisma);
+    //Validamos que hayan credenciales
+    if (nombreUsuario === '' || password === '') {
+        throw new Error('Debe ingresar credenciales');
+    }
+    //Validamos que el usuario exista
+    if (!usuario) {
+        throw new Error('Usuario no encontrado');
+    }
+    const isPasswordCorrect = await compare(password, usuario.password);
+    if (!isPasswordCorrect) {
+        throw new Error('Contraseña incorrecta');
+    }
+    // Generar un token para el usuario
+    const userToken = {
+        id: usuario.id_usuario.toString(),
+        nombreUsuario: usuario.nombre_usuario,
+        email: usuario.email,
+        idRol: usuario.id_rol?.toString() ?? '',
+    } as UserToken;
+
+    const token = generateToken(userToken);
+    const userResponse = {
+        usuario: {
+            id: usuario.id_usuario,
+            nombres: usuario.nombres,
+            apellidos: usuario.apellidos,
+            nombre_usuario: usuario.nombre_usuario,
+            email: usuario.email,
+            rol: {
+                id: usuario.id_rol,
+            },
+            id_estado_usuario: usuario.id_estado_usuario,
+        },
+        jwt: token,  // Incluir el token generado
+    };
+    return userResponse;
+}
+
+export interface RealizarPago {
+    cantidad: number;
+    correoReceptor: string;
+    concepto: string;
+    nombreTienda: string;
+    identificadorTienda: string;
+}
+interface TransactionData {
+    storeName: string;
+    amount: number;
+    receiverEmail: string;
+    senderEmail: string;
+    currency: string; // Para definir "Q" o "Quetzales"
+}
+
+
+export const makePayment = async (payload: RealizarPago) => {
+
 }
