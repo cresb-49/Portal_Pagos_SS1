@@ -27,8 +27,8 @@ export const signup = async (req: Request, res: Response): Promise<any> => {
 
 export const login = async (req: Request, res: Response): Promise<any> => {
     try {
-        const { nombreUsuario, password } = req.body;
-        const usuario = await IniciarSession(nombreUsuario, password);
+        const { email, password } = req.body;
+        const usuario = await IniciarSession(email, password);
         return apiResponse(res, HttpStatusCode.OK, 'User signed up', usuario);
     } catch (error: Error | any) {
         return apiResponse(res, HttpStatusCode.INTERNAL_SERVER_ERROR, 'Error signing up', null, error.message ?? 'Unknown error');

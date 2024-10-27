@@ -25,17 +25,19 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     //Si el usuario ya está autenticado, redirigirlo a la página de inicio
-    // if (this.authService.isLoggedIn()) {
-    //   this.router.navigate(['/']);
-    // }
+    if (this.authService.isLoggedIn()) {
+      this.router.navigate(['/home']);
+    } else {
+      this.router.navigate(['/']);
+    }
   }
 
 
   sendLogin() {
-    // console.log('userName:', this.email);
-    // console.log('password:', this.password);
-    // let result = this.authService.login(this.email, this.password);
-    // console.log('result:', result);
+    console.log('userName:', this.email);
+    console.log('password:', this.password);
+    let result = this.authService.login(this.email, this.password);
+    console.log('result:', result);
   }
 
 }

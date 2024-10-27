@@ -109,6 +109,39 @@ async function main() {
             id_rol: RolType.CLIENTE,
         }
     });
+    //Creamos un usuario administrador
+    await prisma.usuario.create({
+        data: {
+            nombre_usuario: "admin",
+            nombres: "Admin",
+            apellidos: "Admin",
+            email: "admnin@admin.com",
+            password: await encrypt("admin"),
+            id_estado_usuario: EstadoUsuarioType.ACTIVO,
+            id_rol: RolType.ADMINISTRADOR,
+        }
+    });
+    //Creamos un usuario cliente para las pruebas
+    let cliente = await prisma.usuario.create({
+        data: {
+            nombre_usuario: "cliente",
+            nombres: "Cliente",
+            apellidos: "Cliente",
+            email: "cliente@cliente.com",
+            password: await encrypt("cliente"),
+            id_estado_usuario: EstadoUsuarioType.ACTIVO,
+            id_rol: RolType.CLIENTE,
+        }
+    });
+    //Creamos un acuenta asociada al cliente
+    await prisma.cuenta.create({
+        data: {
+            numero_cuenta: "123456789",
+            saldo: 1000,
+            id_usuario: cliente.id_usuario,
+            id_entidad_financiera: 1,
+        }
+    });
     //Se asocia la cuenta de la empresa 1 a la entidad financiera A o B
     console.log("Seeding finished.");
 }
