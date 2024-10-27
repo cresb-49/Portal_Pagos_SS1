@@ -3,11 +3,12 @@ import handlebars from 'handlebars';
 import fs from 'fs';
 import path from 'path';
 
-interface TransactionData {
+export interface TransactionData {
     storeName: string;
     amount: number;
     receiverEmail: string;
     senderEmail: string;
+    description: string;
     currency: string;
 }
 

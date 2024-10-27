@@ -1,12 +1,15 @@
 import { Request, Response } from 'express';
 import { generateTransactionPDF } from './../services/pdfGenerator';
 import path from 'path';
+import { makePayment, RealizarPago } from '../services/transaccionService';
+import { UserToken } from '../models/usuario';
 
 export const generateTransactionPDFHandler = async (req: Request, res: Response) => {
     // Datos de la transacción (podrías obtenerlos de req.body en una app real)
     const transactionData = {
         storeName: 'Tienda Ejemplo',
         amount: 150.75,
+        description: 'Compra de productos varios',
         receiverEmail: 'receptor@correo.com',
         senderEmail: 'emisor@correo.com',
         currency: 'Q',
@@ -17,7 +20,7 @@ export const generateTransactionPDFHandler = async (req: Request, res: Response)
     try {
         await generateTransactionPDF(transactionData, outputPath);
         res.sendFile(outputPath);
-    } catch (error:Error | any) {
+    } catch (error: Error | any) {
         res.status(500).send('Error al generar el comprobante de transacción en PDF');
         console.log(error.message ?? 'Error inesperado');
 

@@ -1,4 +1,4 @@
-import { Usuario } from "@prisma/client";
+import { Cuenta, Usuario } from "@prisma/client";
 import { CrearUsuario } from "../models/usuario";
 
 export const crearUsuarioCliente = async (usuario: CrearUsuario, prisma: any): Promise<any> => {
@@ -19,15 +19,18 @@ export const obtenerUsuarios = async (prisma: any): Promise<any[]> => {
     });
 };
 
-export const obtenerUsuarioPorId = async (id: number, prisma: any): Promise<any> => {
+export const obtenerUsuarioPorId = async (id: number, prisma: any, include_cuenta: boolean = false): Promise<Usuario & { cuenta?: Cuenta | null }> => {
     return await prisma.usuario.findUnique({
         where: {
             id_usuario: id
+        },
+        include: {
+            cuenta: include_cuenta
         }
     });
 };
 
-export const obtenerUsuariosPorNombreUsuario = async (nombreUsuario: string, prisma: any): Promise<Usuario> => {
+export const obtenerUsuariosPorNombreUsuario = async (nombreUsuario: string, prisma: any): Promise<Usuario & { cuenta?: Cuenta | null }> => {
     return await prisma.usuario.findFirst({
         where: {
             nombre_usuario: nombreUsuario
@@ -35,10 +38,13 @@ export const obtenerUsuariosPorNombreUsuario = async (nombreUsuario: string, pri
     });
 }
 
-export const obtenerUsuarioPorEmail = async (email: string, prisma: any): Promise<Usuario> => {
+export const obtenerUsuarioPorEmail = async (email: string, prisma: any, include_cuenta: boolean = false): Promise<Usuario & { cuenta?: Cuenta | null }> => {
     return await prisma.usuario.findFirst({
         where: {
             email: email
+        },
+        include: {
+            cuenta: include_cuenta
         }
     });
 }

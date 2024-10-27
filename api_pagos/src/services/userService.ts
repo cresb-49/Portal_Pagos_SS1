@@ -13,8 +13,12 @@ export const getAllUsers = async () => {
     return await obtenerUsuarios(prisma);
 }
 
-export const getUsusaurioById = async (id: number) => {
-    return await obtenerUsuarioPorId(id, prisma);
+export const getUsusaurioById = async (id: number, include_cuenta: boolean = false) => {
+    return await obtenerUsuarioPorId(id, prisma, include_cuenta);
+}
+
+export const getUsuarioByEmail = async (email: string, include_cuenta: boolean = false) => {
+    return await obtenerUsuarioPorEmail(email, prisma, include_cuenta);
 }
 
 export const register = async (user: UserRegister) => {
@@ -166,24 +170,4 @@ export const LoginApi = async (nombreUsuario: string, password: string) => {
         jwt: token,  // Incluir el token generado
     };
     return userResponse;
-}
-
-export interface RealizarPago {
-    cantidad: number;
-    correoReceptor: string;
-    concepto: string;
-    nombreTienda: string;
-    identificadorTienda: string;
-}
-interface TransactionData {
-    storeName: string;
-    amount: number;
-    receiverEmail: string;
-    senderEmail: string;
-    currency: string; // Para definir "Q" o "Quetzales"
-}
-
-
-export const makePayment = async (payload: RealizarPago) => {
-
 }
