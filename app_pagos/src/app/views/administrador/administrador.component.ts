@@ -100,6 +100,10 @@ export class AdministradorComponent implements OnInit {
 
   // Eliminar usuario
   eliminarUsuario(id: number | undefined) {
+    if (!id) {
+      this.toastr.error('No se ha proporcionado un ID válido', 'Error al eliminar el administrador');
+      return;
+    }
     Swal.fire({
       title: '¿Estás seguro?',
       text: 'No podrás revertir esta acción',
@@ -111,13 +115,15 @@ export class AdministradorComponent implements OnInit {
       cancelButtonColor: '#3085d6'
     }).then((result) => {
       if (result.isConfirmed) {
-        // this.otherService.deleteUsuario(id).subscribe(
-        //   () => {
-        //     this.toastr.success('Administrador eliminado exitosamente');
-        //     this.loadUsuarios();
-        //   },
-        //   () => this.toastr.error('Error al eliminar el administrador')
-        // );
+        this.otherService.deleteAdmin(id).subscribe({
+          next: () => {
+            this.toastr.success('Administrador eliminado exitosamente');
+            this.loadUsuarios();
+          },
+          error: (error: ErrorApiResponse) => {
+            this.toastr.error(error.error, 'Error al eliminar el administrador');
+          }
+        });
       }
     });
   }
@@ -138,14 +144,21 @@ export class AdministradorComponent implements OnInit {
   guardarEdicion() {
     if (this.editForm.valid && this.usuarioEnEdicion) {
       const updatedData = this.editForm.value;
-      // this.otherService.updateUsuario(this.usuarioEnEdicion.id_usuario, updatedData).subscribe(
-      //   () => {
-      //     this.toastr.success('Administrador actualizado exitosamente');
-      //     this.loadUsuarios();
-      //     this.cancelarEdicion();
-      //   },
-      //   () => this.toastr.error('Error al actualizar el administrador')
-      // );
+      //VAlidamos que el usaurio tenga id
+      if (!this.usuarioEnEdicion.id_usuario) {
+        this.toastr.error('No se ha proporcionado un ID válido', 'Error al editar el administrador');
+        return;
+      }
+      this.otherService.updateAdmin(this.usuarioEnEdicion.id_usuario, updatedData).subscribe({
+        next: () => {
+          this.toastr.success('Administrador actualizado exitosamente');
+          this.loadUsuarios();
+          this.cancelarEdicion();
+        },
+        error: (error: ErrorApiResponse) => {
+          this.toastr.error(error.error, 'Error al actualizar el administrador');
+        }
+      });
     }
   }
 

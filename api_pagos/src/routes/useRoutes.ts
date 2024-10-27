@@ -11,13 +11,13 @@ router.post('/signup', signup);
 router.post('/login', login);
 
 //Obtener Admins
-router.get('/user/admins', authenticateJWT, obtenerAdministradores);
+router.get('/user/admins', authenticateJWT, validateAdmin, obtenerAdministradores);
 //Crear Admin
-router.post('/user/create/admin', authenticateJWT, registrarAdmin);
+router.post('/user/create/admin', authenticateJWT, validateAdmin, registrarAdmin);
 ///Eliminar Admin
-router.delete('/user/delete/admin/:id', authenticateJWT, eliminarUsuarioPlataforma);
+router.delete('/user/delete/admin/:id', authenticateJWT, validateAdmin, eliminarUsuarioPlataforma);
 //Actualizar Admin
-router.patch('/user/update/admin/:id', authenticateJWT, actualizarUsuarioPlataforma);
+router.patch('/user/update/admin/:id', authenticateJWT, validateAdmin, actualizarUsuarioPlataforma);
 
 //Acciones de los usuarios cliente
 //Obtener Clientes

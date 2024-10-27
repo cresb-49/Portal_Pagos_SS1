@@ -47,7 +47,7 @@ export class OtherService {
     return this.httpService.post<any>('user/create/admin', data, true);
   }
   updateAdmin(id: number, data: any) {
-    return this.httpService.patch<any>(`user/delete/admin/${id}`, data, true);
+    return this.httpService.patch<any>(`user/update/admin/${id}`, data, true);
   }
   deleteAdmin(id: number) {
     return this.httpService.delete<any>(`user/delete/admin/${id}`, true);
