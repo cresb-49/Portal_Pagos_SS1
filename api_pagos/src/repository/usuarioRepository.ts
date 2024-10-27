@@ -11,6 +11,31 @@ export const crearUsuarioCliente = async (usuario: CrearUsuario, prisma: any): P
     });
 };
 
+export const updateUsuario = async (id_usuario: number, usuario: CrearUsuario, prisma: any): Promise<Usuario> => {
+    return await prisma.usuario.update({
+        where: {
+            id_usuario: id_usuario,
+            delete_at: null
+        },
+        data: {
+            ...usuario,
+            update_at: new Date()
+        }
+    });
+}
+
+export const eliminarUsuario = async (id_usuario: number, prisma: any): Promise<Usuario> => {
+    return await prisma.usuario.update({
+        where: {
+            id_usuario: id_usuario,
+            delete_at: null
+        },
+        data: {
+            delete_at: new Date()
+        }
+    });
+}
+
 export const obtenerUsuarios = async (prisma: any): Promise<any[]> => {
     return await prisma.usuario.findMany({
         where: {
@@ -22,7 +47,8 @@ export const obtenerUsuarios = async (prisma: any): Promise<any[]> => {
 export const obtenerUsuarioPorId = async (id: number, prisma: any, include_cuenta: boolean = false): Promise<Usuario & { cuenta?: Cuenta | null }> => {
     return await prisma.usuario.findUnique({
         where: {
-            id_usuario: id
+            id_usuario: id,
+            delete_at: null
         },
         include: {
             cuenta: include_cuenta
@@ -33,7 +59,8 @@ export const obtenerUsuarioPorId = async (id: number, prisma: any, include_cuent
 export const obtenerUsuariosPorNombreUsuario = async (nombreUsuario: string, prisma: any): Promise<Usuario & { cuenta?: Cuenta | null }> => {
     return await prisma.usuario.findFirst({
         where: {
-            nombre_usuario: nombreUsuario
+            nombre_usuario: nombreUsuario,
+            delete_at: null
         }
     });
 }
@@ -41,7 +68,8 @@ export const obtenerUsuariosPorNombreUsuario = async (nombreUsuario: string, pri
 export const obtenerUsuarioPorEmail = async (email: string, prisma: any, include_cuenta: boolean = false): Promise<Usuario & { cuenta?: Cuenta | null }> => {
     return await prisma.usuario.findFirst({
         where: {
-            email: email
+            email: email,
+            delete_at: null
         },
         include: {
             cuenta: include_cuenta

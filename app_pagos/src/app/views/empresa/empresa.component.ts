@@ -5,13 +5,14 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import Swal from 'sweetalert2';
 import { OtherService } from '../../services/other/other.service';
 import { ToastrService } from 'ngx-toastr';
+import { ApiResponse, ErrorApiResponse } from '../../services/http/http.service';
 
 
 interface Empresa {
-  id_empresa: number;
+  id_empresa?: number;
   nombre: string;
-  create_at: Date;
-  update_at: Date;
+  create_at?: Date;
+  update_at?: Date;
   delete_at?: Date;
 }
 
@@ -51,28 +52,38 @@ export class EmpresaComponent implements OnInit {
   }
 
   loadEmpresas() {
-    // this.otherService.getEmpresas().subscribe(
-    //   (data: Empresa[]) => {
-    //     this.empresas = data;
-    //   },
-    //   () => this.toastr.error('Error al cargar las empresas')
-    // );
+    this.otherService.getEmpresas().subscribe(
+      {
+        next: (response: ApiResponse) => {
+          this.empresas = response.data;
+        },
+        error: (error: ErrorApiResponse) => {
+          this.toastr.error(error.error, 'Error al cargar las empresas');
+        }
+      }
+    );
   }
 
   crearEmpresa() {
     if (this.empresaForm.valid) {
-      // this.otherService.createEmpresa(this.empresaForm.value).subscribe(
-      //   () => {
-      //     this.toastr.success('Empresa creada exitosamente');
-      //     this.loadEmpresas();
-      //     this.empresaForm.reset();
-      //   },
-      //   () => this.toastr.error('Error al crear la empresa')
-      // );
+      this.otherService.createEmpresa(this.empresaForm.value).subscribe({
+        next: (response: ApiResponse) => {
+          this.toastr.success('Empresa creada exitosamente');
+          this.loadEmpresas();
+          this.empresaForm.reset();
+        },
+        error: (error: ErrorApiResponse) => {
+          this.toastr.error(error.error, 'Error al crear la empresa');
+        }
+      });
     }
   }
 
-  eliminarEmpresa(id: number) {
+  eliminarEmpresa(id: number | undefined) {
+    if (!id) {
+      this.toastr.error('No se ha proporcionado un ID válido', 'Error al eliminar la empresa');
+      return;
+    }
     Swal.fire({
       title: '¿Estás seguro?',
       text: 'No podrás revertir esta acción',
@@ -84,13 +95,15 @@ export class EmpresaComponent implements OnInit {
       cancelButtonColor: '#3085d6'
     }).then((result) => {
       if (result.isConfirmed) {
-        // this.otherService.deleteEmpresa(id).subscribe(
-        //   () => {
-        //     this.toastr.success('Empresa eliminada exitosamente');
-        //     this.loadEmpresas();
-        //   },
-        //   () => this.toastr.error('Error al eliminar la empresa')
-        // );
+        this.otherService.deleteEmpresa(id).subscribe({
+          next: (response: ApiResponse) => {
+            this.toastr.success('Empresa eliminada exitosamente');
+            this.loadEmpresas();
+          },
+          error: (error: ErrorApiResponse) => {
+            this.toastr.error(error.error, 'Error al eliminar la empresa');
+          }
+        });
       }
     });
   }
@@ -104,14 +117,20 @@ export class EmpresaComponent implements OnInit {
   guardarEdicion() {
     if (this.editForm.valid && this.empresaEnEdicion) {
       const nuevoNombre = this.editForm.get('nombre')?.value;
-      // this.otherService.updateEmpresa(this.empresaEnEdicion.id_empresa, { nombre: nuevoNombre }).subscribe(
-      //   () => {
-      //     this.toastr.success('Empresa actualizada exitosamente');
-      //     this.loadEmpresas();
-      //     this.cancelarEdicion();
-      //   },
-      //   () => this.toastr.error('Error al actualizar la empresa')
-      // );
+      //Validamos que hay id de empresa
+      if (!this.empresaEnEdicion.id_empresa) {
+        this.toastr.error('No se ha proporcionado un ID válido', 'Error al actualizar la empresa');
+        return;
+      }
+      this.otherService.updateEmpresa(this.empresaEnEdicion.id_empresa, { nombre: nuevoNombre }).subscribe({
+        next: (response: ApiResponse) => {
+          this.toastr.success('Empresa actualizada exitosamente');
+          this.loadEmpresas();
+          this.cancelarEdicion();
+        },
+        error: (error: ErrorApiResponse) => this.toastr.error(error.error, 'Error al actualizar la empresa')
+      }
+      );
     }
   }
 

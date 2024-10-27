@@ -97,6 +97,13 @@ async function main() {
             nombre: "Empleado",
         }
     });
+    //Creamos la empresa Electric-Shop
+    await prisma.empresa.create({
+        data: {
+            nombre: "Electric-Shop"
+        }
+    });
+
     //Cracion de un usuario cliente empresa 1
     await prisma.usuario.create({
         data: {
