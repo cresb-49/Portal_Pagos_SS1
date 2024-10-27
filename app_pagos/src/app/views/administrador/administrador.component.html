@@ -45,11 +45,31 @@
   <div *ngIf="!enEdicion">
     <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 mt-10">Crear Nuevo Administrador</h2>
     <form [formGroup]="adminForm" (ngSubmit)="crearAdministrador()">
+      <!-- Edicion del campo de nombre de usuario -->
       <div class="flex flex-col mb-4">
         <label for="nombre_usuario" class="text-gray-700 dark:text-gray-300 mb-1">Nombre de Usuario</label>
         <input formControlName="nombre_usuario" id="nombre_usuario" type="text" placeholder="Nombre de Usuario"
           class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
       </div>
+      <div class="flex flex-col mb-4">
+        <label for="nombres" class="text-gray-700 dark:text-gray-300 mb-1">Nombres</label>
+        <input formControlName="nombres" id="nombres" type="text" placeholder="Nombres"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+      </div>
+
+      <div class="flex flex-col mb-4">
+        <label for="apellidos" class="text-gray-700 dark:text-gray-300 mb-1">Apellidos</label>
+        <input formControlName="apellidos" id="apellidos" type="text" placeholder="Apellidos"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+      </div>
+
+      <div class="flex flex-col mb-4">
+        <label for="email" class="text-gray-700 dark:text-gray-300 mb-1">Correo Electrónico</label>
+        <input formControlName="email" id="email" type="email" placeholder="Correo Electrónico"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+      </div>
+
+
 
       <!-- Otros campos del formulario de creación, siguiendo el mismo estilo de diseño -->
 
@@ -66,6 +86,25 @@
         <input formControlName="nombre_usuario" id="nombre_usuario" type="text" placeholder="Nuevo nombre de Usuario"
           class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
       </div>
+
+      <div class="flex flex-col mb-4">
+        <label for="nombres" class="text-gray-700 dark:text-gray-300 mb-1">Nombres</label>
+        <input formControlName="nombres" id="nombres" type="text" placeholder="Nombres"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+      </div>
+
+      <div class="flex flex-col mb-4">
+        <label for="apellidos" class="text-gray-700 dark:text-gray-300 mb-1">Apellidos</label>
+        <input formControlName="apellidos" id="apellidos" type="text" placeholder="Apellidos"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+      </div>
+
+      <div class="flex flex-col mb-4">
+        <label for="email" class="text-gray-700 dark:text-gray-300 mb-1">Correo Electrónico</label>
+        <input formControlName="email" id="email" type="email" placeholder="Correo Electrónico"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+      </div>
+
 
       <!-- Otros campos del formulario de edición -->
 

@@ -4,16 +4,17 @@ import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { OtherService } from '../../services/other/other.service';
 import { CommonModule } from '@angular/common';
+import { ApiResponse, ErrorApiResponse } from '../../services/http/http.service';
 
 interface Usuario {
-  id_usuario: number;
+  id_usuario?: number;
   nombre_usuario: string;
   nombres: string;
   apellidos: string;
   email: string;
   id_rol: number;
-  create_at: Date;
-  update_at: Date;
+  create_at?: Date;
+  update_at?: Date;
   delete_at?: Date;
 }
 
@@ -64,12 +65,15 @@ export class AdministradorComponent implements OnInit {
 
   // Cargar lista de usuarios
   loadUsuarios() {
-    // this.otherService.getUsuarios().subscribe(
-    //   (data: Usuario[]) => {
-    //     this.usuarios = data;
-    //   },
-    //   () => this.toastr.error('Error al cargar los usuarios')
-    // );
+    this.otherService.getAdmins().subscribe({
+      next: (response: ApiResponse) => {
+        const data = response.data;
+        this.usuarios = data;
+      },
+      error: (error: ErrorApiResponse) => {
+        this.toastr.error(error.error, 'Error al cargar los administradores');
+      }
+    });
   }
 
   // Función para verificar si las contraseñas coinciden
@@ -95,7 +99,7 @@ export class AdministradorComponent implements OnInit {
   }
 
   // Eliminar usuario
-  eliminarUsuario(id: number) {
+  eliminarUsuario(id: number | undefined) {
     Swal.fire({
       title: '¿Estás seguro?',
       text: 'No podrás revertir esta acción',

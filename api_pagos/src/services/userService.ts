@@ -4,7 +4,7 @@ import { CrearUsuario, UserRegister, UserToken, UsuarioResponse } from '../model
 import { RolType } from '../enums/rolType';
 import { CrearCuenta } from '../models/cuenta';
 import { PrismaClient } from '@prisma/client'
-import { crearUsuarioCliente, obtenerUsuarioPorEmail, obtenerUsuarioPorId, obtenerUsuarios, obtenerUsuariosPorNombreUsuario } from '../repository/usuarioRepository';
+import { crearUsuarioCliente, eliminarUsuario, obtenerUsuarioPorEmail, obtenerUsuarioPorId, obtenerUsuarios, obtenerUsuariosPorNombreUsuario, obtenerUsuariosPorRol, updateUsuario } from '../repository/usuarioRepository';
 import { crearCuenta } from '../repository/cuentaRepository';
 import { generateToken } from '../middlewares/authMiddleware';
 const prisma = new PrismaClient()
@@ -170,4 +170,25 @@ export const LoginApi = async (nombreUsuario: string, password: string) => {
         jwt: token,  // Incluir el token generado
     };
     return userResponse;
+}
+
+export const obtenerAdmins = async () => {
+    return obtenerUsuariosPorRol(RolType.ADMINISTRADOR, prisma);
+}
+
+export const obtenerClientes = async () => {
+    return obtenerUsuariosPorRol(RolType.CLIENTE, prisma);
+}
+
+
+export const eliminacionUsuario = async (id: number) => {
+    return await prisma.$transaction(async (prismaTransaction) => {
+        return await eliminarUsuario(id, prismaTransaction);
+    });
+}
+
+export const actualizarUsuario = async (id: number, usuario: any) => {
+    return await prisma.$transaction(async (prismaTransaction) => {
+        return await updateUsuario(id, usuario, prismaTransaction);
+    });
 }

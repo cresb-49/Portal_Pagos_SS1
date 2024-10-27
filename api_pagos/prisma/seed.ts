@@ -122,7 +122,7 @@ async function main() {
             nombre_usuario: "admin",
             nombres: "Admin",
             apellidos: "Admin",
-            email: "admnin@admin.com",
+            email: "admin@admin.com",
             password: await encrypt("admin"),
             id_estado_usuario: EstadoUsuarioType.ACTIVO,
             id_rol: RolType.ADMINISTRADOR,
