@@ -2,12 +2,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { DefaultViewComponent } from './layout/default-view/default-view.component';
 import { HomeComponent } from './views/home/home.component';
 import { CleanViewComponent } from './layout/clean-view/clean-view.component';
-import { SignupComponent } from './components/signup/signup.component';
 import { NgModule } from '@angular/core';
-import { VerUsuariosComponent } from './views/ver-usuarios/ver-usuarios.component';
-import { CrearModificarUsuarioComponent } from './components/crear-modificar-usuario/crear-modificar-usuario.component';
-import { CrearUsuarioComponent } from './views/crear-usuario/crear-usuario.component';
-import { ModificarUsuarioComponent } from './views/modificar-usuario/modificar-usuario.component';
 import { RegistroUsuarioComponent } from './views/registro-usuario/registro-usuario.component';
 import { RegistroEmpresaComponent } from './views/registro-empresa/registro-empresa.component';
 import { PaymentDashboardComponent } from './views/payment-dashboard/payment-dashboard.component';
@@ -16,6 +11,10 @@ import { ClearViewContentComponent } from './views/clear-view-content/clear-view
 import { InfoServiciosComponent } from './views/info-servicios/info-servicios.component';
 import { RetirosComponent } from './views/retiros/retiros.component';
 import { MyAccountComponent } from './views/my-account/my-account.component';
+import { UsuarioComponent } from './views/usuario/usuario.component';
+import { EmpresaComponent } from './views/empresa/empresa.component';
+import { AdministradorComponent } from './views/administrador/administrador.component';
+import { ReporteComponent } from './views/reporte/reporte.component';
 
 export const routes: Routes = [
   {
@@ -28,15 +27,6 @@ export const routes: Routes = [
       },
       {
         path: 'home', component: PaymentDashboardComponent
-      },
-      {
-        path: 'ver-usuarios', component: VerUsuariosComponent
-      },
-      {
-        path: 'crear-usuario', component: CrearUsuarioComponent
-      },
-      {
-        path: 'modificar-usuario/:id', component: ModificarUsuarioComponent
       },
       {
         path: 'info-servicio', component: InfoServiciosComponent
@@ -55,6 +45,18 @@ export const routes: Routes = [
     children: [
       {
         path: 'dashboard', component: ClearViewContentComponent
+      },
+      {
+        path: 'dashboard/usuarios', component: UsuarioComponent
+      },
+      {
+        path: 'dashboard/empresas', component: EmpresaComponent
+      },
+      {
+        path: 'dashboard/admins', component: AdministradorComponent
+      },
+      {
+        path: 'dashboard/reportes', component: ReporteComponent
       }
     ]
   },

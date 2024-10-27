@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { UsuarioService } from '../../services/usuario/usuario.service';
+import { CommonModule } from '@angular/common';
 
 interface Usuario {
   id_usuario: number;
@@ -21,7 +22,7 @@ interface Usuario {
 
 @Component({
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule],
   selector: 'app-usuario',
   templateUrl: './usuario.component.html',
   styleUrls: ['./usuario.component.css']
