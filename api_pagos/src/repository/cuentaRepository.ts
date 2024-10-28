@@ -1,5 +1,6 @@
 import { Cuenta } from "@prisma/client";
 import { CrearCuenta } from "../models/cuenta";
+import { createNewEmpresa } from "../services/otherService";
 
 export const crearCuenta = async (cuenta: CrearCuenta, prisma: any): Promise<any> => {
     return await prisma.cuenta.create({
@@ -31,3 +32,23 @@ export const obtenerCuentaPorIdCliente = async (id_usuario: number, prisma: any)
     });
 }
 
+export const obtenerCuentaById = async (id_cuenta: number, prisma: any): Promise<Cuenta> => {
+    return await prisma.cuenta.findUnique({
+        where: {
+            id_cuenta,
+            delete_at: null
+        },
+    });
+}
+
+
+export const eliminarCuentaById = async (id_cuenta: number, prisma: any): Promise<Cuenta> => {
+    return await prisma.cuenta.update({
+        where: {
+            id_cuenta: id_cuenta
+        },
+        data: {
+            delete_at: new Date()
+        }
+    });
+}
