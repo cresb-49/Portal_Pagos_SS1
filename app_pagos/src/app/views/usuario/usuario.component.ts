@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
-import { UsuarioService } from '../../services/usuario/usuario.service';
 import { CommonModule } from '@angular/common';
+import { OtherService } from '../../services/other/other.service';
 
 interface Usuario {
   id_usuario: number;
@@ -38,7 +38,7 @@ export class UsuarioComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private usuarioService: UsuarioService,
+    private otherService: OtherService,
     private toastr: ToastrService
   ) {
     this.usuarioForm = this.fb.group({

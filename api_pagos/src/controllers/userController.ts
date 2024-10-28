@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import { actualizarUsuario, eliminacionUsuario, getAllUsers, IniciarSession, obtenerAdmins, obtenerClientes, register, registrarUsuarioAdmin } from '../services/userService';
+import { actualizarUsuario, changePassword, eliminacionUsuario, getAllUsers, IniciarSession, obtenerAdmins, obtenerClientes, register, registrarUsuarioAdmin } from '../services/userService';
 import { apiResponse } from '../response/apiResponse';
 import { UserRegister } from '../models/usuario';
 import { HttpStatusCode } from '../utils/httpStatusCodes';
@@ -94,3 +94,12 @@ export const actualizarUsuarioPlataforma = async (req: Request, res: Response): 
     }
 }
 
+export const cambiarPassword = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const { id } = req.params;
+        await changePassword(Number(id), req.body);
+        return apiResponse(res, HttpStatusCode.OK, 'Actualizado correctamente');
+    } catch (error: Error | any) {
+        return apiResponse(res, 500, 'Error retrieving users', null, error.message ?? 'Unknown error');
+    }
+}

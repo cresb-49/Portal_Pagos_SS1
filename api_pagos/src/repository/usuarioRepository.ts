@@ -24,6 +24,19 @@ export const updateUsuario = async (id_usuario: number, usuario: CrearUsuario, p
     });
 }
 
+export const updatePassword = async (id_usuario: number, password: string, prisma: any): Promise<Usuario> => {
+    return await prisma.usuario.update({
+        where: {
+            id_usuario: id_usuario,
+            delete_at: null
+        },
+        data: {
+            password: password,
+            update_at: new Date()
+        }
+    });
+}
+
 export const eliminarUsuario = async (id_usuario: number, prisma: any): Promise<Usuario> => {
     //Ignoramos el campo password para que no se envie en la respuesta
     return await prisma.usuario.update({

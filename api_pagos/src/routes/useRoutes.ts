@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { actualizarUsuarioPlataforma, eliminarUsuarioPlataforma, getUsers, login, loginAPI, obtenerAdministradores, obtenerClientesPlataforma, registrarAdmin, signup } from '../controllers/userController';
+import { actualizarUsuarioPlataforma, cambiarPassword, eliminarUsuarioPlataforma, getUsers, login, loginAPI, obtenerAdministradores, obtenerClientesPlataforma, registrarAdmin, signup } from '../controllers/userController';
 import { authenticateJWT } from '../middlewares/authMiddleware';
 import { validateAdmin } from '../middlewares/isAdminMiddleware';
 import { existeEmail } from '../services/userService';
@@ -9,6 +9,8 @@ const router = Router();
 router.get('/user/users', getUsers);
 router.post('/signup', signup);
 router.post('/login', login);
+
+router.post('/user/update/password/cliente/:id', authenticateJWT,cambiarPassword);
 
 //Obtener Admins
 router.get('/user/admins', authenticateJWT, validateAdmin, obtenerAdministradores);

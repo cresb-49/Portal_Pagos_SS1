@@ -4,7 +4,7 @@ import { CrearUsuario, UserRegister, UserToken, UsuarioResponse } from '../model
 import { RolType } from '../enums/rolType';
 import { CrearCuenta } from '../models/cuenta';
 import { PrismaClient } from '@prisma/client'
-import { crearUsuarioCliente, eliminarUsuario, obtenerUsuarioPorEmail, obtenerUsuarioPorId, obtenerUsuarios, obtenerUsuariosPorNombreUsuario, obtenerUsuariosPorRol, updateUsuario } from '../repository/usuarioRepository';
+import { crearUsuarioCliente, eliminarUsuario, obtenerUsuarioPorEmail, obtenerUsuarioPorId, obtenerUsuarios, obtenerUsuariosPorNombreUsuario, obtenerUsuariosPorRol, updatePassword, updateUsuario } from '../repository/usuarioRepository';
 import { crearCuenta } from '../repository/cuentaRepository';
 import { generateToken } from '../middlewares/authMiddleware';
 const prisma = new PrismaClient()
@@ -125,6 +125,33 @@ export const IniciarSession = async (email: string, password: string) => {
         token: token,  // Incluir el token generado
     };
     return userResponse;
+}
+export interface updatePassword {
+    currentPassword: string;
+    newPassword: string;
+}
+
+export const changePassword = async (id: number, payload: updatePassword) => {
+    try {
+        await prisma.$transaction(async (prismaTransaction) => {
+            //Encriptar la contraseña actual y la nueva contraseña
+            const hashedNewPassword = await encrypt(payload.newPassword);
+            //Obtener el usuario
+            const usuario = await obtenerUsuarioPorId(id, prismaTransaction);
+            if (!usuario) {
+                throw new Error('Usuario no encontrado');
+            }
+            //Validar que la contraseña actual sea correcta
+            const isPasswordCorrect = await compare(payload.currentPassword, usuario.password);
+            if (!isPasswordCorrect) {
+                throw new Error('Contraseña actual incorrecta');
+            }
+            //Actualizar la contraseña
+            await updatePassword(id, hashedNewPassword, prismaTransaction);
+        });
+    } catch (error) {
+        throw error;
+    }
 }
 
 export const existeEmail = async (email: string) => {
