@@ -85,12 +85,7 @@ export const makePayment = async (payload: RealizarPago, usuario_creador: UserTo
             currency: 'Q',
         };
 
-        //Generamos un timestamp para el nombre del archivo
-        const timestamp = new Date().getTime();
-        const outputPath = path.join(__dirname, '../output', `${timestamp}.pdf`);
-
-        await generateTransactionPDF(transactionData, outputPath);
-        return outputPath;
+        return await generateTransactionPDF(transactionData);
     });
 }
 
@@ -130,7 +125,7 @@ export const makeRetiro = async (payload: Retiro, user: UserToken) => {
             throw new Error('Saldo insuficiente');
         }
         //Aplicamos el cobro por movilizacion de dinero que es de %1.3
-        const monto_cobro = (payload.monto * (1-0.013)).toFixed(2);
+        const monto_cobro = (payload.monto * (1 - 0.013)).toFixed(2);
         console.log(`Cobro por movilizacion de dinero: GTQ${monto_cobro}`);
         //Realizamos una transaccion de retiro del a cuenta del usuario
 

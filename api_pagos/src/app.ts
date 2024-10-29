@@ -8,7 +8,10 @@ import otherRoutes from './routes/otherRoutes';
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: '*', // Permite cualquier origen
+}));
+
 app.use(bodyParser.json());
 app.use('/api', userRoutes);
 app.use('/api', pdfRoutes);

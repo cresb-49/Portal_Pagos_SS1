@@ -15,11 +15,14 @@ export const generateTransactionPDFHandler = async (req: Request, res: Response)
         currency: 'Q',
     };
 
-    const outputPath = path.join(__dirname, '../output', 'comprobante-transaccion.pdf');
+    const timestamp = new Date().getTime();
 
     try {
-        await generateTransactionPDF(transactionData, outputPath);
-        res.sendFile(outputPath);
+        const pdfBuffer = await generateTransactionPDF(transactionData);
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="transaction-${timestamp}.pdf"`);
+        // Envía el PDF en memoria
+        res.end(pdfBuffer);
     } catch (error: Error | any) {
         res.status(500).send('Error al generar el comprobante de transacción en PDF');
         console.log(error.message ?? 'Error inesperado');
