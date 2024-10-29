@@ -6,6 +6,7 @@
     "start": "node dist/index.js",
     "dev": "nodemon",
     "build": "tsc",
+    "vercel:build": "npm generate:models && npm run build",
     "generate:models": "npx prisma generate",
     "migrate:first-init": "npx prisma migrate dev --name init",
     "migrate:new": "npx prisma migrate dev --name",
