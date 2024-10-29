@@ -129,6 +129,9 @@ export const makeRetiro = async (payload: Retiro, user: UserToken) => {
         if (cuenta_usuario.saldo < payload.monto) {
             throw new Error('Saldo insuficiente');
         }
+        //Aplicamos el cobro por movilizacion de dinero que es de %1.3
+        const monto_cobro = (payload.monto * (1-0.013)).toFixed(2);
+        console.log(`Cobro por movilizacion de dinero: GTQ${monto_cobro}`);
         //Realizamos una transaccion de retiro del a cuenta del usuario
 
         const payloadTransaccion: TransaccionModel = {

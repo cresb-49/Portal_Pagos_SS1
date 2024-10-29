@@ -4,6 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ApiResponse, ErrorApiResponse } from '../../services/http/http.service';
+import Swal from 'sweetalert2';
 
 @Component({
   standalone: true,
@@ -50,16 +51,29 @@ export class RetirosComponent implements OnInit {
 
   realizarTransferencia() {
     if (this.transferForm.valid) {
-      const { monto } = this.transferForm.value;
+      Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'No podrás revertir esta acción',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, transferir',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const { monto } = this.transferForm.value;
 
-      this.cuentaService.realizarTransferencia({ monto: Number(monto) }).subscribe({
-        next: (response: ApiResponse) => {
-          this.toastr.success('Transferencia realizada con éxito');
-          this.cargarSaldoDisponible();
-          this.transferForm.reset();
-        },
-        error: (error: ErrorApiResponse) => {
-          this.toastr.error(error.error, 'Error al realizar la transferencia');
+          this.cuentaService.realizarTransferencia({ monto: Number(monto) }).subscribe({
+            next: (response: ApiResponse) => {
+              this.toastr.success('Transferencia realizada con éxito');
+              this.cargarSaldoDisponible();
+              this.transferForm.reset();
+            },
+            error: (error: ErrorApiResponse) => {
+              this.toastr.error(error.error, 'Error al realizar la transferencia');
+            }
+          });
         }
       });
     }
