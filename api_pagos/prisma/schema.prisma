@@ -86,6 +86,7 @@ model Cuenta {
     empresa               Empresa?          @relation(fields: [id_empresa], references: [id_empresa])
     //-----------------------------------------------------------------------------------
     numero_cuenta         String?            @unique
+    pin                   String?
     saldo                 Float             @default(0)
     create_at             DateTime          @default(now())
     update_at             DateTime          @default(now())
