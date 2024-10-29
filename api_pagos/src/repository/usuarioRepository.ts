@@ -96,6 +96,9 @@ export const obtenerUsuariosPorRol = async (id_rol: number, prisma: any): Promis
         where: {
             id_rol: id_rol,
             delete_at: null
+        },
+        include: {
+            cuenta: true
         }
     });
 }

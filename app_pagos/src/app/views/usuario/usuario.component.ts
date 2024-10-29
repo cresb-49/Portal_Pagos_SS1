@@ -3,7 +3,8 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
-import { OtherService } from '../../services/other/other.service';
+import { OtherService, PayloadUserRegister } from '../../services/other/other.service';
+import { ApiResponse, ErrorApiResponse } from '../../services/http/http.service';
 
 interface Usuario {
   id_usuario: number;
@@ -31,6 +32,7 @@ export class UsuarioComponent implements OnInit {
   usuarios: Usuario[] = [];
   usuarioForm: FormGroup;
   editForm: FormGroup;
+  changePasswordForm: FormGroup;
   currentPage = 1;
   itemsPerPage = 10;
   enEdicion = false;
@@ -42,11 +44,9 @@ export class UsuarioComponent implements OnInit {
     private toastr: ToastrService
   ) {
     this.usuarioForm = this.fb.group({
-      nombre_usuario: ['', [Validators.required, Validators.minLength(3)]],
       nombres: ['', Validators.required],
       apellidos: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      id_rol: [1, Validators.required], // Asumimos que es un rol de usuario predeterminado
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirm_password: ['', Validators.required]
     }, {
@@ -59,6 +59,14 @@ export class UsuarioComponent implements OnInit {
       apellidos: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]]
     });
+
+    this.changePasswordForm = this.fb.group({
+      current_password: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirm_password: ['', Validators.required]
+    }, {
+      validator: this.passwordsMatch
+    });
   }
 
   ngOnInit(): void {
@@ -67,12 +75,15 @@ export class UsuarioComponent implements OnInit {
 
   // Cargar lista de usuarios con datos de cuenta
   loadUsuarios() {
-    // this.usuarioService.getUsuarios().subscribe(
-    //   (data: Usuario[]) => {
-    //     this.usuarios = data;
-    //   },
-    //   () => this.toastr.error('Error al cargar los usuarios')
-    // );
+    this.otherService.getClientes().subscribe({
+      next: (response: ApiResponse) => {
+        const data = response.data;
+        this.usuarios = data;
+      },
+      error: (error: ErrorApiResponse) => {
+        this.toastr.error(error.error, 'Error al cargar los usuarios');
+      }
+    })
   }
 
   // Función para verificar si las contraseñas coinciden
@@ -86,19 +97,33 @@ export class UsuarioComponent implements OnInit {
   crearUsuario() {
     if (this.usuarioForm.valid) {
       const { confirm_password, ...data } = this.usuarioForm.value;
-      // this.usuarioService.createUsuario(data).subscribe(
-      //   () => {
-      //     this.toastr.success('Usuario creado exitosamente');
-      //     this.loadUsuarios();
-      //     this.usuarioForm.reset();
-      //   },
-      //   () => this.toastr.error('Error al crear el usuario')
-      // );
+      const payload: PayloadUserRegister = {
+        nombres: data.nombres,
+        email: data.email,
+        password: data.password,
+        apellidos: data.apellidos
+      }
+      this.otherService.signUpCliente(payload).subscribe({
+        next: () => {
+          this.toastr.success('Usuario creado exitosamente');
+          this.loadUsuarios();
+          this.usuarioForm.reset();
+        },
+        error: (error: ErrorApiResponse) => {
+          this.toastr.error(error.error, 'Error al crear el usuario');
+        }
+      });
+    } else {
+      this.toastr.error('Por favor, complete todos los campos', 'Error al crear el administrador');
     }
   }
 
   // Eliminar usuario
-  eliminarUsuario(id: number) {
+  eliminarUsuario(id: number | undefined) {
+    if (!id) {
+      this.toastr.error('No se ha proporcionado un ID válido', 'Error al eliminar el administrador');
+      return;
+    }
     Swal.fire({
       title: '¿Estás seguro?',
       text: 'No podrás revertir esta acción',
@@ -110,13 +135,15 @@ export class UsuarioComponent implements OnInit {
       cancelButtonColor: '#3085d6'
     }).then((result) => {
       if (result.isConfirmed) {
-        // this.usuarioService.deleteUsuario(id).subscribe(
-        //   () => {
-        //     this.toastr.success('Usuario eliminado exitosamente');
-        //     this.loadUsuarios();
-        //   },
-        //   () => this.toastr.error('Error al eliminar el usuario')
-        // );
+        this.otherService.deleteCliente(id).subscribe({
+          next: () => {
+            this.toastr.success('Usuario eliminado exitosamente');
+            this.loadUsuarios();
+          },
+          error: (error: ErrorApiResponse) => {
+            this.toastr.error(error.error, 'Error al eliminar el usuario');
+          }
+        });
       }
     });
   }
@@ -137,14 +164,46 @@ export class UsuarioComponent implements OnInit {
   guardarEdicion() {
     if (this.editForm.valid && this.usuarioEnEdicion) {
       const updatedData = this.editForm.value;
-      // this.usuarioService.updateUsuario(this.usuarioEnEdicion.id_usuario, updatedData).subscribe(
-      //   () => {
-      //     this.toastr.success('Usuario actualizado exitosamente');
-      //     this.loadUsuarios();
-      //     this.cancelarEdicion();
-      //   },
-      //   () => this.toastr.error('Error al actualizar el usuario')
-      // );
+      if (!this.usuarioEnEdicion.id_usuario) {
+        this.toastr.error('No se ha proporcionado un ID válido', 'Error al editar el administrador');
+        return;
+      }
+      this.otherService.updateCliente(this.usuarioEnEdicion.id_usuario, updatedData).subscribe({
+        next: () => {
+          this.toastr.success('Usuario actualizado exitosamente');
+          this.loadUsuarios();
+          this.cancelarEdicion();
+        },
+        error: (error: ErrorApiResponse) => {
+          this.toastr.error(error.error, 'Error al editar el usuario');
+        }
+      });
+    }
+  }
+
+  cambiarContrasena() {
+    if (this.changePasswordForm.valid && this.usuarioEnEdicion) {
+      const { current_password, password } = this.changePasswordForm.value;
+      if (!this.usuarioEnEdicion.id_usuario) {
+        this.toastr.error('No se ha proporcionado un ID válido', 'Error al cambiar la contraseña');
+        return;
+      }
+      this.otherService.updatePassword(this.usuarioEnEdicion.id_usuario, {
+        current_password: current_password,
+        new_password: password
+      }).subscribe({
+        next: () => {
+          this.toastr.success('Contraseña actualizada exitosamente');
+          this.changePasswordForm.reset();
+        },
+        error: (error: ErrorApiResponse) => {
+          this.toastr.error(error.error, 'Error al cambiar la contraseña');
+        }
+      });
+    } else {
+      //Mostrar los errores del formulario en la notificación
+      console.log(this.changePasswordForm.errors);
+      this.toastr.error('Formulario no válido', 'Error al cambiar la contraseña');
     }
   }
 

@@ -25,10 +25,12 @@
         <td class="p-4">{{ usuario.cuenta?.numero_cuenta || 'Sin cuenta' }}</td>
         <td class="p-4">{{ usuario.cuenta?.saldo !== undefined ? usuario.cuenta?.saldo : 'N/A' }}</td>
         <td class="p-4">
-          <button (click)="iniciarEdicion(usuario)" class="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-3 rounded">
+          <button (click)="iniciarEdicion(usuario)"
+            class="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-3 rounded">
             Editar
           </button>
-          <button (click)="eliminarUsuario(usuario.id_usuario)" class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded">
+          <button (click)="eliminarUsuario(usuario.id_usuario)"
+            class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded">
             Eliminar
           </button>
         </td>
@@ -38,9 +40,8 @@
 
   <!-- Paginación -->
   <div class="flex justify-center mt-4">
-    <button *ngFor="let page of [1, 2, 3, 4]" (click)="cambiarPagina(page)"
-      [class.bg-blue-500]="currentPage === page" [class.bg-gray-300]="currentPage !== page"
-      class="mx-1 px-3 py-1 rounded text-white hover:bg-blue-700">
+    <button *ngFor="let page of [1, 2, 3, 4]" (click)="cambiarPagina(page)" [class.bg-blue-500]="currentPage === page"
+      [class.bg-gray-300]="currentPage !== page" class="mx-1 px-3 py-1 rounded text-white hover:bg-blue-700">
       {{ page }}
     </button>
   </div>
@@ -50,14 +51,76 @@
     <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 mt-10">Crear Nuevo Usuario</h2>
     <form [formGroup]="usuarioForm" (ngSubmit)="crearUsuario()">
       <div class="flex flex-col mb-4">
-        <label for="nombre_usuario" class="text-gray-700 dark:text-gray-300 mb-1">Nombre de Usuario</label>
-        <input formControlName="nombre_usuario" id="nombre_usuario" type="text" placeholder="Nombre de Usuario"
+        <label for="nombres" class="text-gray-700 dark:text-gray-300 mb-1">Nombres</label>
+        <input formControlName="nombres" id="nombres" type="text" placeholder="Nombres"
           class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <div
+          *ngIf="usuarioForm.get('nombres')?.errors && (usuarioForm.get('nombres')?.touched || usuarioForm.get('nombres')?.dirty)"
+          class="text-red-500 text-sm mt-1">
+          <div *ngIf="usuarioForm.get('nombres')?.errors?.['required']">Este campo es obligatorio.</div>
+        </div>
       </div>
 
+      <div class="flex flex-col mb-4">
+        <label for="apellidos" class="text-gray-700 dark:text-gray-300 mb-1">Apellidos</label>
+        <input formControlName="apellidos" id="apellidos" type="text" placeholder="Apellidos"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <div
+          *ngIf="usuarioForm.get('apellidos')?.errors && (usuarioForm.get('apellidos')?.touched || usuarioForm.get('apellidos')?.dirty)"
+          class="text-red-500 text-sm mt-1">
+          <div *ngIf="usuarioForm.get('apellidos')?.errors?.['required']">Este campo es obligatorio.</div>
+        </div>
+      </div>
+
+      <div class="flex flex-col mb-4">
+        <label for="email" class="text-gray-700 dark:text-gray-300 mb-1">Correo Electrónico</label>
+        <input formControlName="email" id="email" type="email" placeholder="Correo Electrónico"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <div
+          *ngIf="usuarioForm.get('email')?.errors && (usuarioForm.get('email')?.touched || usuarioForm.get('email')?.dirty)"
+          class="text-red-500 text-sm mt-1">
+          <div *ngIf="usuarioForm.get('email')?.errors?.['required']">El correo electrónico es obligatorio.</div>
+          <div *ngIf="usuarioForm.get('email')?.errors?.['email']">El formato del correo electrónico es inválido.</div>
+        </div>
+      </div>
+
+      <div class="flex flex-col mb-4">
+        <label for="password" class="text-gray-700 dark:text-gray-300 mb-1">Contraseña</label>
+        <input formControlName="password" type="password" id="password" placeholder="Contraseña"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <div
+          *ngIf="usuarioForm.get('password')?.errors && (usuarioForm.get('password')?.touched || usuarioForm.get('password')?.dirty)"
+          class="text-red-500 text-sm mt-1">
+          <div *ngIf="usuarioForm.get('password')?.errors?.['required']">La contraseña es obligatoria.</div>
+          <div *ngIf="usuarioForm.get('password')?.errors?.['minlength']">La contraseña debe tener al menos 6
+            caracteres.
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col mb-4">
+        <label for="confirm_password" class="text-gray-700 dark:text-gray-300 mb-1">Confirmar Contraseña</label>
+        <input formControlName="confirm_password" id="confirm_password" type="password"
+          placeholder="Confirmar Contraseña"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <div
+          *ngIf="usuarioForm.get('confirm_password')?.errors && (usuarioForm.get('confirm_password')?.touched || usuarioForm.get('confirm_password')?.dirty)"
+          class="text-red-500 text-sm mt-1">
+          <div *ngIf="usuarioForm.get('confirm_password')?.errors?.['required']">Es necesario confirmar la contraseña.
+          </div>
+        </div>
+      </div>
+
+      <!-- Error de Coincidencia de Contraseña -->
+      <div
+        *ngIf="usuarioForm.errors?.['mismatch'] && (usuarioForm.get('confirm_password')?.touched || usuarioForm.get('password')?.touched)"
+        class="text-red-500 text-sm mb-4">
+        Las contraseñas no coinciden.
+      </div>
       <!-- Otros campos del formulario de creación, siguiendo el mismo estilo de diseño -->
 
-      <button type="submit" class="w-full bg-green-500 hover:bg-green-700 text-white py-2 rounded-md">Crear Usuario</button>
+      <button type="submit" class="w-full bg-green-500 hover:bg-green-700 text-white py-2 rounded-md">Crear
+        Usuario</button>
     </form>
   </div>
 
@@ -69,13 +132,104 @@
         <label for="nombre_usuario" class="text-gray-700 dark:text-gray-300 mb-1">Nombre de Usuario</label>
         <input formControlName="nombre_usuario" id="nombre_usuario" type="text" placeholder="Nuevo nombre de Usuario"
           class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <div
+          *ngIf="editForm.get('nombre_usuario')?.errors && (editForm.get('nombre_usuario')?.touched || editForm.get('nombre_usuario')?.dirty)"
+          class="text-red-500 text-sm mt-1">
+          <div *ngIf="editForm.get('nombre_usuario')?.errors?.['required']">El nombre de usuario es requerido.</div>
+        </div>
       </div>
 
-      <!-- Otros campos del formulario de edición -->
+      <div class="flex flex-col mb-4">
+        <label for="nombres" class="text-gray-700 dark:text-gray-300 mb-1">Nombres</label>
+        <input formControlName="nombres" id="nombres" type="text" placeholder="Nombres"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <div
+          *ngIf="editForm.get('nombres')?.errors && (editForm.get('nombres')?.touched || editForm.get('nombres')?.dirty)"
+          class="text-red-500 text-sm mt-1">
+          >
+          <div *ngIf="editForm.get('nombres')?.errors?.['required']">Este campo es obligatorio.</div>
+        </div>
+      </div>
+
+      <div class="flex flex-col mb-4">
+        <label for="apellidos" class="text-gray-700 dark:text-gray-300 mb-1">Apellidos</label>
+        <input formControlName="apellidos" id="apellidos" type="text" placeholder="Apellidos"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <div
+          *ngIf="editForm.get('apellidos')?.errors && (editForm.get('apellidos')?.touched || editForm.get('apellidos')?.dirty)"
+          class="text-red-500 text-sm mt-1">
+          <div *ngIf="editForm.get('apellidos')?.errors?.['required']">Este campo es obligatorio.</div>
+        </div>
+      </div>
+
+      <div class="flex flex-col mb-4">
+        <label for="email" class="text-gray-700 dark:text-gray-300 mb-1">Correo Electrónico</label>
+        <input formControlName="email" id="email" type="email" placeholder="Correo Electrónico"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <div *ngIf="editForm.get('email')?.errors && (editForm.get('email')?.touched || editForm.get('email')?.dirty)"
+          class="text-red-500 text-sm mt-1">
+          <div *ngIf="editForm.get('email')?.errors?.['required']">El correo electrónico es obligatorio.</div>
+          <div *ngIf="editForm.get('email')?.errors?.['email']">El formato del correo electrónico es inválido.</div>\
+        </div>
+      </div>
 
       <div class="flex gap-4">
-        <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white py-2 rounded-md">Guardar Cambios</button>
-        <button type="button" (click)="cancelarEdicion()" class="w-full bg-gray-500 hover:bg-gray-700 text-white py-2 rounded-md">Cancelar</button>
+        <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white py-2 rounded-md">Guardar
+          Cambios</button>
+        <button type="button" (click)="cancelarEdicion()"
+          class="w-full bg-gray-500 hover:bg-gray-700 text-white py-2 rounded-md">Cancelar</button>
+      </div>
+    </form>
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 mt-10">
+      Cambiar Contraseña
+    </h2>
+    <form [formGroup]="changePasswordForm" (ngSubmit)="cambiarContrasena()">
+      <div class="flex flex-col mb-4">
+        <label for="current_password" class="text-gray-700 dark:text-gray-300 mb-1">Contraseña Actual</label>
+        <input formControlName="current_password" type="password" id="current_password" placeholder="Contraseña Actual"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <div
+          *ngIf="changePasswordForm.get('current_password')?.errors && (changePasswordForm.get('current_password')?.touched || changePasswordForm.get('current_password')?.dirty)"
+          class="text-red-500 text-sm mt-1">
+          <div *ngIf="changePasswordForm.get('current_password')?.errors?.['required']">La contraseña actual es
+            obligatoria.</div>
+        </div>
+      </div>
+
+      <div class="flex flex-col mb-4">
+        <label for="password" class="text-gray-700 dark:text-gray-300 mb-1">Contraseña</label>
+        <input formControlName="password" type="password" id="password" placeholder="Contraseña"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <div
+          *ngIf="changePasswordForm.get('password')?.errors && (changePasswordForm.get('password')?.touched || changePasswordForm.get('password')?.dirty)"
+          class="text-red-500 text-sm mt-1">
+          <div *ngIf="changePasswordForm.get('password')?.errors?.['required']">La contraseña es obligatoria.</div>
+          <div *ngIf="changePasswordForm.get('password')?.errors?.['minlength']">La contraseña debe tener al menos 6
+            caracteres.</div>
+        </div>
+      </div>
+
+      <div class="flex flex-col mb-4">
+        <label for="confirm_password" class="text-gray-700 dark:text-gray-300 mb-1">Confirmar Contraseña</label>
+        <input formControlName="confirm_password" id="confirm_password" type="password"
+          placeholder="Confirmar Contraseña"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <div
+          *ngIf="changePasswordForm.get('confirm_password')?.errors && (changePasswordForm.get('confirm_password')?.touched || changePasswordForm.get('confirm_password')?.dirty)"
+          class="text-red-500 text-sm mt-1">
+          <div *ngIf="changePasswordForm.get('confirm_password')?.errors?.['required']">Es necesario confirmar la
+            contraseña.</div>
+        </div>
+      </div>
+      <div
+        *ngIf="changePasswordForm.errors?.['mismatch'] && (changePasswordForm.get('confirm_password')?.touched || changePasswordForm.get('password')?.touched)"
+        class="text-red-500 text-sm mb-4">
+        Las contraseñas no coinciden.
+      </div>
+      <div class="flex gap-4">
+        <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white py-2 rounded-md">
+          Cambiar Contraseña
+        </button>
       </div>
     </form>
   </div>

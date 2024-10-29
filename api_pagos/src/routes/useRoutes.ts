@@ -23,7 +23,7 @@ router.patch('/user/update/admin/:id', authenticateJWT, validateAdmin, actualiza
 
 //Acciones de los usuarios cliente
 //Obtener Clientes
-router.get('/user/clientes', authenticateJWT, obtenerClientesPlataforma);
+router.get('/user/clientes', authenticateJWT, validateAdmin, obtenerClientesPlataforma);
 //Obtener Info Cliente by Token
 router.get('/user/my-information', authenticateJWT, obtenerInformacionPersonal);
 //Crear Cliente
