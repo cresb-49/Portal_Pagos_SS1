@@ -1,0 +1,26 @@
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "app_pagos/angular.json",
+            "use": "@vercel/angular",
+            "config": {
+                "outputDirectory": "dist/app_pagos"
+            }
+        },
+        {
+            "src": "api_pagos/src/index.ts",
+            "use": "@vercel/node"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/api/(.*)",
+            "dest": "/api_pagos/src/index.ts"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/app_pagos/dist/app_pagos/$1"
+        }
+    ]
+}
