@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { OtherService } from '../../services/other/other.service';
 import { ApiResponse, ErrorApiResponse } from '../../services/http/http.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   standalone: true,
@@ -41,6 +42,7 @@ export class MyAccountComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    private authService: AuthService,
     private cuentaService: CuentaService,
     private otherService: OtherService,
     private toastr: ToastrService
@@ -98,10 +100,12 @@ export class MyAccountComponent implements OnInit {
           nombres: data.nombres,
           apellidos: data.apellidos
         });
-        this.accountForm.patchValue({
-          numero_cuenta: cuenta.numero_cuenta ?? '',
-          id_entidad_financiera: cuenta.id_entidad_financiera ?? 0
-        });
+        if (this.isCliente()) {
+          this.accountForm.patchValue({
+            numero_cuenta: cuenta.numero_cuenta ?? '',
+            id_entidad_financiera: cuenta.id_entidad_financiera ?? 0
+          });
+        }
       },
       error: (error: ErrorApiResponse) => {
         this.toastr.error(error.error, 'Error al cargar los datos del usuario');
@@ -205,5 +209,13 @@ export class MyAccountComponent implements OnInit {
       console.log(this.passwordForm.errors);
       this.toastr.error('Formulario no válido', 'Error al cambiar la contraseña');
     }
+  }
+
+  isAdmin(): boolean {
+    return this.authService.isAdmin();
+  }
+
+  isCliente(): boolean {
+    return this.authService.isCliente();
   }
 }

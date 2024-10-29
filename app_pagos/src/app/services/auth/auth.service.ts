@@ -6,6 +6,12 @@ import { Router } from '@angular/router';
 import * as CryptoJS from 'crypto-js';
 import { environment } from '../../../environments/environment';
 
+export enum RolType {
+  ADMINISTRADOR = 1,
+  CLIENTE = 2,
+  EMPLEADO = 3
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -104,7 +110,7 @@ export class AuthService {
   }
 
   // Obtener roles
-  getUserRoles(): string[] {
+  getUserRoles(): number[] {
     return this.roles.length > 0 ? this.roles : JSON.parse(this.getFromLocalStorage('roles') || '[]');
   }
 
@@ -114,13 +120,21 @@ export class AuthService {
   }
 
   // Verificar si el usuario tiene un rol específico
-  hasRole(role: string): boolean {
+  hasRole(role: number): boolean {
     return this.getUserRoles().includes(role);
   }
 
   // Verificar si el usuario tiene un permiso específico
   hasPermission(permission: string): boolean {
     return this.getUserPermissions().includes(permission);
+  }
+
+  isCliente(): boolean {
+    return this.hasRole(RolType.CLIENTE);
+  }
+
+  isAdmin(): boolean {
+    return this.hasRole(RolType.ADMINISTRADOR);
   }
 
   private saveLocalStorage(payload: any = null): void {

@@ -53,45 +53,46 @@
   </form>
 
   <!-- Formulario de edición de datos de la cuenta -->
-  <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 mt-10">Editar Datos de la Cuenta</h2>
-  <form [formGroup]="accountForm" (ngSubmit)="onSubmitAccountForm()">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="flex flex-col">
-        <label for="numero_cuenta" class="text-gray-700 dark:text-gray-300 mb-1">Número de Cuenta</label>
-        <input formControlName="numero_cuenta" id="numero_cuenta" type="text"
-          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-        <div
-          *ngIf="accountForm.get('numero_cuenta')?.errors && (accountForm.get('numero_cuenta')?.touched || accountForm.get('numero_cuenta')?.dirty)"
-          class="text-red-500 text-sm mt-1">
-          <div *ngIf="accountForm.get('numero_cuenta')?.errors?.['whitespace']">El número de cuenta no puede contener
-            espacios en blanco.</div>
+  <div *ngIf="isCliente()">
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 mt-10">Editar Datos de la Cuenta</h2>
+    <form [formGroup]="accountForm" (ngSubmit)="onSubmitAccountForm()">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="flex flex-col">
+          <label for="numero_cuenta" class="text-gray-700 dark:text-gray-300 mb-1">Número de Cuenta</label>
+          <input formControlName="numero_cuenta" id="numero_cuenta" type="text"
+            class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          <div
+            *ngIf="accountForm.get('numero_cuenta')?.errors && (accountForm.get('numero_cuenta')?.touched || accountForm.get('numero_cuenta')?.dirty)"
+            class="text-red-500 text-sm mt-1">
+            <div *ngIf="accountForm.get('numero_cuenta')?.errors?.['whitespace']">El número de cuenta no puede contener
+              espacios en blanco.</div>
+          </div>
+        </div>
+        <!-- Selección de Entidad Financiera -->
+        <div class="flex flex-col">
+          <label for="id_entidad_financiera" class="text-gray-700 dark:text-gray-300 mb-1">Entidad Financiera</label>
+          <select formControlName="id_entidad_financiera" id="id_entidad_financiera"
+            [(ngModel)]="selected_entidad_financiera"
+            class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option [value]="0">Ninguna</option>
+            <option *ngFor="let entidad of entidadesFinancieras" [value]="entidad.id">
+              {{ entidad.nombre }}
+            </option>
+          </select>
+          <div
+            *ngIf="accountForm.errors?.['acountrequired'] && (accountForm.get('id_entidad_financiera')?.touched || accountForm.get('numero_cuenta')?.touched)"
+            class="text-red-500 text-sm mb-4">
+            Si se coloca un número de cuenta, es necesario seleccionar una entidad financiera y viceversa.
+          </div>
         </div>
       </div>
-      <!-- Selección de Entidad Financiera -->
-      <div class="flex flex-col">
-        <label for="id_entidad_financiera" class="text-gray-700 dark:text-gray-300 mb-1">Entidad Financiera</label>
-        <select formControlName="id_entidad_financiera" id="id_entidad_financiera"
-          [(ngModel)]="selected_entidad_financiera"
-          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-          <option [value]="0">Ninguna</option>
-          <option *ngFor="let entidad of entidadesFinancieras" [value]="entidad.id">
-            {{ entidad.nombre }}
-          </option>
-        </select>
-        <div
-          *ngIf="accountForm.errors?.['acountrequired'] && (accountForm.get('id_entidad_financiera')?.touched || accountForm.get('numero_cuenta')?.touched)"
-          class="text-red-500 text-sm mb-4">
-          Si se coloca un número de cuenta, es necesario seleccionar una entidad financiera y viceversa.
-        </div>
+
+      <div class="mt-6">
+        <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-700">Guardar
+          Cambios</button>
       </div>
-    </div>
-
-    <div class="mt-6">
-      <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-700">Guardar
-        Cambios</button>
-    </div>
-  </form>
-
+    </form>
+  </div>
 
   <!-- Formulario de cambio de contraseña -->
   <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 mt-10">Cambiar Contraseña</h2>

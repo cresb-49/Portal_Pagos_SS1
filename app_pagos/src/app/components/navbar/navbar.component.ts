@@ -15,6 +15,8 @@ export class NavbarComponent implements OnInit {
   @Input() emptyNav = false;
   name = '';
   email = '';
+  isCliente = false;
+  isAdmin = false;
 
   isLoggedIn = false;
   private authSubscription: Subscription = new Subscription();
@@ -27,6 +29,8 @@ export class NavbarComponent implements OnInit {
   ngOnInit() {
     this.authSubscription = this.authService.authStatus$.subscribe(isLoggedIn => {
       this.isLoggedIn = isLoggedIn;
+      this.isAdmin = this.authService.isAdmin();
+      this.isCliente = this.authService.isCliente();
       this.name = this.authService.getFullName();
       this.email = this.authService.getEmail();
     });
@@ -70,9 +74,4 @@ export class NavbarComponent implements OnInit {
       this.navbarOpen = false;
     }
   }
-
-  isCliente() {
-    // return this.authService.hasRole(NativeUserRoles.CLIENTE);
-  }
-
 }
