@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { makePayment, obtenerCuentaPorIdCliente, obtenerTransaccionesUsuario, RealizarPago } from '../services/transaccionService';
+import { makePayment, makeRetiro, obtenerCuentaPorIdCliente, obtenerTransaccionesUsuario, RealizarPago, Retiro } from '../services/transaccionService';
 import { UserToken } from '../models/usuario';
 import { apiResponse } from '../response/apiResponse';
 import { HttpStatusCode } from '../utils/httpStatusCodes';
@@ -49,6 +49,23 @@ export const obtenerCuenta = async (req: Request, res: Response): Promise<any> =
         return apiResponse(res, HttpStatusCode.OK, 'Datos de cuenta', cuenta);
     } catch (error: Error | any) {
         return apiResponse(res, HttpStatusCode.INTERNAL_SERVER_ERROR, 'Error al obtener la cuenta', null, error.message ?? 'Unknown error');
+    }
+}
+
+export const transferirCuenta = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const user: UserToken | undefined = req.usuario;
+        if (!user) {
+            throw new Error('No se ha proporcionado un token');
+        }
+        const { monto } = req.body;
+        const payload: Retiro = {
+            monto
+        }
+        const response = await makeRetiro(payload, user);
+        return apiResponse(res, HttpStatusCode.OK, 'Transferencia realizada', response);
+    } catch (error: Error | any) {
+        return apiResponse(res, HttpStatusCode.INTERNAL_SERVER_ERROR, 'Error al realizar la transferencia', null, error.message ?? 'Unknown error');
     }
 }
 

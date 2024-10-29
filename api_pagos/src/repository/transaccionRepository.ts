@@ -5,7 +5,7 @@ export interface TransaccionModel {
     descripcion: string;
     id_tipo_transaccion: number;
     id_cuenta_origen: number;
-    id_cuenta_destino: number;
+    id_cuenta_destino?: number | null;
     id_estado_transaccion: number;
     create_at?: Date;
     update_at?: Date;
@@ -15,7 +15,13 @@ export interface TransaccionModel {
 export const crearTransaccion = async (transaccion: TransaccionModel, prisma: any): Promise<any> => {
     return await prisma.transaccion.create({
         data: {
-            ...transaccion,
+            id_tipo_transaccion: transaccion.id_tipo_transaccion,
+            id_cuenta_origen: transaccion.id_cuenta_origen,
+            id_cuenta_destino: transaccion.id_cuenta_destino,
+            id_estado_transaccion: transaccion.id_estado_transaccion,
+            id_cuenta_owner: transaccion.id_cuenta_origen,
+            monto: transaccion.monto,
+            descripcion: transaccion.descripcion,
             create_at: new Date(),
             update_at: new Date(),
         },

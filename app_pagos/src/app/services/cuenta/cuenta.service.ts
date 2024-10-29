@@ -45,4 +45,9 @@ export class CuentaService {
     return this.httpService.get<any>('transacciones/usuario', null, true);
   }
 
+  //Metodo para realizar una transferencia
+  realizarTransferencia(data: any) {
+    return this.httpService.post<any>('transferencia', data, true);
+  }
+
 }

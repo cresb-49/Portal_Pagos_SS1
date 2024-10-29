@@ -10,7 +10,7 @@
     <!-- Monto a Transferir -->
     <div class="flex flex-col mb-4">
       <label for="monto" class="text-gray-700 dark:text-gray-300 mb-1">Monto a Transferir</label>
-      <input formControlName="monto" id="monto" type="number" placeholder="0.00"
+      <input formControlName="monto" id="monto" type="number" placeholder="0.00" [readOnly]="saldoDisponible === 0"
         class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
       <div *ngIf="transferForm.get('monto')?.hasError('required') && transferForm.get('monto')?.touched" class="text-red-500 text-sm mt-1">
         El monto es requerido.
@@ -20,6 +20,9 @@
       </div>
       <div *ngIf="transferForm.get('monto')?.hasError('max')" class="text-red-500 text-sm mt-1">
         El monto no puede superar el saldo disponible.
+      </div>
+      <div *ngIf="saldoDisponible === 0" class="text-red-500 text-sm mt-1">
+        No tienes saldo disponible para realizar un retiro.
       </div>
     </div>
 

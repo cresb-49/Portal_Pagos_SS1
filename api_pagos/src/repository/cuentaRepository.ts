@@ -51,3 +51,31 @@ export const eliminarCuentaById = async (id_cuenta: number, prisma: any): Promis
         }
     });
 }
+
+export const sumarSaldoCuenta = async (id_cuenta: number, monto: number, prisma: any): Promise<Cuenta> => {
+    return await prisma.cuenta.update({
+        where: {
+            id_cuenta: id_cuenta
+        },
+        data: {
+            saldo: {
+                increment: monto
+            },
+            update_at: new Date()
+        }
+    });
+}
+
+export const restarSaldoCuenta = async (id_cuenta: number, monto: number, prisma: any): Promise<Cuenta> => {
+    return await prisma.cuenta.update({
+        where: {
+            id_cuenta: id_cuenta
+        },
+        data: {
+            saldo: {
+                decrement: monto
+            },
+            update_at: new Date()
+        }
+    });
+}

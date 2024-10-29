@@ -3,6 +3,7 @@ import { CuentaService } from '../../services/cuenta/cuenta.service';
 import { ToastrService } from 'ngx-toastr';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ApiResponse, ErrorApiResponse } from '../../services/http/http.service';
 
 @Component({
   standalone: true,
@@ -14,7 +15,7 @@ import { CommonModule } from '@angular/common';
 export class RetirosComponent implements OnInit {
 
   transferForm: FormGroup;
-  saldoDisponible = 1500.75; // Ejemplo de saldo disponible
+  saldoDisponible = 0; // Ejemplo de saldo disponible
 
   constructor(
     private fb: FormBuilder,
@@ -22,7 +23,7 @@ export class RetirosComponent implements OnInit {
     private toastr: ToastrService
   ) {
     this.transferForm = this.fb.group({
-      monto: ['', [Validators.required, Validators.min(1), Validators.max(this.saldoDisponible)]]
+      monto: ['', [Validators.required, Validators.min(1)]]
     });
   }
 
@@ -31,19 +32,36 @@ export class RetirosComponent implements OnInit {
   }
 
   cargarSaldoDisponible() {
-    // this.cuentaService.getSaldo().subscribe((saldo: number) => {
-    //   this.saldoDisponible = saldo;
-    //   this.transferForm.controls['monto'].setValidators([Validators.required, Validators.min(1), Validators.max(this.saldoDisponible)]);
-    // });
+    this.cuentaService.getCuenta().subscribe({
+      next: (response: ApiResponse) => {
+        const data = response.data;
+        this.saldoDisponible = data.saldo;
+        this.transferForm.get('monto')?.setValidators([
+          Validators.required,
+          Validators.min(1),
+          Validators.max(this.saldoDisponible)
+        ]);
+      },
+      error: (error: ErrorApiResponse) => {
+        this.toastr.error(error.error, 'Error al cargar el saldo disponible');
+      }
+    });
   }
 
   realizarTransferencia() {
     if (this.transferForm.valid) {
-      // const { monto } = this.transferForm.value;
-      // this.cuentaService.realizarTransferencia({ monto }).subscribe(
-      //   () => this.toastr.success('Transferencia realizada con éxito'),
-      //   () => this.toastr.error('Error al realizar la transferencia')
-      // );
+      const { monto } = this.transferForm.value;
+
+      this.cuentaService.realizarTransferencia({ monto: Number(monto) }).subscribe({
+        next: (response: ApiResponse) => {
+          this.toastr.success('Transferencia realizada con éxito');
+          this.cargarSaldoDisponible();
+          this.transferForm.reset();
+        },
+        error: (error: ErrorApiResponse) => {
+          this.toastr.error(error.error, 'Error al realizar la transferencia');
+        }
+      });
     }
   }
 }
