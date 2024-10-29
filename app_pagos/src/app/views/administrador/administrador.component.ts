@@ -29,6 +29,7 @@ export class AdministradorComponent implements OnInit {
   usuarios: Usuario[] = [];
   adminForm: FormGroup;
   editForm: FormGroup;
+  changePasswordForm: FormGroup;
   currentPage = 1;
   itemsPerPage = 10;
   enEdicion = false;
@@ -54,6 +55,14 @@ export class AdministradorComponent implements OnInit {
       nombres: ['', Validators.required],
       apellidos: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]]
+    });
+
+    this.changePasswordForm = this.fb.group({
+      current_password: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirm_password: ['', Validators.required]
+    }, {
+      validator: this.passwordsMatch
     });
   }
 
@@ -161,6 +170,32 @@ export class AdministradorComponent implements OnInit {
           this.toastr.error(error.error, 'Error al actualizar el administrador');
         }
       });
+    }
+  }
+
+  cambiarContrasena() {
+    if (this.changePasswordForm.valid && this.usuarioEnEdicion) {
+      const { current_password, password } = this.changePasswordForm.value;
+      if (!this.usuarioEnEdicion.id_usuario) {
+        this.toastr.error('No se ha proporcionado un ID válido', 'Error al cambiar la contraseña');
+        return;
+      }
+      this.otherService.updatePassword(this.usuarioEnEdicion.id_usuario, {
+        current_password: current_password,
+        new_password: password
+      }).subscribe({
+        next: () => {
+          this.toastr.success('Contraseña actualizada exitosamente');
+          this.changePasswordForm.reset();
+        },
+        error: (error: ErrorApiResponse) => {
+          this.toastr.error(error.error, 'Error al cambiar la contraseña');
+        }
+      });
+    } else {
+      //Mostrar los errores del formulario en la notificación
+      console.log(this.changePasswordForm.errors);
+      this.toastr.error('Formulario no válido', 'Error al cambiar la contraseña');
     }
   }
 

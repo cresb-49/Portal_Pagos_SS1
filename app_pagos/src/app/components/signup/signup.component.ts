@@ -3,6 +3,9 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth/auth.service';
 import { Router, RouterModule } from '@angular/router';
+import { OtherService, PayloadUserRegister } from '../../services/other/other.service';
+import { ToastrService } from 'ngx-toastr';
+import { ErrorApiResponse } from '../../services/http/http.service';
 @Component({
   selector: 'app-signup',
   standalone: true,
@@ -15,24 +18,35 @@ export class SignupComponent implements OnInit {
   @Input() registroEmpresa: boolean = false;
   signupForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private router: Router, private authService: AuthService) {
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private authService: AuthService,
+    private otherService: OtherService,
+    private toastr: ToastrService
+  ) {
     this.signupForm = this.fb.group({
       nombres: ['', [Validators.required]],
       apellidos: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-      cui: ['', [Validators.required]],
-      nit: ['', [Validators.required]],
-      telefono: ['', [Validators.required]],
-      password: ['', [Validators.required]],
-      confirmPassword: ['', [Validators.required]]
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirm_password: ['', [Validators.required]]
+    }, {
+      validator: this.passwordsMatch
     });
+  }
+
+  passwordsMatch(group: FormGroup): { [key: string]: boolean } | null {
+    const password = group.get('password')?.value;
+    const confirmPassword = group.get('confirm_password')?.value;
+    return password === confirmPassword ? null : { mismatch: true };
   }
 
   ngOnInit() {
     //Si el usuario ya está autenticado, redirigirlo a la página de inicio
-    // if (this.authService.isLoggedIn()) {
-    //   this.router.navigate(['/']);
-    // }
+    if (this.authService.isLoggedIn()) {
+      this.router.navigate(['/home']);
+    }
   }
 
   clearForm() {
@@ -40,30 +54,22 @@ export class SignupComponent implements OnInit {
   }
 
   onSubmit() {
-    // if (this.signupForm.valid) {
-    //   console.log(this.signupForm.value);
-    //   const payload: signUpCliente = {
-    //     nombres: this.signupForm.value.nombres,
-    //     apellidos: this.signupForm.value.apellidos,
-    //     email: this.signupForm.value.email,
-    //     cui: this.signupForm.value.cui,
-    //     nit: this.signupForm.value.nit,
-    //     phone: this.signupForm.value.telefono,
-    //     password: this.signupForm.value.password
-    //   };
-    //   this.userService.signUpCliente(payload).subscribe(
-    //     {
-    //       next: (data) => {
-    //         console.log('response:', data);
-    //         this.clearForm();
-    //       },
-    //       error: (error) => {
-    //         console.error('Error:', error);
-    //       }
-    //     }
-    //   );
-    // } else {
-    //   console.error('Formulario inválido');
-    // }
+    if (this.signupForm.valid) {
+      const payload: PayloadUserRegister = {
+        nombres: this.signupForm.value.nombres,
+        email: this.signupForm.value.email,
+        password: this.signupForm.value.password,
+        apellidos: this.signupForm.value.apellidos
+      }
+      this.otherService.signUpCliente(payload).subscribe({
+        next: () => {
+          this.toastr.success('Registro exitoso');
+          this.clearForm();
+        },
+        error: (error: ErrorApiResponse) => {
+          this.toastr.error(error.error, 'Error al registrarse');
+        }
+      });
+    }
   }
 }

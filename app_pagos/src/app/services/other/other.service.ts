@@ -3,9 +3,16 @@ import { Router } from '@angular/router';
 import { HttpService } from '../http/http.service';
 import { ToastrService } from 'ngx-toastr';
 
-export interface payloadUpdatePassword {
-  currentPassword: string;
-  newPassword: string;
+export interface PayloadUpdatePassword {
+  current_password: string;
+  new_password: string;
+}
+
+export interface PayloadUserRegister {
+  nombres: string;
+  email: string;
+  password: string;
+  apellidos: string;
 }
 
 @Injectable({
@@ -31,8 +38,13 @@ export class OtherService {
     return this.httpService.post<any>('empresa', data, true);
   }
 
+  //Registro de usaurio
+  signUpCliente(payload: PayloadUserRegister) {
+    return this.httpService.post<any>('signup', payload, true);
+  }
+
   //Actualizacion de las password del usuario
-  updatePassword(id_usuario: number, payload: payloadUpdatePassword) {
+  updatePassword(id_usuario: number, payload: PayloadUpdatePassword) {
     return this.httpService.post<any>(`user/update/password/cliente/${id_usuario}`, payload, true);
   }
 

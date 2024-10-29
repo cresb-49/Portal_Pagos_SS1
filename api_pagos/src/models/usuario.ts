@@ -8,14 +8,10 @@ export interface UserToken {
 }
 
 export interface UserRegister {
-    nombreUsuario: string;
     email: string;
     password: string;
     nombres: string;
     apellidos: string;
-    numeroCuenta: string;
-    idEntidadFinanciera: number;
-    idEmpresa?: number;
 }
 
 export interface UsuarioResponse {
