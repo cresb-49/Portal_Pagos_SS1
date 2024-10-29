@@ -2,14 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "./dist/app_pagos/**",
+      "src": "dist/app_pagos/**",
       "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "./dist/app_pagos/browser/$1"
+      "dest": "dist/app_pagos/browser/$1"
     }
   ]
 }
