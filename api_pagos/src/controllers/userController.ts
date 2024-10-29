@@ -1,7 +1,7 @@
 import { Response, Request } from "express";
-import { actualizarUsuario, changePassword, eliminacionUsuario, getAllUsers, IniciarSession, obtenerAdmins, obtenerClientes, register, registrarUsuarioAdmin } from '../services/userService';
+import { actualizarUsuario, changePassword, eliminacionUsuario, getAllUsers, getPersonalInformation, IniciarSession, obtenerAdmins, obtenerClientes, register, registrarUsuarioAdmin } from '../services/userService';
 import { apiResponse } from '../response/apiResponse';
-import { UserRegister } from '../models/usuario';
+import { UserRegister, UserToken } from '../models/usuario';
 import { HttpStatusCode } from '../utils/httpStatusCodes';
 
 export const getUsers = async (req: Request, res: Response): Promise<any> => {
@@ -79,6 +79,21 @@ export const obtenerClientesPlataforma = async (req: Request, res: Response): Pr
     try {
         const users = await obtenerClientes();
         return apiResponse(res, HttpStatusCode.OK, 'Users retrieved', users);
+    } catch (error: Error | any) {
+        return apiResponse(res, 500, 'Error retrieving users', null, error.message ?? 'Unknown error');
+    }
+}
+
+export const obtenerInformacionPersonal = async (req: Request, res: Response): Promise<any> => {
+    try {
+        console.log("UserToken:", req.usuario);
+        const user: UserToken | undefined = req.usuario;
+        if (user === undefined) {
+            return apiResponse(res, HttpStatusCode.UNAUTHORIZED, 'No user found');
+        }
+        const data = await getPersonalInformation(Number(user.id));
+        console.log("Data:", data);
+        return apiResponse(res, HttpStatusCode.OK, 'Users retrieved', data);
     } catch (error: Error | any) {
         return apiResponse(res, 500, 'Error retrieving users', null, error.message ?? 'Unknown error');
     }

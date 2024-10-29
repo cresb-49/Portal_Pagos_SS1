@@ -8,25 +8,47 @@
         <label for="nombre_usuario" class="text-gray-700 dark:text-gray-300 mb-1">Nombre de Usuario</label>
         <input formControlName="nombre_usuario" id="nombre_usuario" type="text"
           class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <div
+          *ngIf="userForm.get('nombre_usuario')?.errors && (userForm.get('nombre_usuario')?.touched || userForm.get('nombre_usuario')?.dirty)"
+          class="text-red-500 text-sm mt-1">
+          <div *ngIf="userForm.get('nombre_usuario')?.errors?.['required']">El nombre de usuario es requerido.</div>
+        </div>
       </div>
       <div class="flex flex-col">
         <label for="email" class="text-gray-700 dark:text-gray-300 mb-1">Correo Electrónico</label>
         <input formControlName="email" id="email" type="email"
           class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <div *ngIf="userForm.get('email')?.errors && (userForm.get('email')?.touched || userForm.get('email')?.dirty)"
+          class="text-red-500 text-sm mt-1">
+          <div *ngIf="userForm.get('email')?.errors?.['required']">El correo electrónico es obligatorio.</div>
+          <div *ngIf="userForm.get('email')?.errors?.['email']">El formato del correo electrónico es inválido.</div>\
+        </div>
       </div>
       <div class="flex flex-col">
         <label for="nombres" class="text-gray-700 dark:text-gray-300 mb-1">Nombres</label>
         <input formControlName="nombres" id="nombres" type="text"
           class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <div
+          *ngIf="userForm.get('nombres')?.errors && (userForm.get('nombres')?.touched || userForm.get('nombres')?.dirty)"
+          class="text-red-500 text-sm mt-1">
+          >
+          <div *ngIf="userForm.get('nombres')?.errors?.['required']">Este campo es obligatorio.</div>
+        </div>
       </div>
       <div class="flex flex-col">
         <label for="apellidos" class="text-gray-700 dark:text-gray-300 mb-1">Apellidos</label>
         <input formControlName="apellidos" id="apellidos" type="text"
           class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <div
+          *ngIf="userForm.get('apellidos')?.errors && (userForm.get('apellidos')?.touched || userForm.get('apellidos')?.dirty)"
+          class="text-red-500 text-sm mt-1">
+          <div *ngIf="userForm.get('apellidos')?.errors?.['required']">Este campo es obligatorio.</div>
+        </div>
       </div>
     </div>
     <div class="mt-6">
-      <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-700">Guardar Cambios</button>
+      <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-700">Guardar
+        Cambios</button>
     </div>
   </form>
 
@@ -50,22 +72,11 @@
           </option>
         </select>
       </div>
-
-      <!-- Selección de Empresa -->
-      <div class="flex flex-col">
-        <label for="id_empresa" class="text-gray-700 dark:text-gray-300 mb-1">Empresa (Opcional)</label>
-        <select formControlName="id_empresa" id="id_empresa"
-          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-          <option value="">Seleccione una Empresa</option>
-          <option *ngFor="let empresa of empresas" [value]="empresa.id">
-            {{ empresa.nombre }}
-          </option>
-        </select>
-      </div>
     </div>
 
     <div class="mt-6">
-      <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-700">Guardar Cambios</button>
+      <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-700">Guardar
+        Cambios</button>
     </div>
   </form>
 
@@ -75,23 +86,43 @@
   <form [formGroup]="passwordForm" (ngSubmit)="onSubmitPasswordForm()">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div class="flex flex-col col-span-2">
-        <label for="currentPassword" class="text-gray-700 dark:text-gray-300 mb-1">Contraseña Actual</label>
-        <input formControlName="currentPassword" id="currentPassword" type="password"
+        <label for="current_password" class="text-gray-700 dark:text-gray-300 mb-1">Contraseña Actual</label>
+        <input formControlName="current_password" id="current_password" type="password"
           class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <div
+          *ngIf="passwordForm.get('current_password')?.errors && (passwordForm.get('current_password')?.touched || passwordForm.get('current_password')?.dirty)"
+          class="text-red-500 text-sm mt-1">
+          <div *ngIf="passwordForm.get('current_password')?.errors?.['required']">La contraseña actual es
+            obligatoria.</div>
+        </div>
       </div>
       <div class="flex flex-col">
-        <label for="newPassword" class="text-gray-700 dark:text-gray-300 mb-1">Nueva Contraseña</label>
-        <input formControlName="newPassword" id="newPassword" type="password"
+        <label for="password" class="text-gray-700 dark:text-gray-300 mb-1">Nueva Contraseña</label>
+        <input formControlName="password" id="password" type="password"
           class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <div
+          *ngIf="passwordForm.get('password')?.errors && (passwordForm.get('password')?.touched || passwordForm.get('password')?.dirty)"
+          class="text-red-500 text-sm mt-1">
+          <div *ngIf="passwordForm.get('password')?.errors?.['required']">La contraseña es obligatoria.</div>
+          <div *ngIf="passwordForm.get('password')?.errors?.['minlength']">La contraseña debe tener al menos 6
+            caracteres.</div>
+        </div>
       </div>
       <div class="flex flex-col">
-        <label for="confirmPassword" class="text-gray-700 dark:text-gray-300 mb-1">Confirmar Nueva Contraseña</label>
-        <input formControlName="confirmPassword" id="confirmPassword" type="password"
+        <label for="confirm_password" class="text-gray-700 dark:text-gray-300 mb-1">Confirmar Nueva Contraseña</label>
+        <input formControlName="confirm_password" id="confirm_password" type="password"
           class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <div
+          *ngIf="passwordForm.get('confirm_password')?.errors && (passwordForm.get('confirm_password')?.touched || passwordForm.get('confirm_password')?.dirty)"
+          class="text-red-500 text-sm mt-1">
+          <div *ngIf="passwordForm.get('confirm_password')?.errors?.['required']">Es necesario confirmar la
+            contraseña.</div>
+        </div>
       </div>
     </div>
     <div class="mt-6">
-      <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-700">Actualizar Contraseña</button>
+      <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-700">Actualizar
+        Contraseña</button>
     </div>
   </form>
 </div>

@@ -212,3 +212,7 @@ export const actualizarUsuario = async (id: number, usuario: any) => {
         return await updateUsuario(id, usuario, prismaTransaction);
     });
 }
+
+export const getPersonalInformation = async (id: number) => {
+    return await obtenerUsuarioPorId(id, prisma, true);
+}

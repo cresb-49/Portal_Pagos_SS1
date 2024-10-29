@@ -43,6 +43,11 @@ export class OtherService {
     return this.httpService.post<any>('signup', payload, true);
   }
 
+  //Obtener informacion personal del usuario
+  getProfile() {
+    return this.httpService.get<any>('user/my-information', null, true);
+  }
+
   //Actualizacion de las password del usuario
   updatePassword(id_usuario: number, payload: PayloadUpdatePassword) {
     return this.httpService.post<any>(`user/update/password/cliente/${id_usuario}`, payload, true);
@@ -56,7 +61,7 @@ export class OtherService {
     return this.httpService.post<any>('user/create/cliente', data, true);
   }
   updateCliente(id: number, data: any) {
-    return this.httpService.patch<any>(`user/delete/cliente/${id}`, data, true);
+    return this.httpService.patch<any>(`user/update/cliente/${id}`, data, true);
   }
   deleteCliente(id: number) {
     return this.httpService.delete<any>(`user/delete/cliente/${id}`, true);
@@ -75,6 +80,5 @@ export class OtherService {
   deleteAdmin(id: number) {
     return this.httpService.delete<any>(`user/delete/admin/${id}`, true);
   }
-
   //Acciones referentes al manejo de las cuentas
 }

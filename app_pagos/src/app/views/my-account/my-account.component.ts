@@ -4,6 +4,8 @@ import { ToastrService } from 'ngx-toastr';
 import { CuentaService } from '../../services/cuenta/cuenta.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { OtherService } from '../../services/other/other.service';
+import { ApiResponse, ErrorApiResponse } from '../../services/http/http.service';
 
 @Component({
   standalone: true,
@@ -16,6 +18,10 @@ export class MyAccountComponent implements OnInit {
   userForm: FormGroup;
   passwordForm: FormGroup;
   accountForm: FormGroup;
+
+  usuario_id: number = 0;
+  cuenta_id: number = 0;
+
 
   // Arrays para entidades financieras y empresas
   entidadesFinancieras = [
@@ -36,6 +42,7 @@ export class MyAccountComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private cuentaService: CuentaService,
+    private otherService: OtherService,
     private toastr: ToastrService
   ) {
     // Formulario de edición de usuario
@@ -48,45 +55,45 @@ export class MyAccountComponent implements OnInit {
 
     // Formulario de cambio de contraseña
     this.passwordForm = this.fb.group({
-      currentPassword: ['', Validators.required],
-      newPassword: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', Validators.required]
+      current_password: ['', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirm_password: ['', Validators.required]
     }, { validator: this.checkPasswords });
 
     // Formulario de edición de cuenta
     this.accountForm = this.fb.group({
-      numero_cuenta: ['', Validators.required],
-      id_entidad_financiera: ['', Validators.required],
-      id_empresa: [''] // Campo opcional
+      numero_cuenta: [''], // Valor opcional
+      id_entidad_financiera: [''], // Valor opcional
     });
   }
 
   ngOnInit(): void {
     this.loadUserData();
-    this.loadAccountData();
   }
 
   // Cargar los datos del usuario
   loadUserData() {
-    this.cuentaService.getCuenta().subscribe((user) => {
-      this.userForm.patchValue({
-        nombre_usuario: user.nombre_usuario,
-        email: user.email,
-        nombres: user.nombres,
-        apellidos: user.apellidos,
-      });
+    this.otherService.getProfile().subscribe({
+      next: (response: ApiResponse) => {
+        const data = response.data;
+        const cuenta = data.cuenta;
+        this.usuario_id = data.id_usuario;
+        this.cuenta_id = cuenta.id_cuenta;
+        this.userForm.patchValue({
+          nombre_usuario: data.nombre_usuario,
+          email: data.email,
+          nombres: data.nombres,
+          apellidos: data.apellidos
+        });
+        this.accountForm.patchValue({
+          numero_cuenta: cuenta.numero_cuenta,
+          id_entidad_financiera: cuenta.id_entidad_financiera
+        });
+      },
+      error: (error: ErrorApiResponse) => {
+        this.toastr.error(error.error, 'Error al cargar los datos del usuario');
+      }
     });
-  }
-
-  // Cargar los datos de la cuenta
-  loadAccountData() {
-    // this.cuentaService.getCuentaDetails().subscribe((account) => {
-    //   this.accountForm.patchValue({
-    //     numero_cuenta: account.numero_cuenta,
-    //     id_entidad_financiera: account.id_entidad_financiera,
-    //     id_empresa: account.id_empresa
-    //   });
-    // });
   }
 
   // Validación de contraseña
@@ -99,10 +106,20 @@ export class MyAccountComponent implements OnInit {
   // Actualizar datos del usuario
   onSubmitUserForm() {
     if (this.userForm.valid) {
-      // this.cuentaService.updateCuenta(this.userForm.value).subscribe(
-      //   () => this.toastr.success('Datos del usuario actualizados correctamente'),
-      //   () => this.toastr.error('Error al actualizar los datos del usuario')
-      // );
+      if (this.usuario_id === 0) {
+        this.toastr.error('No se ha proporcionado un ID válido', 'Error al cambiar la contraseña');
+        return;
+      }
+      const updateData = this.userForm.value;
+      this.otherService.updateCliente(this.usuario_id, updateData).subscribe({
+        next: () => {
+          this.toastr.success('Datos del usuario actualizados correctamente');
+          this.loadUserData();
+        },
+        error: (error: ErrorApiResponse) => {
+          this.toastr.error(error.error, 'Error al actualizar los datos del usuario');
+        }
+      });
     }
   }
 
@@ -119,10 +136,27 @@ export class MyAccountComponent implements OnInit {
   // Actualizar contraseña
   onSubmitPasswordForm() {
     if (this.passwordForm.valid) {
-      // this.cuentaService.updatePassword(this.passwordForm.value).subscribe(
-      //   () => this.toastr.success('Contraseña actualizada correctamente'),
-      //   () => this.toastr.error('Error al actualizar la contraseña')
-      // );
+      const { current_password, password } = this.passwordForm.value;
+      if (this.usuario_id === 0) {
+        this.toastr.error('No se ha proporcionado un ID válido', 'Error al cambiar la contraseña');
+        return;
+      }
+      this.otherService.updatePassword(this.usuario_id, {
+        current_password: current_password,
+        new_password: password
+      }).subscribe({
+        next: () => {
+          this.toastr.success('Contraseña actualizada exitosamente');
+          this.passwordForm.reset();
+        },
+        error: (error: ErrorApiResponse) => {
+          this.toastr.error(error.error, 'Error al cambiar la contraseña');
+        }
+      });
+    } else {
+      //Mostrar los errores del formulario en la notificación
+      console.log(this.passwordForm.errors);
+      this.toastr.error('Formulario no válido', 'Error al cambiar la contraseña');
     }
   }
 }
