@@ -69,8 +69,10 @@ export const registrarUsuarioAdmin = async (user: UserRegister) => {
         // Iniciar una transacción
         const result = await prisma.$transaction(async (prismaTransaction) => {
             // Crear el nuevo usuario dentro de la transacción
+            //Generamosn un time stamp para el nombre de usuario
+            const timestamp = new Date().getTime();
             const newUser: CrearUsuario = {
-                nombre_usuario: user.nombreUsuario,
+                nombre_usuario: `${user.nombres}${timestamp}`,
                 email: user.email,
                 apellidos: user.apellidos,
                 nombres: user.nombres,
@@ -91,7 +93,8 @@ export const registrarUsuarioAdmin = async (user: UserRegister) => {
             return responseUser; // Devolver el usuario creado al final de la transacción
         });
         return result; // Devuelve el resultado de la transacción
-    } catch (error) {
+    } catch (error: Error | any) {
+        console.log(error.message);
         throw error;
     }
 }

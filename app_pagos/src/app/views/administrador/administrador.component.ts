@@ -40,7 +40,6 @@ export class AdministradorComponent implements OnInit {
     private toastr: ToastrService
   ) {
     this.adminForm = this.fb.group({
-      nombre_usuario: ['', [Validators.required, Validators.minLength(3)]],
       nombres: ['', Validators.required],
       apellidos: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
