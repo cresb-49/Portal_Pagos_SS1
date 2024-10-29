@@ -78,14 +78,14 @@ model Cuenta {
     usuario               Usuario           @relation(fields: [id_usuario], references: [id_usuario])
     //-----------------------------------------------------------------------------------
     //La cuenta pertece a una entidad financiera
-    id_entidad_financiera Int
-    entidad_financiera    EntidadFinanciera @relation(fields: [id_entidad_financiera], references: [id_entidad_financiera])
+    id_entidad_financiera Int?
+    entidad_financiera    EntidadFinanciera? @relation(fields: [id_entidad_financiera], references: [id_entidad_financiera])
     //-----------------------------------------------------------------------------------
     //La cuenta puede pertenecer a una empresa
     id_empresa            Int?              @unique
     empresa               Empresa?          @relation(fields: [id_empresa], references: [id_empresa])
     //-----------------------------------------------------------------------------------
-    numero_cuenta         String            @unique
+    numero_cuenta         String?            @unique
     saldo                 Float             @default(0)
     create_at             DateTime          @default(now())
     update_at             DateTime          @default(now())
