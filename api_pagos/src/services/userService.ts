@@ -38,7 +38,13 @@ export const register = async (user: UserRegister) => {
                 id_estado_usuario: null,
             };
             const usuarioCreado = await crearUsuarioCliente(newUser, prismaTransaction);
-            return usuarioCreado; // Devolver el usuario creado al final de la transacción
+            // Crear la cuenta del usuario
+            const nuevaCuenta: CrearCuenta = {
+                id_usuario: usuarioCreado.id_usuario,
+                saldo: 0,
+            };
+            await crearCuenta(nuevaCuenta, prismaTransaction);
+            return true; // Devolver el usuario creado al final de la transacción
         });
         return result; // Devuelve el resultado de la transacción
     } catch (error: Error | any) {
