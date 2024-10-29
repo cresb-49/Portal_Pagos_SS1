@@ -17,7 +17,7 @@
       },
       {
         "src": "/(.*)",
-        "dest": "/app_pagos/dist/app_pagos/$1"
+        "dest": "/app_pagos/dist/app_pagos/browser/$1"
       }
     ]
   }
