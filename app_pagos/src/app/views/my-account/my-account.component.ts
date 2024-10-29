@@ -71,8 +71,8 @@ export class MyAccountComponent implements OnInit {
 
   noWhitespaceValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      const original_lenght = (control.value??'').length;
-      const trimmed_lenght = (control.value??'').trim().length;
+      const original_lenght = (control.value ?? '').length;
+      const trimmed_lenght = (control.value ?? '').trim().length;
       if (original_lenght === trimmed_lenght) {
         return null;
       }
@@ -99,8 +99,8 @@ export class MyAccountComponent implements OnInit {
           apellidos: data.apellidos
         });
         this.accountForm.patchValue({
-          numero_cuenta: cuenta.numero_cuenta,
-          id_entidad_financiera: cuenta.id_entidad_financiera
+          numero_cuenta: cuenta.numero_cuenta ?? '',
+          id_entidad_financiera: cuenta.id_entidad_financiera ?? 0
         });
       },
       error: (error: ErrorApiResponse) => {
@@ -118,7 +118,7 @@ export class MyAccountComponent implements OnInit {
 
   checkAcountNumberIfEntidadFinancieraIsSelected(group: FormGroup) {
     const entidad_financiera = Number(group.get('id_entidad_financiera')?.value ?? 0);
-    const numero_cuenta = group.get('numero_cuenta')?.value??'';
+    const numero_cuenta = group.get('numero_cuenta')?.value ?? '';
     if (entidad_financiera !== 0) {
       if (numero_cuenta.length === 0) {
         return { acountrequired: true };
@@ -155,10 +155,28 @@ export class MyAccountComponent implements OnInit {
   // Actualizar datos de la cuenta
   onSubmitAccountForm() {
     if (this.accountForm.valid) {
-      // this.cuentaService.updateCuentaDetails(this.accountForm.value).subscribe(
-      //   () => this.toastr.success('Datos de la cuenta actualizados correctamente'),
-      //   () => this.toastr.error('Error al actualizar los datos de la cuenta')
-      // );
+      const updateData = this.accountForm.value;
+      const numero_cuenta = updateData.numero_cuenta ?? '';
+      const id_entidad_financiera = Number(updateData.id_entidad_financiera);
+      const payload = {
+        numero_cuenta: numero_cuenta.length === 0 ? null : numero_cuenta,
+        id_entidad_financiera: id_entidad_financiera === 0 ? null : id_entidad_financiera
+      };
+      if (this.cuenta_id === 0) {
+        this.toastr.error('No se ha proporcionado un ID válido', 'Error al actualizar los datos de la cuenta');
+        return;
+      }
+      this.otherService.updateCuenta(this.cuenta_id, payload).subscribe({
+        next: () => {
+          this.toastr.success('Datos de la cuenta actualizados correctamente');
+          this.loadUserData();
+        },
+        error: (error: ErrorApiResponse) => {
+          this.toastr.error(error.error, 'Error al actualizar los datos de la cuenta');
+        }
+      });
+    } else {
+      this.toastr.error('Formulario no válido', 'Error al actualizar los datos de la cuenta');
     }
   }
 

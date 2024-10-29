@@ -1,6 +1,5 @@
 import { Cuenta } from "@prisma/client";
 import { CrearCuenta } from "../models/cuenta";
-import { createNewEmpresa } from "../services/otherService";
 
 export const crearCuenta = async (cuenta: CrearCuenta, prisma: any): Promise<any> => {
     return await prisma.cuenta.create({
@@ -12,7 +11,7 @@ export const crearCuenta = async (cuenta: CrearCuenta, prisma: any): Promise<any
     });
 }
 
-export const updateCuenta = async (id_cuenta: number, cuenta: CrearCuenta, prisma: any): Promise<Cuenta> => {
+export const updateCuenta = async (id_cuenta: number, cuenta: any, prisma: any): Promise<Cuenta> => {
     return await prisma.cuenta.update({
         where: {
             id_cuenta: id_cuenta

@@ -81,4 +81,7 @@ export class OtherService {
     return this.httpService.delete<any>(`user/delete/admin/${id}`, true);
   }
   //Acciones referentes al manejo de las cuentas
+  updateCuenta(id: number, data: any) {
+    return this.httpService.patch<any>(`cuenta/${id}`, data, true);
+  }
 }

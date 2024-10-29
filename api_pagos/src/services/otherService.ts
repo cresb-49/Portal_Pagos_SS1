@@ -40,7 +40,8 @@ export const actualizarDatosCuenta = async (id_cuenta: number, cuenta: any) => {
         await prisma.$transaction(async (prismaTransaction) => {
             await updateCuenta(id_cuenta, cuenta, prismaTransaction);
         });
-    } catch (error) {
+    } catch (error: Error | any) {
+        console.log(error.message);
         throw error;
     }
 };
