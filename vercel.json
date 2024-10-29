@@ -1,23 +1,24 @@
 {
     "version": 2,
     "builds": [
-        {
-            "src": "app_pagos/dist/app_pagos/**",
-            "use": "@vercel/static"
-        },
-        {
-            "src": "api_pagos/src/index.ts",
-            "use": "@vercel/node"
-        }
+      {
+        "src": "app_pagos/dist/app_pagos/**",
+        "use": "@vercel/static"
+      },
+      {
+        "src": "api_pagos/src/index.ts",
+        "use": "@vercel/node"
+      }
     ],
     "routes": [
-        {
-            "src": "/api/(.*)",
-            "dest": "/api_pagos/src/index.ts"
-        },
-        {
-            "src": "/(.*)",
-            "dest": "/app_pagos/dist/app_pagos/$1"
-        }
+      {
+        "src": "/api/(.*)",
+        "dest": "/api_pagos/src/index.ts"
+      },
+      {
+        "src": "/(.*)",
+        "dest": "/app_pagos/dist/app_pagos/$1"
+      }
     ]
-}
+  }
+  
