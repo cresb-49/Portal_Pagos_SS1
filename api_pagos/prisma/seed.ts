@@ -12,13 +12,13 @@ async function main() {
     //Entidades Financieras
     await prisma.entidadFinanciera.create({
         data: {
-            nombre: "Financiera A",
+            nombre: "Portal Financiero Cuentas Bancarias",
             codigo: "A",
         }
     })
     await prisma.entidadFinanciera.create({
         data: {
-            nombre: "Financiera B",
+            nombre: "Portal Financiero Tarjeta de Crédito",
             codigo: "B",
         }
     })

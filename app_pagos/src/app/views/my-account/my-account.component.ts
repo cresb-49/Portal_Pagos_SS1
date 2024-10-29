@@ -1,3 +1,4 @@
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
@@ -22,14 +23,13 @@ export class MyAccountComponent implements OnInit {
   usuario_id: number = 0;
   cuenta_id: number = 0;
 
+  selected_entidad_financiera: number = 0;
+
 
   // Arrays para entidades financieras y empresas
   entidadesFinancieras = [
-    { id: 1, nombre: 'Banco de Guatemala' },
-    { id: 2, nombre: 'Banrural' },
-    { id: 3, nombre: 'Banco Industrial' },
-    { id: 4, nombre: 'G&T Continental' }
-    // Agrega más según tus necesidades
+    { id: 1, nombre: 'Portal Financiero Cuentas Bancarias' },
+    { id: 2, nombre: 'Portal Financiero Tarjeta de crédito' },
   ];
 
   empresas = [
@@ -62,9 +62,22 @@ export class MyAccountComponent implements OnInit {
 
     // Formulario de edición de cuenta
     this.accountForm = this.fb.group({
-      numero_cuenta: [''], // Valor opcional
+      numero_cuenta: ['', this.noWhitespaceValidator()],
       id_entidad_financiera: [''], // Valor opcional
+    }, {
+      validator: this.checkAcountNumberIfEntidadFinancieraIsSelected
     });
+  }
+
+  noWhitespaceValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const original_lenght = (control.value??'').length;
+      const trimmed_lenght = (control.value??'').trim().length;
+      if (original_lenght === trimmed_lenght) {
+        return null;
+      }
+      return { whitespace: true };
+    };
   }
 
   ngOnInit(): void {
@@ -101,6 +114,22 @@ export class MyAccountComponent implements OnInit {
     const newPassword = group.get('newPassword')?.value;
     const confirmPassword = group.get('confirmPassword')?.value;
     return newPassword === confirmPassword ? null : { notSame: true };
+  }
+
+  checkAcountNumberIfEntidadFinancieraIsSelected(group: FormGroup) {
+    const entidad_financiera = Number(group.get('id_entidad_financiera')?.value ?? 0);
+    const numero_cuenta = group.get('numero_cuenta')?.value??'';
+    if (entidad_financiera !== 0) {
+      if (numero_cuenta.length === 0) {
+        return { acountrequired: true };
+      }
+      return null;
+    } else {
+      if (numero_cuenta.length !== 0) {
+        return { acountrequired: true };
+      }
+      return null;
+    }
   }
 
   // Actualizar datos del usuario
