@@ -14,5 +14,8 @@ app.use('/api', userRoutes);
 app.use('/api', pdfRoutes);
 app.use('/api', transaccionRoutes);
 app.use('/api', otherRoutes);
+app.use('/api/saludo', (req, res) => {
+    res.send('Hola mundo!');
+});
 
 export default app;
