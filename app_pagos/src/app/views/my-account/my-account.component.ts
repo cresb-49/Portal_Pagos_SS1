@@ -91,9 +91,7 @@ export class MyAccountComponent implements OnInit {
     this.otherService.getProfile().subscribe({
       next: (response: ApiResponse) => {
         const data = response.data;
-        const cuenta = data.cuenta;
         this.usuario_id = data.id_usuario;
-        this.cuenta_id = cuenta.id_cuenta;
         this.userForm.patchValue({
           nombre_usuario: data.nombre_usuario,
           email: data.email,
@@ -101,6 +99,8 @@ export class MyAccountComponent implements OnInit {
           apellidos: data.apellidos
         });
         if (this.isCliente()) {
+          const cuenta = data.cuenta;
+          this.cuenta_id = cuenta.id_cuenta;
           this.accountForm.patchValue({
             numero_cuenta: cuenta.numero_cuenta ?? '',
             id_entidad_financiera: cuenta.id_entidad_financiera ?? 0
