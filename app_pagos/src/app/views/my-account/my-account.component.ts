@@ -8,6 +8,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { OtherService } from '../../services/other/other.service';
 import { ApiResponse, ErrorApiResponse } from '../../services/http/http.service';
 import { AuthService } from '../../services/auth/auth.service';
+import { EncryptService } from '../../services/encrypt/encrypt.service';
 
 @Component({
   standalone: true,
@@ -17,6 +18,7 @@ import { AuthService } from '../../services/auth/auth.service';
   styleUrls: ['./my-account.component.css']
 })
 export class MyAccountComponent implements OnInit {
+  showPin: boolean = false;
   userForm: FormGroup;
   passwordForm: FormGroup;
   accountForm: FormGroup;
@@ -41,6 +43,7 @@ export class MyAccountComponent implements OnInit {
   ];
 
   constructor(
+    private encryptService: EncryptService,
     private fb: FormBuilder,
     private authService: AuthService,
     private cuentaService: CuentaService,
@@ -66,9 +69,14 @@ export class MyAccountComponent implements OnInit {
     this.accountForm = this.fb.group({
       numero_cuenta: ['', this.noWhitespaceValidator()],
       id_entidad_financiera: [''], // Valor opcional
+      pin: ['', this.noWhitespaceValidator()] // Valor opcional
     }, {
-      validator: this.checkAcountNumberIfEntidadFinancieraIsSelected
+      validator: [this.checkAcountNumberIfEntidadFinancieraIsSelected, this.checkPinIfAcountNumberExists]
     });
+  }
+
+  toggleShowPin() {
+    this.showPin = !this.showPin;
   }
 
   noWhitespaceValidator(): ValidatorFn {
@@ -103,7 +111,8 @@ export class MyAccountComponent implements OnInit {
           this.cuenta_id = cuenta.id_cuenta;
           this.accountForm.patchValue({
             numero_cuenta: cuenta.numero_cuenta ?? '',
-            id_entidad_financiera: cuenta.id_entidad_financiera ?? 0
+            id_entidad_financiera: cuenta.id_entidad_financiera ?? 0,
+            pin: cuenta.pin ? this.encryptService.decrypt(cuenta.pin) : ''
           });
         }
       },
@@ -131,6 +140,22 @@ export class MyAccountComponent implements OnInit {
     } else {
       if (numero_cuenta.length !== 0) {
         return { acountrequired: true };
+      }
+      return null;
+    }
+  }
+
+  checkPinIfAcountNumberExists(group: FormGroup) {
+    const pin = group.get('pin')?.value ?? '';
+    const numero_cuenta = group.get('numero_cuenta')?.value ?? '';
+    if (numero_cuenta.length !== 0) {
+      if (pin.length === 0) {
+        return { pinrequired: true };
+      }
+      return null;
+    } else {
+      if (pin.length !== 0) {
+        return { pinrequired: true };
       }
       return null;
     }
@@ -164,7 +189,8 @@ export class MyAccountComponent implements OnInit {
       const id_entidad_financiera = Number(updateData.id_entidad_financiera);
       const payload = {
         numero_cuenta: numero_cuenta.length === 0 ? null : numero_cuenta,
-        id_entidad_financiera: id_entidad_financiera === 0 ? null : id_entidad_financiera
+        id_entidad_financiera: id_entidad_financiera === 0 ? null : id_entidad_financiera,
+        pin: updateData.pin.length === 0 ? null : this.encryptService.encrypt(updateData.pin)
       };
       if (this.cuenta_id === 0) {
         this.toastr.error('No se ha proporcionado un ID válido', 'Error al actualizar los datos de la cuenta');

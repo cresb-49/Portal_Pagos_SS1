@@ -85,6 +85,36 @@
             Si se coloca un número de cuenta, es necesario seleccionar una entidad financiera y viceversa.
           </div>
         </div>
+        <div class="flex flex-col">
+          <label for="pin" class="text-gray-700 dark:text-gray-300 mb-1">Pin</label>
+          <div class="relative">
+            <input
+              formControlName="pin"
+              [type]="showPin ? 'text' : 'password'"
+              id="pin"
+              class="w-full border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <button
+              type="button"
+              (click)="toggleShowPin()"
+              class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 dark:text-gray-300 focus:outline-none"
+            >
+              <span *ngIf="showPin">🙈</span>
+              <span *ngIf="!showPin">👁️</span>
+            </button>
+          </div>
+          <div
+            *ngIf="accountForm.get('pin')?.errors && (accountForm.get('pin')?.touched || accountForm.get('pin')?.dirty)"
+            class="text-red-500 text-sm mt-1">
+            <div *ngIf="accountForm.get('pin')?.errors?.['whitespace']">El pin no puede contener
+              espacios en blanco.</div>
+          </div>
+          <div
+            *ngIf="accountForm.errors?.['pinrequired'] && (accountForm.get('pin')?.touched || accountForm.get('numero_cuenta')?.touched)"
+            class="text-red-500 text-sm mb-4">
+            Si se coloca un número de cuenta, es necesario seleccionar una entidad financiera y viceversa.
+          </div>
+        </div>
       </div>
 
       <div class="mt-6">
