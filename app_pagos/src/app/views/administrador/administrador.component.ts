@@ -44,7 +44,6 @@ export class AdministradorComponent implements OnInit {
       nombres: ['', Validators.required],
       apellidos: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      id_rol: [1, Validators.required], // Rol de administrador, aquí asumimos un ID de rol
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirm_password: ['', Validators.required]
     }, {
@@ -87,14 +86,18 @@ export class AdministradorComponent implements OnInit {
   crearAdministrador() {
     if (this.adminForm.valid) {
       const { confirm_password, ...data } = this.adminForm.value;
-      // this.otherService.createUsuario(data).subscribe(
-      //   () => {
-      //     this.toastr.success('Administrador creado exitosamente');
-      //     this.loadUsuarios();
-      //     this.adminForm.reset();
-      //   },
-      //   () => this.toastr.error('Error al crear el administrador')
-      // );
+      this.otherService.createAdmin(data).subscribe({
+        next: (response: ApiResponse) => {
+          this.toastr.success('Administrador creado exitosamente');
+          this.loadUsuarios();
+          this.adminForm.reset();
+        },
+        error: (error: ErrorApiResponse) => {
+          this.toastr.error(error.error, 'Error al crear el administrador');
+        }
+      });
+    } else {
+      this.toastr.error('Por favor, complete todos los campos', 'Error al crear el administrador');
     }
   }
 

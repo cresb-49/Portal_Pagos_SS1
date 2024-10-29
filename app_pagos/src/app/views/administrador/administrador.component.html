@@ -21,10 +21,12 @@
         <td class="p-4">{{ usuario.nombres }}</td>
         <td class="p-4">{{ usuario.apellidos }}</td>
         <td class="p-4">
-          <button (click)="iniciarEdicion(usuario)" class="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-3 rounded">
+          <button (click)="iniciarEdicion(usuario)"
+            class="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-3 rounded">
             Editar
           </button>
-          <button (click)="eliminarUsuario(usuario.id_usuario)" class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded">
+          <button (click)="eliminarUsuario(usuario.id_usuario)"
+            class="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded">
             Eliminar
           </button>
         </td>
@@ -34,9 +36,8 @@
 
   <!-- Paginación -->
   <div class="flex justify-center mt-4">
-    <button *ngFor="let page of [1, 2, 3, 4]" (click)="cambiarPagina(page)"
-      [class.bg-blue-500]="currentPage === page" [class.bg-gray-300]="currentPage !== page"
-      class="mx-1 px-3 py-1 rounded text-white hover:bg-blue-700">
+    <button *ngFor="let page of [1, 2, 3, 4]" (click)="cambiarPagina(page)" [class.bg-blue-500]="currentPage === page"
+      [class.bg-gray-300]="currentPage !== page" class="mx-1 px-3 py-1 rounded text-white hover:bg-blue-700">
       {{ page }}
     </button>
   </div>
@@ -69,11 +70,22 @@
           class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
       </div>
 
+      <div class="flex flex-col mb-4">
+        <label for="password" class="text-gray-700 dark:text-gray-300 mb-1">Contraseña</label>
+        <input formControlName="password" type="password" id="password" placeholder="Contraseña"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+      </div>
 
+      <div class="flex flex-col mb-4">
+        <label for="confirm_password" class="text-gray-700 dark:text-gray-300 mb-1">Confirmar Contraseña</label>
+        <input formControlName="confirm_password" id="confirm_password" type="password" placeholder="Confirmar Contraseña"
+          class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+      </div>
 
       <!-- Otros campos del formulario de creación, siguiendo el mismo estilo de diseño -->
 
-      <button type="submit" class="w-full bg-green-500 hover:bg-green-700 text-white py-2 rounded-md">Crear Administrador</button>
+      <button type="submit" class="w-full bg-green-500 hover:bg-green-700 text-white py-2 rounded-md">Crear
+        Administrador</button>
     </form>
   </div>
 
@@ -109,8 +121,10 @@
       <!-- Otros campos del formulario de edición -->
 
       <div class="flex gap-4">
-        <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white py-2 rounded-md">Guardar Cambios</button>
-        <button type="button" (click)="cancelarEdicion()" class="w-full bg-gray-500 hover:bg-gray-700 text-white py-2 rounded-md">Cancelar</button>
+        <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white py-2 rounded-md">Guardar
+          Cambios</button>
+        <button type="button" (click)="cancelarEdicion()"
+          class="w-full bg-gray-500 hover:bg-gray-700 text-white py-2 rounded-md">Cancelar</button>
       </div>
     </form>
   </div>
