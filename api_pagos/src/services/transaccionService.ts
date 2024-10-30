@@ -7,6 +7,7 @@ import { crearTransaccion, obtenerTransaccionesPorIdCuenta, TransaccionModel } f
 import { TipoTransaccionType } from "../enums/tipoTransaccionType";
 import { EstadoTransaccionType } from "../enums/estadoTransaccionType";
 import { restarSaldoCuenta } from "../repository/cuentaRepository";
+import { log } from "console";
 
 const prisma = new PrismaClient()
 
@@ -43,7 +44,7 @@ export const makePayment = async (payload: RealizarPago, usuario_creador: UserTo
         if (!cuenta_emisor) {
             throw new Error('Cuenta emisor no encontrada');
         }
-        const usuario_receptor = await getUsuarioByEmail(payload.correoReceptor);
+        const usuario_receptor = await getUsuarioByEmail(payload.correoReceptor, true);
         if (!usuario_receptor) {
             throw new Error('Usuario receptor no encontrado');
         }
