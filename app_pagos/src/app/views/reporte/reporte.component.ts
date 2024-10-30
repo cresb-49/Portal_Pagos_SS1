@@ -10,8 +10,8 @@ interface ReportOption {
   description: string;
   downloadLink: string;
   requiresDateRange: boolean;
-  startDate?: Date;
-  endDate?: Date;
+  startDate?: string;
+  endDate?: string;
   usuario_id_seleccionado?: number;
 }
 
@@ -49,8 +49,6 @@ export class ReporteComponent implements OnInit {
       description: 'Reporte de histórico de movimientos para un usuario específico.',
       downloadLink: 'reporte3',
       requiresDateRange: true,
-      startDate: new Date(),
-      endDate: new Date(),
       usuario_id_seleccionado: 0
     },
     {
@@ -58,30 +56,26 @@ export class ReporteComponent implements OnInit {
       description: 'Presenta, hasta una fecha determinada, el monto total de ingresos/egresos en todas las cuentas.',
       downloadLink: 'reporte4',
       requiresDateRange: true,
-      startDate: new Date(),
-      endDate: new Date()
     },
     {
       title: 'Reporte General de Ganancias',
       description: 'Muestra el monto total generado por concepto de movilización de fondos hasta una fecha determinada.',
       downloadLink: 'reporte5',
       requiresDateRange: true,
-      startDate: new Date(),
-      endDate: new Date()
     }
   ];
 
   // Método para descargar el reporte, validando las fechas cuando se requieren
   downloadReport(report: ReportOption) {
     if (report.requiresDateRange && (!report.startDate || !report.endDate)) {
-      this.toatsr.error('Por favor, selecciona ambas fechas para este reporte.','Error al obtener el reporte');
+      this.toatsr.error('Por favor, selecciona ambas fechas para este reporte.', 'Error al obtener el reporte');
       return;
     }
     if (report.requiresDateRange) {
-      const startDate = report.startDate?.toISOString().split('T')[0];
-      const endDate = report.endDate?.toISOString().split('T')[0];
+      const startDate = report.startDate;
+      const endDate = report.endDate;
       if (!(startDate && endDate)) {
-        this.toatsr.error('Por favor, selecciona ambas fechas para este reporte.','Error al obtener el reporte');
+        this.toatsr.error('Por favor, selecciona ambas fechas para este reporte.', 'Error al obtener el reporte');
         return;
       }
     }
@@ -89,74 +83,78 @@ export class ReporteComponent implements OnInit {
     switch (report.downloadLink) {
       case 'reporte1':
         this.otherService.getReport1().subscribe({
-          next: (data: Blob | any) => {
-            console.log("Response", data);
-
+          next: (response: Blob | any) => {
+            const blob = new Blob([response], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+            window.open(url);
           },
           error: (error: ErrorApiResponse) => {
-            this.toatsr.error(error.error,"Error al obtener el reporte");
+            this.toatsr.error(error.error, "Error al obtener el reporte");
           }
         });
         break;
       case 'reporte2':
         this.otherService.getReport2().subscribe({
-          next: (data: Blob | any) => {
-            console.log("Response", data);
-
+          next: (response: Blob | any) => {
+            const blob = new Blob([response], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+            window.open(url);
           },
           error: (error: ErrorApiResponse) => {
-            this.toatsr.error(error.error,"Error al obtener el reporte");
+            this.toatsr.error(error.error, "Error al obtener el reporte");
           }
         });
         break;
       case 'reporte3':
-        const startDate3 = report.startDate?.toISOString().split('T')[0];
-        const endDate3 = report.endDate?.toISOString().split('T')[0];
+        const startDate3 = report.startDate;
+        const endDate3 = report.endDate;
         const payload = {
           usuario_id: report.usuario_id_seleccionado,
           start_date: startDate3,
           end_date: endDate3
         };
+        console.log('Payload', payload);
         this.otherService.getReport3(payload).subscribe({
-          next: (data: Blob | any) => {
-            console.log("Response", data);
-
+          next: (response: Blob | any) => {
+            console.log("Response", response);
           },
           error: (error: ErrorApiResponse) => {
-            this.toatsr.error(error.error,"Error al obtener el reporte");
+            this.toatsr.error(error.error, "Error al obtener el reporte");
           }
         });
         break;
       case 'reporte4':
-        const startDate4 = report.startDate?.toISOString().split('T')[0];
-        const endDate4 = report.endDate?.toISOString().split('T')[0];
+        console.log('flag 1');
+        const startDate4 = report.startDate;
+        const endDate4 = report.endDate;
         const payload4 = {
           start_date: startDate4,
           end_date: endDate4
         }
         this.otherService.getReport4(payload4).subscribe({
-          next: (data: Blob | any) => {
-            console.log("Response", data);
-
+          next: (response: Blob | any) => {
+            const blob = new Blob([response], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+            window.open(url);
           },
           error: (error: ErrorApiResponse) => {
-            this.toatsr.error(error.error,"Error al obtener el reporte");
+            this.toatsr.error(error.error, "Error al obtener el reporte");
           }
         });
         break;
       case 'reporte5':
-        const startDate5 = report.startDate?.toISOString().split('T')[0];
-        const endDate5 = report.endDate?.toISOString().split('T')[0];
+        const startDate5 = report.startDate;
+        const endDate5 = report.endDate;
         const payload5 = {
           start_date: startDate5,
           end_date: endDate5
         }
         this.otherService.getReport5(payload5).subscribe({
-          next: (data: Blob | any) => {
-            console.log("Response", data);
+          next: (response: Blob | any) => {
+            console.log("Response", response);
           },
           error: (error: ErrorApiResponse) => {
-            this.toatsr.error(error.error,"Error al obtener el reporte");
+            this.toatsr.error(error.error, "Error al obtener el reporte");
           }
         });
         break;

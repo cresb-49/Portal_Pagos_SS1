@@ -54,7 +54,7 @@ export async function getUsersByStatusReport(prisma: any): Promise<any> {
 
     // Combinar ambos resultados
     return report.map((item: any) => {
-        const estado = estados.find((e:any) => e.id_estado_usuario === item.id_estado_usuario);
+        const estado = estados.find((e: any) => e.id_estado_usuario === item.id_estado_usuario);
         return {
             estado_usuario: estado ? estado.nombre : 'Desconocido',
             total_usuarios: item._count.id_usuario,
@@ -83,14 +83,22 @@ export async function getFailedTransactionsReport(prisma: any): Promise<any> {
 
 
 export async function getUserTransactionHistory(userId: number, startDate: string, endDate: string, prisma: any): Promise<any> {
+    // Convertir startDate y endDate usando split
+    const [startYear, startMonth, startDay] = startDate.split('-').map(Number);
+    const [endYear, endMonth, endDay] = endDate.split('-').map(Number);
+
+    // Crear objetos Date
+    const start = new Date(startYear, startMonth - 1, startDay); // Mes - 1 porque en Date el mes empieza en 0
+    const end = new Date(endYear, endMonth - 1, endDay);
+
     const transactionHistory = await prisma.transaccion.findMany({
         where: {
             cuenta_owner: {
                 id_usuario: userId
             },
             create_at: {
-                gte: startDate, // Mayor o igual que la fecha de inicio
-                lte: endDate    // Menor o igual que la fecha de fin
+                gte: start, // Mayor o igual que la fecha de inicio
+                lte: end    // Menor o igual que la fecha de fin
             }
         },
         select: {
@@ -110,34 +118,66 @@ export async function getUserTransactionHistory(userId: number, startDate: strin
     return transactionHistory;
 }
 
+export interface IncomeExpenseReport {
+    total_ingresos: number;
+    total_egresos: number;
+    mensaje_balance: string;
+    fecha_generacion: string; // Fecha en que se generó el reporte
+}
+
 export async function getIncomeExpenseReport(startDate: string, endDate: string, prisma: any): Promise<any> {
-    const report = await prisma.transaccion.groupBy({
-        by: [],
-        _sum: {
-            monto: true
-        },
+    // Convertir startDate y endDate usando split
+    const [startYear, startMonth, startDay] = startDate.split('-').map(Number);
+    const [endYear, endMonth, endDay] = endDate.split('-').map(Number);
+
+    // Crear objetos Date
+    const start = new Date(startYear, startMonth - 1, startDay);
+    const end = new Date(endYear, endMonth - 1, endDay);
+
+    // Obtener todas las transacciones en el rango de fechas
+    const transactions = await prisma.transaccion.findMany({
         where: {
             create_at: {
-                gte: startDate, // Mayor o igual que la fecha de inicio
-                lte: endDate    // Menor o igual que la fecha de fin
+                gte: start,
+                lte: end
             }
+        },
+        select: {
+            monto: true,
+            id_tipo_transaccion: true
         }
     });
 
-    const totalIngresos = report._sum.monto.filter(
-        (t:any) => t.id_tipo_transaccion === TipoTransaccionType.CREDITO
-    );
-    const totalEgresos = report._sum.monto.filter(
-        (t:any) => t.id_tipo_transaccion === TipoTransaccionType.DEBITO || t.id_tipo_transaccion === TipoTransaccionType.RETIRO
-    );
+    // Sumar ingresos y egresos
+    const totalIngresos = transactions
+        .filter((t: { id_tipo_transaccion: TipoTransaccionType; }) => t.id_tipo_transaccion === TipoTransaccionType.CREDITO)
+        .reduce((sum: any, t: { monto: any; }) => sum + t.monto, 0);
+
+    const totalEgresos = transactions
+        .filter((t: { id_tipo_transaccion: TipoTransaccionType; }) => t.id_tipo_transaccion === TipoTransaccionType.DEBITO || t.id_tipo_transaccion === TipoTransaccionType.RETIRO)
+        .reduce((sum: any, t: { monto: any; }) => sum + t.monto, 0);
+
+    // Verificar si los ingresos y egresos se cancelan mutuamente
+    const balance = totalIngresos + totalEgresos;
+    const mensajeBalance = balance === 0
+        ? "La cantidad de dinero en la plataforma se mantiene estable."
+        : "Existe una diferencia neta en los fondos de la plataforma.";
 
     return {
         total_ingresos: totalIngresos,
         total_egresos: totalEgresos,
+        mensaje_balance: mensajeBalance
     };
 }
 
 export async function getTotalEarningsReport(startDate: string, endDate: string, prisma: any): Promise<any> {
+    // Convertir startDate y endDate usando split
+    const [startYear, startMonth, startDay] = startDate.split('-').map(Number);
+    const [endYear, endMonth, endDay] = endDate.split('-').map(Number);
+
+    // Crear objetos Date
+    const start = new Date(startYear, startMonth - 1, startDay); // Mes - 1 porque en Date el mes empieza en 0
+    const end = new Date(endYear, endMonth - 1, endDay);
     const earningsReport = await prisma.transaccion.groupBy({
         by: [],
         _sum: {
@@ -145,8 +185,8 @@ export async function getTotalEarningsReport(startDate: string, endDate: string,
         },
         where: {
             create_at: {
-                gte: startDate, // Mayor o igual que la fecha de inicio
-                lte: endDate    // Menor o igual que la fecha de fin
+                gte: start, // Mayor o igual que la fecha de inicio
+                lte: end    // Menor o igual que la fecha de fin
             }
         }
     });
