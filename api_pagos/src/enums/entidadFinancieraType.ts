@@ -1,4 +1,4 @@
 export enum EntidadFinancieraType {
-    FINANCIERA_A = 1,
-    FINANCIERA_B = 2
+    FINANCIERA_PB = 1,
+    FINANCIERA_PC = 2
 }

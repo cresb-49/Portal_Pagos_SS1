@@ -6,8 +6,10 @@ import { UserToken } from "../models/usuario";
 import { crearTransaccion, obtenerTransaccionesPorIdCuenta, TransaccionModel } from "../repository/transaccionRepository";
 import { TipoTransaccionType } from "../enums/tipoTransaccionType";
 import { EstadoTransaccionType } from "../enums/estadoTransaccionType";
-import { restarSaldoCuenta } from "../repository/cuentaRepository";
+import { restarSaldoCuenta, sumarSaldoCuenta } from "../repository/cuentaRepository";
 import { log } from "console";
+import { EntidadFinancieraType } from "../enums/entidadFinancieraType";
+import { ReponseMenajoBancario, solicitarCreditoPB, solicitarDebitoPC } from "./bancosService";
 
 const prisma = new PrismaClient()
 
@@ -52,33 +54,81 @@ export const makePayment = async (payload: RealizarPago, usuario_creador: UserTo
         if (!cuenta_receptor) {
             throw new Error('Cuenta receptor no encontrada');
         }
+        //Verificamos que la cuenta tenga saldo suficiente
+        let respuesta_bancaria: ReponseMenajoBancario | null = null;
 
-        //Generamos una transacción de debito para el emisor
-        //Generamos una transacción de credito para el receptor
-
-        const payloadTransaccion: TransaccionModel = {
-            monto: -Number(payload.cantidad),
-            descripcion: payload.concepto,
-            id_tipo_transaccion: TipoTransaccionType.DEBITO,
-            id_cuenta_origen: cuenta_emisor.id_cuenta,
-            id_cuenta_destino: cuenta_receptor.id_cuenta,
-            id_estado_transaccion: EstadoTransaccionType.EXITOSO,
+        if (cuenta_emisor.saldo < payload.cantidad) {
+            console.log(`Saldo insuficiente`);
+            //Realizamos una solicitud de credito a la entidad bancaria correspondiente
+            const entidad = cuenta_emisor.id_entidad_financiera;
+            if (entidad === EntidadFinancieraType.FINANCIERA_PB) {
+                if (cuenta_emisor.pin) {
+                    respuesta_bancaria = await solicitarCreditoPB(usuario_emisor.email, cuenta_emisor.pin, Number(payload.cantidad));
+                } else {
+                    respuesta_bancaria = { success: false, message: 'El cliente no tiene saldo suficiente y no se puede solicitar credito' };
+                }
+            } else if (entidad === EntidadFinancieraType.FINANCIERA_PC) {
+                if (cuenta_emisor.pin) {
+                    respuesta_bancaria = await solicitarDebitoPC(usuario_emisor.email, cuenta_emisor.pin, Number(payload.cantidad));
+                } else {
+                    respuesta_bancaria = { success: false, message: 'El cliente no tiene saldo suficiente y no se puede solicitar credito' };
+                }
+            } else {
+                respuesta_bancaria = { success: false, message: 'El cliente no tiene saldo suficiente y no se puede solicitar credito' };
+            }
         }
 
-        const payloadTransaccion2: TransaccionModel = {
-            monto: payload.cantidad,
-            descripcion: payload.concepto,
-            id_tipo_transaccion: TipoTransaccionType.CREDITO,
-            id_cuenta_origen: cuenta_emisor.id_cuenta,
-            id_cuenta_destino: cuenta_receptor.id_cuenta,
-            id_estado_transaccion: EstadoTransaccionType.EXITOSO,
+        let payloadTransaccion: TransaccionModel | null = null;
+        let payloadTransaccion2: TransaccionModel | null = null;
+
+        let afectar_saldo = false;
+
+        if (respuesta_bancaria && !respuesta_bancaria.success) {
+            payloadTransaccion = {
+                monto: -Number(payload.cantidad),
+                descripcion: payload.concepto,
+                id_tipo_transaccion: TipoTransaccionType.DEBITO,
+                id_cuenta_origen: cuenta_emisor.id_cuenta,
+                id_cuenta_destino: cuenta_receptor.id_cuenta,
+                id_estado_transaccion: EstadoTransaccionType.FALLIDO,
+            }
+            payloadTransaccion2 = {
+                monto: payload.cantidad,
+                descripcion: payload.concepto,
+                id_tipo_transaccion: TipoTransaccionType.CREDITO,
+                id_cuenta_origen: cuenta_emisor.id_cuenta,
+                id_cuenta_destino: cuenta_receptor.id_cuenta,
+                id_estado_transaccion: EstadoTransaccionType.FALLIDO,
+            }
+            afectar_saldo = false;
+        } else {
+            payloadTransaccion = {
+                monto: -Number(payload.cantidad),
+                descripcion: payload.concepto,
+                id_tipo_transaccion: TipoTransaccionType.DEBITO,
+                id_cuenta_origen: cuenta_emisor.id_cuenta,
+                id_cuenta_destino: cuenta_receptor.id_cuenta,
+                id_estado_transaccion: EstadoTransaccionType.EXITOSO,
+            }
+
+            payloadTransaccion2 = {
+                monto: payload.cantidad,
+                descripcion: payload.concepto,
+                id_tipo_transaccion: TipoTransaccionType.CREDITO,
+                id_cuenta_origen: cuenta_emisor.id_cuenta,
+                id_cuenta_destino: cuenta_receptor.id_cuenta,
+                id_estado_transaccion: EstadoTransaccionType.EXITOSO,
+            }
+            afectar_saldo = true;
         }
 
         await crearTransaccion(payloadTransaccion, cuenta_emisor.id_cuenta, prismaTransaction);
         await crearTransaccion(payloadTransaccion2, cuenta_receptor.id_cuenta, prismaTransaction);
-        await restarSaldoCuenta(cuenta_emisor.id_cuenta, payload.cantidad, prismaTransaction);
-        await restarSaldoCuenta(cuenta_receptor.id_cuenta, payload.cantidad, prismaTransaction);
 
+        if (afectar_saldo) {
+            await restarSaldoCuenta(cuenta_emisor.id_cuenta, payload.cantidad, prismaTransaction);
+            await sumarSaldoCuenta(cuenta_receptor.id_cuenta, payload.cantidad, prismaTransaction);
+        }
 
         const transactionData: TransactionData = {
             storeName: payload.nombreTienda,
@@ -87,6 +137,8 @@ export const makePayment = async (payload: RealizarPago, usuario_creador: UserTo
             receiverEmail: usuario_receptor.email,
             senderEmail: usuario_emisor.email,
             currency: 'Q',
+            transactionDate: new Date(),
+            message: respuesta_bancaria ? respuesta_bancaria.message : 'Transaccion exitosa',
         };
 
         const pdfBuffer = await generateTransactionPDF2(transactionData);

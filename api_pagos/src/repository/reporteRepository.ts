@@ -196,7 +196,8 @@ export async function getIncomeExpenseReport(startDate: string, endDate: string,
             create_at: {
                 gte: start,
                 lte: end
-            }
+            },
+            id_estado_transaccion: EstadoTransaccionType.EXITOSO
         },
         select: {
             monto: true,
@@ -248,7 +249,8 @@ export async function getTotalEarningsReport(startDate: string, endDate: string,
                 gte: start,
                 lte: end
             },
-            id_tipo_transaccion: TipoTransaccionType.RETIRO
+            id_tipo_transaccion: TipoTransaccionType.RETIRO,
+            id_estado_transaccion: EstadoTransaccionType.EXITOSO
         },
         select: {
             monto: true
