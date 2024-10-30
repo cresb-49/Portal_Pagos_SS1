@@ -49,7 +49,19 @@ export const registrarAdmin = async (req: Request, res: Response): Promise<any> 
 export const loginAPI = async (req: Request, res: Response): Promise<any> => {
     try {
         const { email, password } = req.body;
-        const response = await IniciarSession(email, password);
+        const usuario = await IniciarSession(email, password);
+        const response = {
+            usuario: {
+                id: usuario.id_usuario,
+                email: usuario.email,
+                nombres: usuario.nombres,
+                apellidos: usuario.apellidos,
+                rol: {
+                    id: usuario.id_rol,
+                },
+            },
+            jwt: usuario.token,
+        }
         res.status(200).json(response);
     } catch (error: Error | any) {
         res.status(500).json(error.message ?? 'Error inesperado');

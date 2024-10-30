@@ -105,7 +105,7 @@ async function main() {
     });
 
     //Cracion de un usuario cliente empresa 1
-    await prisma.usuario.create({
+    const empresa = await prisma.usuario.create({
         data: {
             nombre_usuario: "Electric-Shop",
             nombres: " Electric-Shop",
@@ -116,6 +116,16 @@ async function main() {
             id_rol: RolType.CLIENTE,
         }
     });
+    //Agregamos la cuenta de la empresa 1
+    await prisma.cuenta.create({
+        data: {
+            numero_cuenta: "123b3421",
+            saldo: 10000,
+            id_usuario: empresa.id_usuario,
+            id_entidad_financiera: 1,
+        }
+    });
+
     //Creamos un usuario administrador
     await prisma.usuario.create({
         data: {

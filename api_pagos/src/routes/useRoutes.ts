@@ -44,7 +44,7 @@ router.get('/usuario/public/existeEmail/:email', async (req, res) => {
             return;
         }
         const existe = await existeEmail(email);
-        res.json({ existe });
+        res.json(existe);
     } catch (error: Error | any) {
         res.status(500).json('Error inesperado');
     }

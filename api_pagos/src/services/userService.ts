@@ -89,7 +89,7 @@ export const registrarUsuarioAdmin = async (user: UserRegister) => {
     }
 }
 
-export const IniciarSession = async (email: string, password: string) => {
+export const IniciarSession = async (email: string, password: string): Promise<UsuarioResponse> => {
     const usuario = await obtenerUsuarioPorEmail(email, prisma);
     if (!usuario) {
         throw new Error('Usuario no encontrado');
