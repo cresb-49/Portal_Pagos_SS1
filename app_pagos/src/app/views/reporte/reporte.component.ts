@@ -151,7 +151,9 @@ export class ReporteComponent implements OnInit {
         }
         this.otherService.getReport5(payload5).subscribe({
           next: (response: Blob | any) => {
-            console.log("Response", response);
+            const blob = new Blob([response], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+            window.open(url);
           },
           error: (error: ErrorApiResponse) => {
             this.toatsr.error(error.error, "Error al obtener el reporte");

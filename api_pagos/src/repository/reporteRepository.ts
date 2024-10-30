@@ -170,35 +170,43 @@ export async function getIncomeExpenseReport(startDate: string, endDate: string,
     };
 }
 
+export interface EarningsReport {
+    total_earnings: number; // Ganancias calculadas (1.3% del total de retiros)
+    total_withdrawals: number; // Total absoluto de los retiros en el rango de fechas
+    fecha_generacion: string; // Fecha de generación del reporte
+}
+
 export async function getTotalEarningsReport(startDate: string, endDate: string, prisma: any): Promise<any> {
     // Convertir startDate y endDate usando split
     const [startYear, startMonth, startDay] = startDate.split('-').map(Number);
     const [endYear, endMonth, endDay] = endDate.split('-').map(Number);
 
     // Crear objetos Date
-    const start = new Date(startYear, startMonth - 1, startDay); // Mes - 1 porque en Date el mes empieza en 0
+    const start = new Date(startYear, startMonth - 1, startDay);
     const end = new Date(endYear, endMonth - 1, endDay);
-    const earningsReport = await prisma.transaccion.groupBy({
-        by: [],
-        _sum: {
-            monto: true
-        },
+
+    // Obtener todas las transacciones de tipo "RETIRO" en el rango de fechas
+    const withdrawals = await prisma.transaccion.findMany({
         where: {
             create_at: {
-                gte: start, // Mayor o igual que la fecha de inicio
-                lte: end    // Menor o igual que la fecha de fin
-            }
+                gte: start,
+                lte: end
+            },
+            id_tipo_transaccion: TipoTransaccionType.RETIRO
+        },
+        select: {
+            monto: true
         }
     });
 
-    const totalIngresos = earningsReport._sum.monto.filter(
-        (t: any) => t.id_tipo_transaccion === TipoTransaccionType.CREDITO
-    );
-    const totalEgresos = earningsReport._sum.monto.filter(
-        (t: any) => t.id_tipo_transaccion === TipoTransaccionType.DEBITO || t.id_tipo_transaccion === TipoTransaccionType.RETIRO
-    );
+    // Sumar el valor absoluto de todos los montos de retiro
+    const totalWithdrawals = withdrawals.reduce((sum: number, transaction: { monto: number; }) => sum + Math.abs(transaction.monto), 0);
+
+    // Calcular el 1.3% de la suma total de retiros
+    const totalEarnings = totalWithdrawals * 0.013;
 
     return {
-        total_ganancias: totalIngresos - totalEgresos
+        total_earnings: totalEarnings,
+        total_withdrawals: totalWithdrawals // Opcional: para verificar el total de retiros absolutos
     };
 }
