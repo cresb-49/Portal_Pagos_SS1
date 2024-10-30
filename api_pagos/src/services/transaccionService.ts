@@ -9,7 +9,7 @@ import { EstadoTransaccionType } from "../enums/estadoTransaccionType";
 import { restarSaldoCuenta, sumarSaldoCuenta } from "../repository/cuentaRepository";
 import { log } from "console";
 import { EntidadFinancieraType } from "../enums/entidadFinancieraType";
-import { ReponseMenajoBancario, solicitarCreditoPB, solicitarDebitoPC } from "./bancosService";
+import { ReponseMenajoBancario, solicitarAcreditamientoPB, solicitarAcreditamientoPC, solicitarCreditoPB, solicitarDebitoPC } from "./bancosService";
 
 const prisma = new PrismaClient()
 
@@ -185,17 +185,52 @@ export const makeRetiro = async (payload: Retiro, user: UserToken) => {
         const monto_cobro = (payload.monto * (1 - 0.013)).toFixed(2);
         console.log(`Cobro por movilizacion de dinero: GTQ${monto_cobro}`);
         //Realizamos una transaccion de retiro del a cuenta del usuario
-
-        const payloadTransaccion: TransaccionModel = {
-            monto: -Number(payload.monto),
-            descripcion: `Retiro de saldo por GTQ${payload.monto} a la cuenta ${cuenta_usuario.numero_cuenta}`,
-            id_tipo_transaccion: TipoTransaccionType.RETIRO,
-            id_cuenta_origen: cuenta_usuario.id_cuenta,
-            id_estado_transaccion: EstadoTransaccionType.EXITOSO,
+        let respuesta_bancaria: ReponseMenajoBancario | null = null;
+        let afectar_saldo = false;
+        //Debemos de enviar la peticion a la entidad bancaria correspondiente
+        if (cuenta_usuario.id_entidad_financiera === EntidadFinancieraType.FINANCIERA_PB) {
+            if (cuenta_usuario.pin) {
+                respuesta_bancaria = await solicitarAcreditamientoPB(usuario.email, cuenta_usuario.pin, Number(payload.monto));
+            } else {
+                respuesta_bancaria = { success: false, message: 'No esta configurada la cuenta para realizar debitos' };
+            }
+        } else if (cuenta_usuario.id_entidad_financiera === EntidadFinancieraType.FINANCIERA_PC) {
+            if (cuenta_usuario.pin) {
+                respuesta_bancaria = await solicitarAcreditamientoPC(usuario.email, cuenta_usuario.pin, Number(payload.monto));
+            } else {
+                respuesta_bancaria = { success: false, message: 'No esta configurada la cuenta para realizar debitos' };
+            }
+        } else {
+            respuesta_bancaria = { success: false, message: 'Entidad financiera no soportada' };
         }
-        await restarSaldoCuenta(cuenta_usuario.id_cuenta, payload.monto, prismaTransaction);
+
+        let payloadTransaccion: TransaccionModel | null = null;
+
+        if (respuesta_bancaria && !respuesta_bancaria.success) {
+            payloadTransaccion = {
+                monto: -Number(payload.monto),
+                descripcion: `Retiro de saldo por GTQ${payload.monto} a la cuenta ${cuenta_usuario.numero_cuenta}`,
+                id_tipo_transaccion: TipoTransaccionType.RETIRO,
+                id_cuenta_origen: cuenta_usuario.id_cuenta,
+                id_estado_transaccion: EstadoTransaccionType.FALLIDO,
+            }
+            afectar_saldo = false;
+        } else {
+            payloadTransaccion = {
+                monto: -Number(payload.monto),
+                descripcion: `Retiro de saldo por GTQ${payload.monto} a la cuenta ${cuenta_usuario.numero_cuenta}`,
+                id_tipo_transaccion: TipoTransaccionType.RETIRO,
+                id_cuenta_origen: cuenta_usuario.id_cuenta,
+                id_estado_transaccion: EstadoTransaccionType.EXITOSO,
+            }
+            afectar_saldo = true;
+        }
+
+        if (afectar_saldo) {
+            await restarSaldoCuenta(cuenta_usuario.id_cuenta, payload.monto, prismaTransaction);
+        }
+
         await crearTransaccion(payloadTransaccion, cuenta_usuario.id_cuenta, prismaTransaction);
-        //Realizamos la operacion en la entidad bancaria asociada
 
         return true;
     });
