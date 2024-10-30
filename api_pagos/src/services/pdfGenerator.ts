@@ -1,5 +1,6 @@
 import puppeteer from 'puppeteer';
 import handlebars from 'handlebars';
+import pdf from 'html-pdf';
 import fs from 'fs';
 import path from 'path';
 
@@ -12,7 +13,7 @@ export interface TransactionData {
     currency: string;
 }
 
-const compileTemplate = async (templatePath: string, data: TransactionData): Promise<string> => {
+export const compileTemplate = async (templatePath: string, data: TransactionData): Promise<string> => {
     const html = fs.readFileSync(templatePath, 'utf-8');
     const template = handlebars.compile(html);
     return template(data);
@@ -37,4 +38,13 @@ export const generateTransactionPDF = async (data: TransactionData, outputPath: 
 
     await browser.close();
     return pdfBuffer;
+};
+
+export const generateTransactionPDF2 = (htmlContent: string): Promise<Buffer> => {
+    return new Promise((resolve, reject) => {
+        pdf.create(htmlContent, { format: 'A4' }).toBuffer((err: any, buffer: any) => {
+            if (err) return reject(err);
+            resolve(buffer);
+        });
+    });
 };
