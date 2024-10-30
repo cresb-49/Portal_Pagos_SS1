@@ -18,9 +18,19 @@
           class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
       </div>
     </div>
+    <!-- Campo para la seleccion del cliente sobre el cual se quiere generar el reporte -->
+    <div *ngIf="report.requiresUserSelection" class="flex flex-col mb-4">
+      <label for="client" class="text-gray-700 dark:text-gray-300 mb-1">Cliente</label>
+      <select [(ngModel)]="report.usuario_id_seleccionado" id="client"
+        class="border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <option value="0" selected>Selecciona un cliente</option>
+        <option *ngFor="let cliente of clients" [value]="cliente.id_usuario">
+          {{ cliente.nombres + ' ' + cliente.apellidos}}</option>
+      </select>
+    </div>
 
     <button (click)="downloadReport(report)"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
       Descargar
     </button>
   </div>

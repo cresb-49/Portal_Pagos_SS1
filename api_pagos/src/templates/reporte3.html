@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Historial de Transacciones</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+
+        .user-info,
+        .report-info {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 auto;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            font-size: 9px;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+        }
+
+        td {
+            text-align: center;
+        }
+
+        .negative {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Reporte de Historial de Transacciones</h1>
+
+    <div class="user-info">
+        <p><strong>Usuario:</strong> {{usuario_info.nombres}} {{usuario_info.apellidos}}</p>
+        <p><strong>Email:</strong> {{usuario_info.email}}</p>
+    </div>
+
+    <div class="report-info">
+        <p>Fecha de generación: <strong>{{fecha_generacion}}</strong></p>
+        <p>Total de transacciones: <strong>{{data.length}}</strong></p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID Transacción</th>
+                <th>Tipo de Transacción</th>
+                <th>Descripción</th>
+                <th>Monto</th>
+                <th>Fecha</th>
+                <th>Cuenta Origen</th>
+                <th>Cuenta Destino</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each data}}
+            <tr>
+                <td>{{id_transaccion}}</td>
+                <td>{{tipo_transaccion.nombre}}</td>
+                <td>{{descripcion}}</td>
+                <td>{{monto}}</td>
+                <td>{{create_at}}</td>
+                <td>{{cuenta_origen.numero_cuenta}}</td>
+                <td>{{cuenta_destino.numero_cuenta}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+
+</body>
+
+</html>

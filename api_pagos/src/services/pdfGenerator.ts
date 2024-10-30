@@ -49,3 +49,13 @@ export const generateTransactionPDF2 = async (data: TransactionData): Promise<Bu
         });
     });
 };
+
+export const generateTransactionPDF2_name_template = async (data: any, template: string): Promise<Buffer> => {
+    const htmlContent = await compileTemplate(path.join(__dirname, `../templates/${template}.html`), data);
+    return new Promise((resolve, reject) => {
+        pdf.create(htmlContent, { format: 'A4' }).toBuffer((err: any, buffer: any) => {
+            if (err) return reject(err);
+            resolve(buffer);
+        });
+    });
+};

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Usuarios por Estado</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+
+        .report-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 auto;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Reporte de Usuarios por Estado</h1>
+
+    <div class="report-info">
+        <p>Fecha de generación: <strong>{{fecha_generacion}}</strong></p>
+        <p>Total de estados registrados: <strong>{{total_estados}}</strong></p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Estado del Usuario</th>
+                <th>Total de Usuarios</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each data}}
+            <tr>
+                <td>{{estado_usuario}}</td>
+                <td>{{total_usuarios}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+
+</body>
+
+</html>
