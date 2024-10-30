@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Transacciones Fallidas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #e74c3c;
+        }
+        .report-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 auto;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            font-size: 10px; /* Tamaño de fuente más pequeño */
+        }
+        th {
+            background-color: #e74c3c;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Reporte de Transacciones Fallidas</h1>
+
+    <div class="report-info">
+        <p>Fecha de generación: <strong>{{fecha_generacion}}</strong></p>
+        <p>Total de transacciones: <strong>{{data.length}}</strong></p>
+    </div>
+
+    <table class="small-font">
+        <thead>
+            <tr>
+                <th>ID Transacción</th>
+                <th>Descripción</th>
+                <th>Monto</th>
+                <th>Fecha</th>
+                <th>Cuenta Origen</th>
+                <th>Cuenta Destino</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each data}}
+            <tr>
+                <td>{{id_transaccion}}</td>
+                <td>{{descripcion}}</td>
+                <td>{{monto}}</td>
+                <td>{{create_at}}</td>
+                <td>{{cuenta_origen.numero_cuenta}}</td>
+                <td>{{cuenta_destino.numero_cuenta}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+
+</body>
+</html>

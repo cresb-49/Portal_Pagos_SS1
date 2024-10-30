@@ -180,7 +180,461 @@ async function main() {
             id_entidad_financiera: 1,
         }
     });
-    //Se asocia la cuenta de la empresa 1 a la entidad financiera A o B
+    //Generamos data de transacciones fallidas
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta.id_cuenta,
+            monto: -1000,
+            id_tipo_transaccion: 2,
+            id_estado_transaccion: 2,
+            descripcion: "Transferencia fallida",
+        }
+    });
+
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta2.id_cuenta,
+            monto: 1000,
+            id_tipo_transaccion: 1,
+            id_estado_transaccion: 2,
+            descripcion: "Transferencia fallida",
+        }
+    });await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta.id_cuenta,
+            monto: -1000,
+            id_tipo_transaccion: 2,
+            id_estado_transaccion: 2,
+            descripcion: "Transferencia fallida",
+        }
+    });
+
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta2.id_cuenta,
+            monto: 1000,
+            id_tipo_transaccion: 1,
+            id_estado_transaccion: 2,
+            descripcion: "Transferencia fallida",
+        }
+    });await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta.id_cuenta,
+            monto: -1000,
+            id_tipo_transaccion: 2,
+            id_estado_transaccion: 2,
+            descripcion: "Transferencia fallida",
+        }
+    });
+
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta2.id_cuenta,
+            monto: 1000,
+            id_tipo_transaccion: 1,
+            id_estado_transaccion: 2,
+            descripcion: "Transferencia fallida",
+        }
+    });await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta.id_cuenta,
+            monto: -1000,
+            id_tipo_transaccion: 2,
+            id_estado_transaccion: 2,
+            descripcion: "Transferencia fallida",
+        }
+    });
+
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta2.id_cuenta,
+            monto: 1000,
+            id_tipo_transaccion: 1,
+            id_estado_transaccion: 2,
+            descripcion: "Transferencia fallida",
+        }
+    });await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta.id_cuenta,
+            monto: -1000,
+            id_tipo_transaccion: 2,
+            id_estado_transaccion: 2,
+            descripcion: "Transferencia fallida",
+        }
+    });
+
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta2.id_cuenta,
+            monto: 1000,
+            id_tipo_transaccion: 1,
+            id_estado_transaccion: 2,
+            descripcion: "Transferencia fallida",
+        }
+    });await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta.id_cuenta,
+            monto: -1000,
+            id_tipo_transaccion: 2,
+            id_estado_transaccion: 2,
+            descripcion: "Transferencia fallida",
+        }
+    });
+
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta2.id_cuenta,
+            monto: 1000,
+            id_tipo_transaccion: 1,
+            id_estado_transaccion: 2,
+            descripcion: "Transferencia fallida",
+        }
+    });await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta.id_cuenta,
+            monto: -1000,
+            id_tipo_transaccion: 2,
+            id_estado_transaccion: 2,
+            descripcion: "Transferencia fallida",
+        }
+    });
+
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta2.id_cuenta,
+            monto: 1000,
+            id_tipo_transaccion: 1,
+            id_estado_transaccion: 2,
+            descripcion: "Transferencia fallida",
+        }
+    });await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta.id_cuenta,
+            monto: -1000,
+            id_tipo_transaccion: 2,
+            id_estado_transaccion: 2,
+            descripcion: "Transferencia fallida",
+        }
+    });
+
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta2.id_cuenta,
+            monto: 1000,
+            id_tipo_transaccion: 1,
+            id_estado_transaccion: 2,
+            descripcion: "Transferencia fallida",
+        }
+    });await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta.id_cuenta,
+            monto: -1000,
+            id_tipo_transaccion: 2,
+            id_estado_transaccion: 2,
+            descripcion: "Transferencia fallida",
+        }
+    });
+
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta2.id_cuenta,
+            monto: 1000,
+            id_tipo_transaccion: 1,
+            id_estado_transaccion: 2,
+            descripcion: "Transferencia fallida",
+        }
+    });
+
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta.id_cuenta,
+            monto: -1000,
+            id_tipo_transaccion: 2,
+            id_estado_transaccion: 1,
+            descripcion: "Transferencia Exitosa",
+        }
+    });
+
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta2.id_cuenta,
+            monto: 1000,
+            id_tipo_transaccion: 1,
+            id_estado_transaccion: 1,
+            descripcion: "Transferencia Exitosa",
+        }
+    });
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta.id_cuenta,
+            monto: -1000,
+            id_tipo_transaccion: 2,
+            id_estado_transaccion: 1,
+            descripcion: "Transferencia Exitosa",
+        }
+    });
+
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta2.id_cuenta,
+            monto: 1000,
+            id_tipo_transaccion: 1,
+            id_estado_transaccion: 1,
+            descripcion: "Transferencia Exitosa",
+        }
+    });
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta.id_cuenta,
+            monto: -1000,
+            id_tipo_transaccion: 2,
+            id_estado_transaccion: 1,
+            descripcion: "Transferencia Exitosa",
+        }
+    });
+
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta2.id_cuenta,
+            monto: 1000,
+            id_tipo_transaccion: 1,
+            id_estado_transaccion: 1,
+            descripcion: "Transferencia Exitosa",
+        }
+    });
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta.id_cuenta,
+            monto: -1000,
+            id_tipo_transaccion: 2,
+            id_estado_transaccion: 1,
+            descripcion: "Transferencia Exitosa",
+        }
+    });
+
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta2.id_cuenta,
+            monto: 1000,
+            id_tipo_transaccion: 1,
+            id_estado_transaccion: 1,
+            descripcion: "Transferencia Exitosa",
+        }
+    });
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta.id_cuenta,
+            monto: -1000,
+            id_tipo_transaccion: 2,
+            id_estado_transaccion: 1,
+            descripcion: "Transferencia Exitosa",
+        }
+    });
+
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta2.id_cuenta,
+            monto: 1000,
+            id_tipo_transaccion: 1,
+            id_estado_transaccion: 1,
+            descripcion: "Transferencia Exitosa",
+        }
+    });
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta.id_cuenta,
+            monto: -1000,
+            id_tipo_transaccion: 2,
+            id_estado_transaccion: 1,
+            descripcion: "Transferencia Exitosa",
+        }
+    });
+
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta2.id_cuenta,
+            monto: 1000,
+            id_tipo_transaccion: 1,
+            id_estado_transaccion: 1,
+            descripcion: "Transferencia Exitosa",
+        }
+    });
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta.id_cuenta,
+            monto: -1000,
+            id_tipo_transaccion: 2,
+            id_estado_transaccion: 1,
+            descripcion: "Transferencia Exitosa",
+        }
+    });
+
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta2.id_cuenta,
+            monto: 1000,
+            id_tipo_transaccion: 1,
+            id_estado_transaccion: 1,
+            descripcion: "Transferencia Exitosa",
+        }
+    });
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta.id_cuenta,
+            monto: -1000,
+            id_tipo_transaccion: 2,
+            id_estado_transaccion: 1,
+            descripcion: "Transferencia Exitosa",
+        }
+    });
+
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta2.id_cuenta,
+            monto: 1000,
+            id_tipo_transaccion: 1,
+            id_estado_transaccion: 1,
+            descripcion: "Transferencia Exitosa",
+        }
+    });
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta.id_cuenta,
+            monto: -1000,
+            id_tipo_transaccion: 2,
+            id_estado_transaccion: 1,
+            descripcion: "Transferencia Exitosa",
+        }
+    });
+
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta2.id_cuenta,
+            monto: 1000,
+            id_tipo_transaccion: 1,
+            id_estado_transaccion: 1,
+            descripcion: "Transferencia Exitosa",
+        }
+    });
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta.id_cuenta,
+            monto: -1000,
+            id_tipo_transaccion: 2,
+            id_estado_transaccion: 1,
+            descripcion: "Transferencia Exitosa",
+        }
+    });
+
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta2.id_cuenta,
+            monto: 1000,
+            id_tipo_transaccion: 1,
+            id_estado_transaccion: 1,
+            descripcion: "Transferencia Exitosa",
+        }
+    });
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta.id_cuenta,
+            monto: -1000,
+            id_tipo_transaccion: 2,
+            id_estado_transaccion: 1,
+            descripcion: "Transferencia Exitosa",
+        }
+    });
+
+    await prisma.transaccion.create({
+        data: {
+            id_cuenta_origen: cuenta.id_cuenta,
+            id_cuenta_destino: cuenta2.id_cuenta,
+            id_cuenta_owner: cuenta2.id_cuenta,
+            monto: 1000,
+            id_tipo_transaccion: 1,
+            id_estado_transaccion: 1,
+            descripcion: "Transferencia Exitosa",
+        }
+    });
+
     console.log("Seeding finished.");
 }
 
