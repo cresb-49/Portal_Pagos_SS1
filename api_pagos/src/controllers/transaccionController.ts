@@ -20,10 +20,11 @@ export const realizarPago = async (req: Request, res: Response): Promise<any> =>
         }
         //El identificado de la tienda solo puede ser a 0 b
         const pdfBuffer = await makePayment(payload, user);
-        const timestamp = new Date().getTime();
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename="transaction-${timestamp}.pdf"`);
-        res.end(pdfBuffer);
+        // const timestamp = new Date().getTime();
+        // res.setHeader('Content-Type', 'application/pdf');
+        // res.setHeader('Content-Disposition', `attachment; filename="transaction-${timestamp}.pdf"`);
+        // res.end(pdfBuffer);
+        res.status(200).json({ success: pdfBuffer });
     } catch (error: Error | any) {
         res.status(500).json(error.message ?? 'Error inesperado');
     }

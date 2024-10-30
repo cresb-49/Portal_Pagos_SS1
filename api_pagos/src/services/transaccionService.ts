@@ -85,7 +85,8 @@ export const makePayment = async (payload: RealizarPago, usuario_creador: UserTo
             currency: 'Q',
         };
 
-        return await generateTransactionPDF(transactionData);
+        // return await generateTransactionPDF(transactionData);
+        return true;
     });
 }
 
