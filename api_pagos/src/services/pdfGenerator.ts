@@ -11,6 +11,8 @@ export interface TransactionData {
     senderEmail: string;
     description: string;
     currency: string;
+    transactionDate: Date;
+    message: string;
 }
 
 export const compileTemplate = async (templatePath: string, data: TransactionData): Promise<string> => {

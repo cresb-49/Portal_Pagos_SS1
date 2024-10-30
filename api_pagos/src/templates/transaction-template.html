@@ -62,12 +62,15 @@
             <h2>{{storeName}}</h2>
         </div>
         <div class="content">
-            <p><strong>Monto:</strong> Q{{amount}}</p>
+            <p><strong>Descripción:</strong> {{description}}</p>
+            <p><strong>Fecha de Transacción:</strong> {{transactionDate}}</p>
+            <p><strong>Monto:</strong> {{currency}}{{amount}}</p>
             <p><strong>Correo del Emisor:</strong> {{senderEmail}}</p>
             <p><strong>Correo del Receptor:</strong> {{receiverEmail}}</p>
-            <p class="amount">Total: Q{{amount}}</p>
+            <p class="amount">Total: {{currency}}{{amount}}</p>
         </div>
         <div class="footer">
+            <p>{{message}}</p>
             <p>Gracias por confiar en {{storeName}}. Transacción realizada con éxito.</p>
         </div>
     </div>

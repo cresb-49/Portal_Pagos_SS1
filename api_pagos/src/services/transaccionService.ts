@@ -1,13 +1,13 @@
 import { PrismaClient, Transaccion } from "@prisma/client";
-import path from "path";
-import { generateTransactionPDF, generateTransactionPDF2, TransactionData } from "./pdfGenerator";
+import { generateTransactionPDF2, TransactionData } from "./pdfGenerator";
 import { getUsuarioByEmail, getUsusaurioById } from "./userService";
 import { UserToken } from "../models/usuario";
 import { crearTransaccion, obtenerTransaccionesPorIdCuenta, TransaccionModel } from "../repository/transaccionRepository";
 import { TipoTransaccionType } from "../enums/tipoTransaccionType";
 import { EstadoTransaccionType } from "../enums/estadoTransaccionType";
-import { restarSaldoCuenta } from "../repository/cuentaRepository";
-import { log } from "console";
+import { restarSaldoCuenta, sumarSaldoCuenta } from "../repository/cuentaRepository";
+import { EntidadFinancieraType } from "../enums/entidadFinancieraType";
+import { ReponseMenajoBancario, solicitarAcreditamientoPB, solicitarAcreditamientoPC, solicitarCreditoPB, solicitarDebitoPC } from "./bancosService";
 
 const prisma = new PrismaClient()
 
@@ -52,33 +52,81 @@ export const makePayment = async (payload: RealizarPago, usuario_creador: UserTo
         if (!cuenta_receptor) {
             throw new Error('Cuenta receptor no encontrada');
         }
+        //Verificamos que la cuenta tenga saldo suficiente
+        let respuesta_bancaria: ReponseMenajoBancario | null = null;
 
-        //Generamos una transacción de debito para el emisor
-        //Generamos una transacción de credito para el receptor
-
-        const payloadTransaccion: TransaccionModel = {
-            monto: -Number(payload.cantidad),
-            descripcion: payload.concepto,
-            id_tipo_transaccion: TipoTransaccionType.DEBITO,
-            id_cuenta_origen: cuenta_emisor.id_cuenta,
-            id_cuenta_destino: cuenta_receptor.id_cuenta,
-            id_estado_transaccion: EstadoTransaccionType.EXITOSO,
+        if (cuenta_emisor.saldo < payload.cantidad) {
+            console.log(`Saldo insuficiente`);
+            //Realizamos una solicitud de credito a la entidad bancaria correspondiente
+            const entidad = cuenta_emisor.id_entidad_financiera;
+            if (entidad === EntidadFinancieraType.FINANCIERA_PB) {
+                if (cuenta_emisor.pin) {
+                    respuesta_bancaria = await solicitarCreditoPB(usuario_emisor.email, cuenta_emisor.pin, Number(payload.cantidad));
+                } else {
+                    respuesta_bancaria = { success: false, message: 'El cliente no tiene saldo suficiente y no se puede solicitar credito' };
+                }
+            } else if (entidad === EntidadFinancieraType.FINANCIERA_PC) {
+                if (cuenta_emisor.pin) {
+                    respuesta_bancaria = await solicitarDebitoPC(usuario_emisor.email, cuenta_emisor.pin, Number(payload.cantidad));
+                } else {
+                    respuesta_bancaria = { success: false, message: 'El cliente no tiene saldo suficiente y no se puede solicitar credito' };
+                }
+            } else {
+                respuesta_bancaria = { success: false, message: 'El cliente no tiene saldo suficiente y no se puede solicitar credito' };
+            }
         }
 
-        const payloadTransaccion2: TransaccionModel = {
-            monto: payload.cantidad,
-            descripcion: payload.concepto,
-            id_tipo_transaccion: TipoTransaccionType.CREDITO,
-            id_cuenta_origen: cuenta_emisor.id_cuenta,
-            id_cuenta_destino: cuenta_receptor.id_cuenta,
-            id_estado_transaccion: EstadoTransaccionType.EXITOSO,
+        let payloadTransaccion: TransaccionModel | null = null;
+        let payloadTransaccion2: TransaccionModel | null = null;
+
+        let afectar_saldo = false;
+
+        if (respuesta_bancaria && !respuesta_bancaria.success) {
+            payloadTransaccion = {
+                monto: -Number(payload.cantidad),
+                descripcion: payload.concepto,
+                id_tipo_transaccion: TipoTransaccionType.DEBITO,
+                id_cuenta_origen: cuenta_emisor.id_cuenta,
+                id_cuenta_destino: cuenta_receptor.id_cuenta,
+                id_estado_transaccion: EstadoTransaccionType.FALLIDO,
+            }
+            payloadTransaccion2 = {
+                monto: payload.cantidad,
+                descripcion: payload.concepto,
+                id_tipo_transaccion: TipoTransaccionType.CREDITO,
+                id_cuenta_origen: cuenta_emisor.id_cuenta,
+                id_cuenta_destino: cuenta_receptor.id_cuenta,
+                id_estado_transaccion: EstadoTransaccionType.FALLIDO,
+            }
+            afectar_saldo = false;
+        } else {
+            payloadTransaccion = {
+                monto: -Number(payload.cantidad),
+                descripcion: payload.concepto,
+                id_tipo_transaccion: TipoTransaccionType.DEBITO,
+                id_cuenta_origen: cuenta_emisor.id_cuenta,
+                id_cuenta_destino: cuenta_receptor.id_cuenta,
+                id_estado_transaccion: EstadoTransaccionType.EXITOSO,
+            }
+
+            payloadTransaccion2 = {
+                monto: payload.cantidad,
+                descripcion: payload.concepto,
+                id_tipo_transaccion: TipoTransaccionType.CREDITO,
+                id_cuenta_origen: cuenta_emisor.id_cuenta,
+                id_cuenta_destino: cuenta_receptor.id_cuenta,
+                id_estado_transaccion: EstadoTransaccionType.EXITOSO,
+            }
+            afectar_saldo = true;
         }
 
         await crearTransaccion(payloadTransaccion, cuenta_emisor.id_cuenta, prismaTransaction);
         await crearTransaccion(payloadTransaccion2, cuenta_receptor.id_cuenta, prismaTransaction);
-        await restarSaldoCuenta(cuenta_emisor.id_cuenta, payload.cantidad, prismaTransaction);
-        await restarSaldoCuenta(cuenta_receptor.id_cuenta, payload.cantidad, prismaTransaction);
 
+        if (afectar_saldo) {
+            await restarSaldoCuenta(cuenta_emisor.id_cuenta, payload.cantidad, prismaTransaction);
+            await sumarSaldoCuenta(cuenta_receptor.id_cuenta, payload.cantidad, prismaTransaction);
+        }
 
         const transactionData: TransactionData = {
             storeName: payload.nombreTienda,
@@ -87,6 +135,8 @@ export const makePayment = async (payload: RealizarPago, usuario_creador: UserTo
             receiverEmail: usuario_receptor.email,
             senderEmail: usuario_emisor.email,
             currency: 'Q',
+            transactionDate: new Date(),
+            message: respuesta_bancaria ? respuesta_bancaria.message : 'Transaccion exitosa',
         };
 
         const pdfBuffer = await generateTransactionPDF2(transactionData);
@@ -133,17 +183,52 @@ export const makeRetiro = async (payload: Retiro, user: UserToken) => {
         const monto_cobro = (payload.monto * (1 - 0.013)).toFixed(2);
         console.log(`Cobro por movilizacion de dinero: GTQ${monto_cobro}`);
         //Realizamos una transaccion de retiro del a cuenta del usuario
-
-        const payloadTransaccion: TransaccionModel = {
-            monto: -Number(payload.monto),
-            descripcion: `Retiro de saldo por GTQ${payload.monto} a la cuenta ${cuenta_usuario.numero_cuenta}`,
-            id_tipo_transaccion: TipoTransaccionType.RETIRO,
-            id_cuenta_origen: cuenta_usuario.id_cuenta,
-            id_estado_transaccion: EstadoTransaccionType.EXITOSO,
+        let respuesta_bancaria: ReponseMenajoBancario | null = null;
+        let afectar_saldo = false;
+        //Debemos de enviar la peticion a la entidad bancaria correspondiente
+        if (cuenta_usuario.id_entidad_financiera === EntidadFinancieraType.FINANCIERA_PB) {
+            if (cuenta_usuario.pin) {
+                respuesta_bancaria = await solicitarAcreditamientoPB(usuario.email, cuenta_usuario.pin, Number(payload.monto));
+            } else {
+                respuesta_bancaria = { success: false, message: 'No esta configurada la cuenta para realizar debitos' };
+            }
+        } else if (cuenta_usuario.id_entidad_financiera === EntidadFinancieraType.FINANCIERA_PC) {
+            if (cuenta_usuario.pin) {
+                respuesta_bancaria = await solicitarAcreditamientoPC(usuario.email, cuenta_usuario.pin, Number(payload.monto));
+            } else {
+                respuesta_bancaria = { success: false, message: 'No esta configurada la cuenta para realizar debitos' };
+            }
+        } else {
+            respuesta_bancaria = { success: false, message: 'Entidad financiera no soportada' };
         }
-        await restarSaldoCuenta(cuenta_usuario.id_cuenta, payload.monto, prismaTransaction);
+
+        let payloadTransaccion: TransaccionModel | null = null;
+
+        if (respuesta_bancaria && !respuesta_bancaria.success) {
+            payloadTransaccion = {
+                monto: -Number(payload.monto),
+                descripcion: `Retiro de saldo por GTQ${payload.monto} a la cuenta ${cuenta_usuario.numero_cuenta}`,
+                id_tipo_transaccion: TipoTransaccionType.RETIRO,
+                id_cuenta_origen: cuenta_usuario.id_cuenta,
+                id_estado_transaccion: EstadoTransaccionType.FALLIDO,
+            }
+            afectar_saldo = false;
+        } else {
+            payloadTransaccion = {
+                monto: -Number(payload.monto),
+                descripcion: `Retiro de saldo por GTQ${payload.monto} a la cuenta ${cuenta_usuario.numero_cuenta}`,
+                id_tipo_transaccion: TipoTransaccionType.RETIRO,
+                id_cuenta_origen: cuenta_usuario.id_cuenta,
+                id_estado_transaccion: EstadoTransaccionType.EXITOSO,
+            }
+            afectar_saldo = true;
+        }
+
+        if (afectar_saldo) {
+            await restarSaldoCuenta(cuenta_usuario.id_cuenta, payload.monto, prismaTransaction);
+        }
+
         await crearTransaccion(payloadTransaccion, cuenta_usuario.id_cuenta, prismaTransaction);
-        //Realizamos la operacion en la entidad bancaria asociada
 
         return true;
     });
