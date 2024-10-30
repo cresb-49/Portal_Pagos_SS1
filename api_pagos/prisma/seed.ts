@@ -154,7 +154,7 @@ async function main() {
     let cuenta = await prisma.cuenta.create({
         data: {
             numero_cuenta: "123456789",
-            saldo: 1000,
+            saldo: 10000,
             id_usuario: cliente.id_usuario,
             id_entidad_financiera: 1,
         }
@@ -178,51 +178,6 @@ async function main() {
             saldo: 10000,
             id_usuario: cliente2.id_usuario,
             id_entidad_financiera: 1,
-        }
-    });
-    //Creamos unas transacciones de ejemplo
-    await prisma.transaccion.create({
-        data: {
-            monto: -100,
-            descripcion: "Pago de Servicio 1",
-            id_tipo_transaccion: 2,
-            id_cuenta_origen: cuenta.id_cuenta,
-            id_cuenta_destino: cuenta2.id_cuenta,
-            id_cuenta_owner: cuenta.id_cuenta,
-            id_estado_transaccion: 1,
-        }
-    });
-    await prisma.transaccion.create({
-        data: {
-            monto: 100,
-            descripcion: "Pago de Servicio 2",
-            id_tipo_transaccion: 1,
-            id_cuenta_origen: cuenta.id_cuenta,
-            id_cuenta_destino: cuenta2.id_cuenta,
-            id_cuenta_owner: cuenta2.id_cuenta,
-            id_estado_transaccion: 1,
-        }
-    });
-    await prisma.transaccion.create({
-        data: {
-            monto: -100,
-            descripcion: "Pago de Servicio 3",
-            id_tipo_transaccion: 3,
-            id_cuenta_origen: cuenta.id_cuenta,
-            id_cuenta_destino: null,
-            id_cuenta_owner: cuenta.id_cuenta,
-            id_estado_transaccion: 1,
-        }
-    });
-    await prisma.transaccion.create({
-        data: {
-            monto: -100,
-            descripcion: "Pago de Servicio 3",
-            id_tipo_transaccion: 3,
-            id_cuenta_origen: cuenta.id_cuenta,
-            id_cuenta_destino: null,
-            id_cuenta_owner: cuenta.id_cuenta,
-            id_estado_transaccion: 1,
         }
     });
     //Se asocia la cuenta de la empresa 1 a la entidad financiera A o B
