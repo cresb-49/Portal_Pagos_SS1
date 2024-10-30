@@ -1,6 +1,6 @@
 import { PrismaClient, Transaccion } from "@prisma/client";
 import path from "path";
-import { generateTransactionPDF, TransactionData } from "./pdfGenerator";
+import { generateTransactionPDF, generateTransactionPDF2, TransactionData } from "./pdfGenerator";
 import { getUsuarioByEmail, getUsusaurioById } from "./userService";
 import { UserToken } from "../models/usuario";
 import { crearTransaccion, obtenerTransaccionesPorIdCuenta, TransaccionModel } from "../repository/transaccionRepository";
@@ -89,8 +89,8 @@ export const makePayment = async (payload: RealizarPago, usuario_creador: UserTo
             currency: 'Q',
         };
 
-        // return await generateTransactionPDF(transactionData);
-        return true;
+        const pdfBuffer = await generateTransactionPDF2(transactionData);
+        return pdfBuffer;
     });
 }
 

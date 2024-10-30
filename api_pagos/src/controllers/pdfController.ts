@@ -39,11 +39,8 @@ export const generateTransactionPDFHandler2 = async (req: Request, res: Response
         senderEmail: 'emisor@correo.com',
         currency: 'Q',
     };
-
-    const htmlContent = await compileTemplate(path.join(__dirname, '../templates/transaction-template.html'), transactionData);
-
     try {
-        const pdfBuffer = await generateTransactionPDF2(htmlContent);
+        const pdfBuffer = await generateTransactionPDF2(transactionData);
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', 'attachment; filename="transaction.pdf"');
         res.end(pdfBuffer);

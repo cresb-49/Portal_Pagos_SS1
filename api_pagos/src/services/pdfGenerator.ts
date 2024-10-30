@@ -40,7 +40,8 @@ export const generateTransactionPDF = async (data: TransactionData, outputPath: 
     return pdfBuffer;
 };
 
-export const generateTransactionPDF2 = (htmlContent: string): Promise<Buffer> => {
+export const generateTransactionPDF2 = async (data: TransactionData): Promise<Buffer> => {
+    const htmlContent = await compileTemplate(path.join(__dirname, '../templates/transaction-template.html'), data);
     return new Promise((resolve, reject) => {
         pdf.create(htmlContent, { format: 'A4' }).toBuffer((err: any, buffer: any) => {
             if (err) return reject(err);
