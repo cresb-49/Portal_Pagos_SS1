@@ -12,14 +12,14 @@ export interface TransaccionModel {
     delete_at?: Date;
 }
 
-export const crearTransaccion = async (transaccion: TransaccionModel, prisma: any): Promise<any> => {
+export const crearTransaccion = async (transaccion: TransaccionModel,id_cuenta_owner:number, prisma: any): Promise<any> => {
     return await prisma.transaccion.create({
         data: {
             id_tipo_transaccion: transaccion.id_tipo_transaccion,
             id_cuenta_origen: transaccion.id_cuenta_origen,
             id_cuenta_destino: transaccion.id_cuenta_destino,
             id_estado_transaccion: transaccion.id_estado_transaccion,
-            id_cuenta_owner: transaccion.id_cuenta_origen,
+            id_cuenta_owner: id_cuenta_owner,
             monto: transaccion.monto,
             descripcion: transaccion.descripcion,
             create_at: new Date(),

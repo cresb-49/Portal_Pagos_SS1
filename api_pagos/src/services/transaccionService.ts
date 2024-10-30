@@ -74,8 +74,11 @@ export const makePayment = async (payload: RealizarPago, usuario_creador: UserTo
             id_estado_transaccion: EstadoTransaccionType.EXITOSO,
         }
 
-        await crearTransaccion(payloadTransaccion, prismaTransaction);
-        await crearTransaccion(payloadTransaccion2, prismaTransaction);
+        await crearTransaccion(payloadTransaccion, cuenta_emisor.id_cuenta, prismaTransaction);
+        await crearTransaccion(payloadTransaccion2, cuenta_receptor.id_cuenta, prismaTransaction);
+        await restarSaldoCuenta(cuenta_emisor.id_cuenta, payload.cantidad, prismaTransaction);
+        await restarSaldoCuenta(cuenta_receptor.id_cuenta, payload.cantidad, prismaTransaction);
+
 
         const transactionData: TransactionData = {
             storeName: payload.nombreTienda,
@@ -139,7 +142,7 @@ export const makeRetiro = async (payload: Retiro, user: UserToken) => {
             id_estado_transaccion: EstadoTransaccionType.EXITOSO,
         }
         await restarSaldoCuenta(cuenta_usuario.id_cuenta, payload.monto, prismaTransaction);
-        await crearTransaccion(payloadTransaccion, prismaTransaction);
+        await crearTransaccion(payloadTransaccion, cuenta_usuario.id_cuenta, prismaTransaction);
         //Realizamos la operacion en la entidad bancaria asociada
 
         return true;
