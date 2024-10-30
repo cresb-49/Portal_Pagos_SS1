@@ -10,6 +10,7 @@ interface ReportOption {
   description: string;
   downloadLink: string;
   requiresDateRange: boolean;
+  requiresUserSelection?: boolean;
   startDate?: string;
   endDate?: string;
   usuario_id_seleccionado?: number;
@@ -29,7 +30,25 @@ export class ReporteComponent implements OnInit {
     private toatsr: ToastrService,
   ) { }
 
-  ngOnInit(): void {
+  clients: any[] = [];
+
+  async ngOnInit() {
+    const { data } = await this.getUsuariosCliente();
+    this.clients = data ?? [];
+  }
+
+  getUsuariosCliente(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.otherService.getClientes().subscribe({
+        next: (response: any) => {
+          resolve(response);
+        },
+        error: (error: ErrorApiResponse) => {
+          reject(error);
+        }
+      });
+    });
+
   }
   reportOptions: ReportOption[] = [
     {
@@ -49,6 +68,7 @@ export class ReporteComponent implements OnInit {
       description: 'Reporte de histórico de movimientos para un usuario específico.',
       downloadLink: 'reporte3',
       requiresDateRange: true,
+      requiresUserSelection: true,
       usuario_id_seleccionado: 0
     },
     {
@@ -78,6 +98,11 @@ export class ReporteComponent implements OnInit {
         this.toatsr.error('Por favor, selecciona ambas fechas para este reporte.', 'Error al obtener el reporte');
         return;
       }
+    }
+    //Validar que el usuario seleccionado sea válido es decir que sea distinto de 0
+    if (report.requiresUserSelection && Number(report.usuario_id_seleccionado ?? 0) === 0) {
+      this.toatsr.error('Por favor, selecciona un usuario para este reporte.', 'Error al obtener el reporte');
+      return;
     }
 
     switch (report.downloadLink) {
@@ -109,14 +134,16 @@ export class ReporteComponent implements OnInit {
         const startDate3 = report.startDate;
         const endDate3 = report.endDate;
         const payload = {
-          usuario_id: report.usuario_id_seleccionado,
+          usuario_id: Number(report.usuario_id_seleccionado),
           start_date: startDate3,
           end_date: endDate3
         };
         console.log('Payload', payload);
         this.otherService.getReport3(payload).subscribe({
           next: (response: Blob | any) => {
-            console.log("Response", response);
+            const blob = new Blob([response], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+            window.open(url);
           },
           error: (error: ErrorApiResponse) => {
             this.toatsr.error(error.error, "Error al obtener el reporte");

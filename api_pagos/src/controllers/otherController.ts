@@ -96,7 +96,11 @@ export const getReport3 = async (req: Request, res: Response): Promise<any> => {
     try {
         const { usuario_id, start_date, end_date } = req.body;
         const data = await reporte3(usuario_id, start_date, end_date);
-        return apiResponse(res, HttpStatusCode.OK, 'Ok', data);
+        const pdfBuffer = await generateTransactionPDF2_name_template(data, 'reporte3');
+        const timestamp = new Date().getTime();
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="transaction-${timestamp}.pdf"`);
+        res.end(pdfBuffer);
     } catch (error: Error | any) {
         return apiResponse(res, HttpStatusCode.INTERNAL_SERVER_ERROR, 'Report Error', null, error.message ?? 'Unknown error');
     }

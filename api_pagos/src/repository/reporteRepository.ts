@@ -81,16 +81,49 @@ export async function getFailedTransactionsReport(prisma: any): Promise<any> {
     return failedTransactions;
 }
 
+interface UsuarioInfo {
+    nombres: string;
+    apellidos: string;
+    email: string;
+}
 
-export async function getUserTransactionHistory(userId: number, startDate: string, endDate: string, prisma: any): Promise<any> {
+interface Transaccion {
+    id_transaccion: number;
+    tipo_transaccion: {
+        nombre: string;
+    };
+    descripcion: string;
+    monto: number;
+    create_at: string;
+    cuenta_origen: {
+        numero_cuenta: string;
+    };
+    cuenta_destino: {
+        numero_cuenta: string;
+    };
+}
+
+interface TransactionHistoryReport {
+    fecha_generacion: string;
+    usuario_info: UsuarioInfo;
+    data: Transaccion[];
+}
+
+export async function getUserTransactionHistory(
+    userId: number,
+    startDate: string,
+    endDate: string,
+    prisma: any
+): Promise<TransactionHistoryReport> {
     // Convertir startDate y endDate usando split
     const [startYear, startMonth, startDay] = startDate.split('-').map(Number);
     const [endYear, endMonth, endDay] = endDate.split('-').map(Number);
 
     // Crear objetos Date
-    const start = new Date(startYear, startMonth - 1, startDay); // Mes - 1 porque en Date el mes empieza en 0
+    const start = new Date(startYear, startMonth - 1, startDay);
     const end = new Date(endYear, endMonth - 1, endDay);
 
+    // Consulta para obtener el historial de transacciones
     const transactionHistory = await prisma.transaccion.findMany({
         where: {
             cuenta_owner: {
@@ -115,7 +148,30 @@ export async function getUserTransactionHistory(userId: number, startDate: strin
         }
     });
 
-    return transactionHistory;
+    // Consulta para obtener la información del usuario
+    const userInfo = await prisma.usuario.findUnique({
+        where: { id_usuario: userId },
+        select: {
+            nombres: true,
+            apellidos: true,
+            email: true
+        }
+    });
+
+    if (!userInfo) {
+        throw new Error("Usuario no encontrado");
+    }
+
+    // Construir el reporte
+    return {
+        fecha_generacion: new Date().toISOString(),
+        usuario_info: {
+            nombres: userInfo.nombres,
+            apellidos: userInfo.apellidos,
+            email: userInfo.email
+        },
+        data: transactionHistory
+    };
 }
 
 export interface IncomeExpenseReport {
