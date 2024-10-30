@@ -3,6 +3,7 @@ import { UserToken } from "../models/usuario";
 import { crearEmpresa, eliminarEmpresa, obtenerEmpresas, updateEmpresa } from "../repository/empresaRepository";
 import e from "express";
 import { crearCuenta, eliminarCuentaById, obtenerCuentaById, obtenerCuentaPorIdCliente, updateCuenta } from "../repository/cuentaRepository";
+import { getFailedTransactionsReport, getIncomeExpenseReport, getTotalEarningsReport, getUsersByStatusReport, getUserTransactionHistory } from "../repository/reporteRepository";
 const prisma = new PrismaClient()
 
 
@@ -63,3 +64,24 @@ export const obtenerCuentaIdCliente = async (id_usuario: number) => {
 export const obtenerCuentaId = async (id_cuenta: number) => {
     return await obtenerCuentaById(id_cuenta, prisma);
 };
+
+
+export const reporte1 = async () => {
+    return await getUsersByStatusReport(prisma);
+}
+
+export const reporte2 = async () => {
+    return await getFailedTransactionsReport(prisma);
+}
+
+export const reporte3 = async (usuario_id: number, start_date: string, end_date: string) => {
+    return await getUserTransactionHistory(usuario_id, start_date, end_date, prisma);
+}
+
+export const reporte4 = async (start_date: string, end_date: string) => {
+    return await getIncomeExpenseReport(start_date, end_date, prisma);
+}
+
+export const reporte5 = async (start_date: string, end_date: string) => {
+    return await getTotalEarningsReport(start_date, end_date, prisma);
+}
