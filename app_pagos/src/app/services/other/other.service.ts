@@ -84,4 +84,20 @@ export class OtherService {
   updateCuenta(id: number, data: any) {
     return this.httpService.patch<any>(`cuenta/${id}`, data, true);
   }
+  //Acciones de los reportes
+  getReport1() {
+    return this.httpService.post<any>('reporte1', null, true, 'blob');
+  }
+  getReport2() {
+    return this.httpService.post<any>('reporte2', null, true, 'blob');
+  }
+  getReport3(payload: any) {
+    return this.httpService.post<any>('reporte3', payload, true, 'blob');
+  }
+  getReport4(payload: any) {
+    return this.httpService.post<any>('reporte4', payload, true, 'blob');
+  }
+  getReport5(payload: any) {
+    return this.httpService.post<any>('reporte5', payload, true, 'blob');
+  }
 }

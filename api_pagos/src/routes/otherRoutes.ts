@@ -14,10 +14,10 @@ router.patch('/empresa/:id', actualizarEmpresa);
 router.patch('/cuenta/:id', updateDataCuenta);
 
 //Obtencion de los reportes
-router.get('/reporte1', authenticateJWT, validateAdmin, getReport1);
-router.get('/reporte2', authenticateJWT, validateAdmin, getReport2);
-router.get('/reporte3', authenticateJWT, validateAdmin, getReport3);
-router.get('/reporte4', authenticateJWT, validateAdmin, getReport4);
-router.get('/reporte5', authenticateJWT, validateAdmin, getReport5);
+router.post('/reporte1', authenticateJWT, validateAdmin, getReport1);
+router.post('/reporte2', authenticateJWT, validateAdmin, getReport2);
+router.post('/reporte3', authenticateJWT, validateAdmin, getReport3);
+router.post('/reporte4', authenticateJWT, validateAdmin, getReport4);
+router.post('/reporte5', authenticateJWT, validateAdmin, getReport5);
 
 export default router;
