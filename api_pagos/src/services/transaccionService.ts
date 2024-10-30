@@ -1,13 +1,11 @@
 import { PrismaClient, Transaccion } from "@prisma/client";
-import path from "path";
-import { generateTransactionPDF, generateTransactionPDF2, TransactionData } from "./pdfGenerator";
+import { generateTransactionPDF2, TransactionData } from "./pdfGenerator";
 import { getUsuarioByEmail, getUsusaurioById } from "./userService";
 import { UserToken } from "../models/usuario";
 import { crearTransaccion, obtenerTransaccionesPorIdCuenta, TransaccionModel } from "../repository/transaccionRepository";
 import { TipoTransaccionType } from "../enums/tipoTransaccionType";
 import { EstadoTransaccionType } from "../enums/estadoTransaccionType";
 import { restarSaldoCuenta, sumarSaldoCuenta } from "../repository/cuentaRepository";
-import { log } from "console";
 import { EntidadFinancieraType } from "../enums/entidadFinancieraType";
 import { ReponseMenajoBancario, solicitarAcreditamientoPB, solicitarAcreditamientoPC, solicitarCreditoPB, solicitarDebitoPC } from "./bancosService";
 
