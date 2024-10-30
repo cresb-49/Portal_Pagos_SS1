@@ -24,7 +24,6 @@ export const realizarPago = async (req: Request, res: Response): Promise<any> =>
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `attachment; filename="transaction-${timestamp}.pdf"`);
         res.end(pdfBuffer);
-        res.status(200).json({ success: pdfBuffer });
     } catch (error: Error | any) {
         res.status(500).json(error.message ?? 'Error inesperado');
     }
