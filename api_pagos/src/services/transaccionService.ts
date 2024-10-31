@@ -10,6 +10,8 @@ import { EntidadFinancieraType } from "../enums/entidadFinancieraType";
 import { ReponseMenajoBancario, solicitarAcreditamientoPB, solicitarAcreditamientoPC, solicitarCreditoPB, solicitarDebitoPC } from "./bancosService";
 import { decrypt } from "../utils/encryptReversibleUtil";
 import { dataTiendaElvis } from "./tiendaService";
+import axios from 'axios';
+
 
 const prisma = new PrismaClient()
 
@@ -137,7 +139,7 @@ export const makePayment = async (payload: RealizarPago, usuario_creador: UserTo
         }
 
         const transactionData: TransactionData = {
-            image: imagen,
+            image: await obtenerImagenBase64(imagen),
             storeName: payload.nombreTienda,
             amount: payload.cantidad,
             description: payload.concepto,
@@ -151,6 +153,19 @@ export const makePayment = async (payload: RealizarPago, usuario_creador: UserTo
         const pdfBuffer = await generateTransactionPDF2(transactionData);
         return pdfBuffer;
     });
+}
+
+async function obtenerImagenBase64(url: string) {
+    if (!url) return '';
+    if (url.length === 0) return '';
+    try {
+        const response: any = await axios.get(url, { responseType: 'arraybuffer' });
+        const imageBase64 = Buffer.from(response.data, 'binary').toString('base64');
+        return `data:${response.headers['content-type']};base64,${imageBase64}`;
+    } catch (error) {
+        console.error('Error al descargar la imagen:', error);
+        return '';
+    }
 }
 
 export const obtenerTransaccionesUsuario = async (id_usuario: number) => {
