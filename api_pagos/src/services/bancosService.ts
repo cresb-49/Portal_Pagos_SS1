@@ -27,6 +27,7 @@ export interface responseLoginPortalFinanciero extends PortalResponse {
 //Enviar JWT
 export interface payloadGenerarCredito {
     monto: number;
+    nombre_pasarela: string;
 }
 
 export interface responseGenerarCredito extends PortalResponse { }
@@ -166,7 +167,7 @@ export const solicitarAcreditamientoPC = async (email: string, pin: string, mont
         if (login.ok) {
             const token = login.token;
             if (!token) return { success: false, message: 'Error al iniciar sesion en el Portal Financiero Tarjetas de Credito: No se recibio token' }
-            const credito = await generarCreditoPC({ monto: monto }, token);
+            const credito = await generarCreditoPC({ monto: monto, nombre_pasarela: 'SecureFlow' }, token);
             if (credito.ok) {
                 return { success: true, message: 'Credito solicitado correctamente', data: credito }
             } else {
