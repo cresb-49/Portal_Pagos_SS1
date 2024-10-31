@@ -22,7 +22,7 @@ export interface responseLoginPortalFinanciero extends PortalResponse {
 //POST: tarjeta-credito/v1/tarjeta/generar-credito
 //Enviar JWT
 export interface payloadGenerarCredito {
-    "saldo_a_acreditar": number;
+    monto: number;
 }
 
 export interface responseGenerarCredito extends PortalResponse { }
@@ -31,7 +31,8 @@ export interface responseGenerarCredito extends PortalResponse { }
 //POST: tarjeta-credito/v1/tarjeta/generar-credito
 //Enviar JWT
 export interface payloadGenerarDebito {
-    "saldo_a_comprar": number;
+    monto: number;
+    nombre_pasarela: string;
 }
 
 export interface responseGenerarDebito extends PortalResponse { }
@@ -158,7 +159,7 @@ export const solicitarAcreditamientoPC = async (email: string, pin: string, mont
         if (login.ok) {
             const token = login.token;
             if (!token) return { success: false, message: 'Error al iniciar sesion en el Portal Financiero Tarjetas de Credito: No se recibio token' }
-            const credito = await generarCreditoPC({ saldo_a_acreditar: monto }, token);
+            const credito = await generarCreditoPC({ monto: monto }, token);
             if (credito.ok) {
                 return { success: true, message: 'Credito solicitado correctamente', data: credito }
             } else {
@@ -173,13 +174,13 @@ export const solicitarAcreditamientoPC = async (email: string, pin: string, mont
 }
 
 // Disminucion Saldo Tarjeta de Credito
-export const solicitarDebitoPC = async (email: string, pin: string, monto: number): Promise<ReponseMenajoBancario> => {
+export const solicitarDebitoPC = async (email: string, pin: string, nombre_pasarela: string, monto: number): Promise<ReponseMenajoBancario> => {
     try {
         const login = await loginPC({ correo: email, pin });
         if (login.ok) {
             const token = login.token;
             if (!token) return { success: false, message: 'Error al iniciar sesion en el Portal Financiero Tarjetas de Credito: No se recibio token' }
-            const debito = await generarDebitoPC({ saldo_a_comprar: monto }, token);
+            const debito = await generarDebitoPC({ monto: monto, nombre_pasarela: nombre_pasarela }, token);
             if (debito.ok) {
                 return { success: true, message: 'Debito solicitado correctamente', data: debito }
             } else {

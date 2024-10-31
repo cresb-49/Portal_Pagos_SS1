@@ -57,17 +57,18 @@ export const makePayment = async (payload: RealizarPago, usuario_creador: UserTo
 
         if (cuenta_emisor.saldo < payload.cantidad) {
             console.log(`Saldo insuficiente`);
+            const cantidad_faltante = payload.cantidad - cuenta_emisor.saldo;
             //Realizamos una solicitud de credito a la entidad bancaria correspondiente
             const entidad = cuenta_emisor.id_entidad_financiera;
             if (entidad === EntidadFinancieraType.FINANCIERA_PB) {
                 if (cuenta_emisor.pin) {
-                    respuesta_bancaria = await solicitarCreditoPB(usuario_emisor.email, cuenta_emisor.pin, Number(payload.cantidad));
+                    respuesta_bancaria = await solicitarCreditoPB(usuario_emisor.email, cuenta_emisor.pin, Number(cantidad_faltante));
                 } else {
                     respuesta_bancaria = { success: false, message: 'El cliente no tiene saldo suficiente y no se puede solicitar credito' };
                 }
             } else if (entidad === EntidadFinancieraType.FINANCIERA_PC) {
                 if (cuenta_emisor.pin) {
-                    respuesta_bancaria = await solicitarDebitoPC(usuario_emisor.email, cuenta_emisor.pin, Number(payload.cantidad));
+                    respuesta_bancaria = await solicitarDebitoPC(usuario_emisor.email, cuenta_emisor.pin,'SecureFlow',Number(cantidad_faltante));
                 } else {
                     respuesta_bancaria = { success: false, message: 'El cliente no tiene saldo suficiente y no se puede solicitar credito' };
                 }
@@ -187,14 +188,14 @@ export const makeRetiro = async (payload: Retiro, user: UserToken) => {
         let afectar_saldo = false;
         //Debemos de enviar la peticion a la entidad bancaria correspondiente
         if (cuenta_usuario.id_entidad_financiera === EntidadFinancieraType.FINANCIERA_PB) {
-            if (cuenta_usuario.pin) {
-                respuesta_bancaria = await solicitarAcreditamientoPB(usuario.email, cuenta_usuario.pin, Number(payload.monto));
+            if (cuenta_usuario.pin && cuenta_usuario.numero_cuenta) {
+                respuesta_bancaria = await solicitarAcreditamientoPB(cuenta_usuario.numero_cuenta, cuenta_usuario.pin, Number(payload.monto));
             } else {
                 respuesta_bancaria = { success: false, message: 'No esta configurada la cuenta para realizar debitos' };
             }
         } else if (cuenta_usuario.id_entidad_financiera === EntidadFinancieraType.FINANCIERA_PC) {
-            if (cuenta_usuario.pin) {
-                respuesta_bancaria = await solicitarAcreditamientoPC(usuario.email, cuenta_usuario.pin, Number(payload.monto));
+            if (cuenta_usuario.pin && cuenta_usuario.numero_cuenta) {
+                respuesta_bancaria = await solicitarAcreditamientoPC(cuenta_usuario.numero_cuenta, cuenta_usuario.pin, Number(payload.monto));
             } else {
                 respuesta_bancaria = { success: false, message: 'No esta configurada la cuenta para realizar debitos' };
             }
