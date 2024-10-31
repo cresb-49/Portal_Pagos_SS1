@@ -143,7 +143,7 @@ export const makePayment = async (payload: RealizarPago, usuario_creador: UserTo
         }
 
         const transactionData: TransactionData = {
-            image: await obtenerImagenBase64(imagen),
+            image: imagen,
             storeName: payload.nombreTienda,
             amount: payload.cantidad,
             description: payload.concepto,
