@@ -5,6 +5,7 @@ import fs from 'fs';
 import path from 'path';
 
 export interface TransactionData {
+    image?: string;
     storeName: string;
     amount: number;
     receiverEmail: string;

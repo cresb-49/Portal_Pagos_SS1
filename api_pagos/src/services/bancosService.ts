@@ -49,7 +49,6 @@ export interface responseObtenerUsuario extends PortalResponse {
     usuario?: any;
 }
 
-
 export const loginPC = async (data: loginPortalFinancieroCredito): Promise<responseLoginPortalFinanciero> => {
     return POST(`${config.bancopc}/tarjeta-credito/v1/auth/login`, data);
 }
