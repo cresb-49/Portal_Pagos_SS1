@@ -8,6 +8,7 @@ import { EstadoTransaccionType } from "../enums/estadoTransaccionType";
 import { restarSaldoCuenta, sumarSaldoCuenta } from "../repository/cuentaRepository";
 import { EntidadFinancieraType } from "../enums/entidadFinancieraType";
 import { ReponseMenajoBancario, solicitarAcreditamientoPB, solicitarAcreditamientoPC, solicitarCreditoPB, solicitarDebitoPC } from "./bancosService";
+import { decrypt } from "../utils/encryptReversibleUtil";
 
 const prisma = new PrismaClient()
 
@@ -57,17 +58,18 @@ export const makePayment = async (payload: RealizarPago, usuario_creador: UserTo
 
         if (cuenta_emisor.saldo < payload.cantidad) {
             console.log(`Saldo insuficiente`);
+            const cantidad_faltante = payload.cantidad - cuenta_emisor.saldo;
             //Realizamos una solicitud de credito a la entidad bancaria correspondiente
             const entidad = cuenta_emisor.id_entidad_financiera;
             if (entidad === EntidadFinancieraType.FINANCIERA_PB) {
                 if (cuenta_emisor.pin) {
-                    respuesta_bancaria = await solicitarCreditoPB(usuario_emisor.email, cuenta_emisor.pin, Number(payload.cantidad));
+                    respuesta_bancaria = await solicitarCreditoPB(usuario_emisor.email, cuenta_emisor.pin, Number(cantidad_faltante));
                 } else {
                     respuesta_bancaria = { success: false, message: 'El cliente no tiene saldo suficiente y no se puede solicitar credito' };
                 }
             } else if (entidad === EntidadFinancieraType.FINANCIERA_PC) {
                 if (cuenta_emisor.pin) {
-                    respuesta_bancaria = await solicitarDebitoPC(usuario_emisor.email, cuenta_emisor.pin, Number(payload.cantidad));
+                    respuesta_bancaria = await solicitarDebitoPC(usuario_emisor.email, cuenta_emisor.pin, 'SecureFlow', Number(cantidad_faltante));
                 } else {
                     respuesta_bancaria = { success: false, message: 'El cliente no tiene saldo suficiente y no se puede solicitar credito' };
                 }
@@ -187,14 +189,16 @@ export const makeRetiro = async (payload: Retiro, user: UserToken) => {
         let afectar_saldo = false;
         //Debemos de enviar la peticion a la entidad bancaria correspondiente
         if (cuenta_usuario.id_entidad_financiera === EntidadFinancieraType.FINANCIERA_PB) {
-            if (cuenta_usuario.pin) {
-                respuesta_bancaria = await solicitarAcreditamientoPB(usuario.email, cuenta_usuario.pin, Number(payload.monto));
+            if (cuenta_usuario.pin && cuenta_usuario.numero_cuenta) {
+                const decrypt_pin = decrypt(cuenta_usuario.pin);
+                respuesta_bancaria = await solicitarAcreditamientoPB(cuenta_usuario.numero_cuenta, decrypt_pin, Number(payload.monto));
             } else {
                 respuesta_bancaria = { success: false, message: 'No esta configurada la cuenta para realizar debitos' };
             }
         } else if (cuenta_usuario.id_entidad_financiera === EntidadFinancieraType.FINANCIERA_PC) {
-            if (cuenta_usuario.pin) {
-                respuesta_bancaria = await solicitarAcreditamientoPC(usuario.email, cuenta_usuario.pin, Number(payload.monto));
+            if (cuenta_usuario.pin && cuenta_usuario.numero_cuenta) {
+                const decrypt_pin = decrypt(cuenta_usuario.pin);
+                respuesta_bancaria = await solicitarAcreditamientoPC(cuenta_usuario.numero_cuenta, decrypt_pin, Number(payload.monto));
             } else {
                 respuesta_bancaria = { success: false, message: 'No esta configurada la cuenta para realizar debitos' };
             }
@@ -203,6 +207,8 @@ export const makeRetiro = async (payload: Retiro, user: UserToken) => {
         }
 
         let payloadTransaccion: TransaccionModel | null = null;
+        console.log(respuesta_bancaria);
+
 
         if (respuesta_bancaria && !respuesta_bancaria.success) {
             payloadTransaccion = {
@@ -230,6 +236,75 @@ export const makeRetiro = async (payload: Retiro, user: UserToken) => {
 
         await crearTransaccion(payloadTransaccion, cuenta_usuario.id_cuenta, prismaTransaction);
 
-        return true;
+        return respuesta_bancaria;
+    });
+}
+
+export const makeCompra = async (payload: Retiro, user: UserToken) => {
+    return await prisma.$transaction(async (prismaTransaction) => {
+
+        const usuario = await getUsusaurioById(parseInt(user.id), true);
+        //Verificamos que el usuario exista y tenga una cuenta por errores separados
+        if (!usuario) {
+            throw new Error('Usuario no encontrado');
+        }
+        const cuenta_usuario = usuario?.cuenta;
+        if (!cuenta_usuario) {
+            throw new Error('Cuenta emisor no encontrada');
+        }
+
+        //Realizamos una transaccion de retiro del a cuenta del usuario
+        let respuesta_bancaria: ReponseMenajoBancario | null = null;
+        let afectar_saldo = false;
+        //Debemos de enviar la peticion a la entidad bancaria correspondiente
+        if (cuenta_usuario.id_entidad_financiera === EntidadFinancieraType.FINANCIERA_PB) {
+            if (cuenta_usuario.pin && cuenta_usuario.numero_cuenta) {
+                const decrypt_pin = decrypt(cuenta_usuario.pin);
+                respuesta_bancaria = await solicitarCreditoPB(cuenta_usuario.numero_cuenta, decrypt_pin, Number(payload.monto));
+            } else {
+                respuesta_bancaria = { success: false, message: 'No esta configurada la cuenta para realizar debitos' };
+            }
+        } else if (cuenta_usuario.id_entidad_financiera === EntidadFinancieraType.FINANCIERA_PC) {
+            if (cuenta_usuario.pin && cuenta_usuario.numero_cuenta) {
+                const decrypt_pin = decrypt(cuenta_usuario.pin);
+                respuesta_bancaria = await solicitarDebitoPC(cuenta_usuario.numero_cuenta, decrypt_pin, 'SecureFlow', Number(payload.monto));
+            } else {
+                respuesta_bancaria = { success: false, message: 'No esta configurada la cuenta para realizar debitos' };
+            }
+        } else {
+            respuesta_bancaria = { success: false, message: 'Entidad financiera no soportada' };
+        }
+
+        let payloadTransaccion: TransaccionModel | null = null;
+        console.log(respuesta_bancaria);
+
+
+        if (respuesta_bancaria && !respuesta_bancaria.success) {
+            payloadTransaccion = {
+                monto: Number(payload.monto),
+                descripcion: `Compra de saldo por GTQ${payload.monto} de la cuenta ${cuenta_usuario.numero_cuenta}`,
+                id_tipo_transaccion: TipoTransaccionType.CREDITO,
+                id_cuenta_origen: cuenta_usuario.id_cuenta,
+                id_estado_transaccion: EstadoTransaccionType.FALLIDO,
+            }
+            afectar_saldo = false;
+        } else {
+            payloadTransaccion = {
+                monto: Number(payload.monto),
+                descripcion: `Compra de saldo por GTQ${payload.monto} de la cuenta ${cuenta_usuario.numero_cuenta}`,
+                id_tipo_transaccion: TipoTransaccionType.CREDITO,
+                id_cuenta_origen: cuenta_usuario.id_cuenta,
+                id_estado_transaccion: EstadoTransaccionType.EXITOSO,
+            }
+            afectar_saldo = true;
+        }
+
+        if (afectar_saldo) {
+            await sumarSaldoCuenta(cuenta_usuario.id_cuenta, payload.monto, prismaTransaction);
+        }
+
+        await crearTransaccion(payloadTransaccion, cuenta_usuario.id_cuenta, prismaTransaction);
+
+        return respuesta_bancaria;
     });
 }

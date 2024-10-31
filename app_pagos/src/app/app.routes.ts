@@ -15,6 +15,7 @@ import { UsuarioComponent } from './views/usuario/usuario.component';
 import { EmpresaComponent } from './views/empresa/empresa.component';
 import { AdministradorComponent } from './views/administrador/administrador.component';
 import { ReporteComponent } from './views/reporte/reporte.component';
+import { CompraComponent } from './views/compra/compra.component';
 
 export const routes: Routes = [
   {
@@ -33,6 +34,9 @@ export const routes: Routes = [
       },
       {
         path: 'retiros', component: RetirosComponent
+      },
+      {
+        path: 'compras', component: CompraComponent
       },
       {
         path: 'mi-perfil', component: MyAccountComponent

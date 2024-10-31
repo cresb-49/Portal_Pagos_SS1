@@ -12,6 +12,10 @@ export interface loginPortalFinanciero {
     correo: string;
     pin: string;
 }
+export interface loginPortalFinancieroCredito {
+    correo_electronico: string;
+    pin: string;
+}
 
 export interface responseLoginPortalFinanciero extends PortalResponse {
     a2f?: boolean;
@@ -22,7 +26,7 @@ export interface responseLoginPortalFinanciero extends PortalResponse {
 //POST: tarjeta-credito/v1/tarjeta/generar-credito
 //Enviar JWT
 export interface payloadGenerarCredito {
-    "saldo_a_acreditar": number;
+    monto: number;
 }
 
 export interface responseGenerarCredito extends PortalResponse { }
@@ -31,7 +35,8 @@ export interface responseGenerarCredito extends PortalResponse { }
 //POST: tarjeta-credito/v1/tarjeta/generar-credito
 //Enviar JWT
 export interface payloadGenerarDebito {
-    "saldo_a_comprar": number;
+    monto: number;
+    nombre_pasarela: string;
 }
 
 export interface responseGenerarDebito extends PortalResponse { }
@@ -45,7 +50,7 @@ export interface responseObtenerUsuario extends PortalResponse {
 }
 
 
-export const loginPC = async (data: loginPortalFinanciero): Promise<responseLoginPortalFinanciero> => {
+export const loginPC = async (data: loginPortalFinancieroCredito): Promise<responseLoginPortalFinanciero> => {
     return POST(`${config.bancopc}/tarjeta-credito/v1/auth/login`, data);
 }
 
@@ -126,6 +131,8 @@ export const solicitarCreditoPB = async (email: string, pin: string, monto: numb
             return { success: false, message: 'Error al iniciar sesion en el Portal Financiero Cuentas Bancarias: ' + (login.message ?? '') }
         }
     } catch (error: Error | any) {
+        console.log(error);
+
         return { success: false, message: 'Error al solicitar credito' + error.message }
     }
 }
@@ -146,6 +153,8 @@ export const solicitarAcreditamientoPB = async (email: string, pin: string, mont
             return { success: false, message: 'Error al iniciar sesion en el Portal Financiero Cuentas Bancarias: ' + (login.message ?? '') }
         }
     } catch (error: Error | any) {
+        console.log(error);
+
         return { success: false, message: 'Error al solicitar credito' + error.message }
     }
 }
@@ -154,11 +163,11 @@ export const solicitarAcreditamientoPB = async (email: string, pin: string, mont
 // Aumento Saldo Tarjeta de Credito
 export const solicitarAcreditamientoPC = async (email: string, pin: string, monto: number): Promise<ReponseMenajoBancario> => {
     try {
-        const login = await loginPC({ correo: email, pin });
+        const login = await loginPC({ correo_electronico: email, pin });
         if (login.ok) {
             const token = login.token;
             if (!token) return { success: false, message: 'Error al iniciar sesion en el Portal Financiero Tarjetas de Credito: No se recibio token' }
-            const credito = await generarCreditoPC({ saldo_a_acreditar: monto }, token);
+            const credito = await generarCreditoPC({ monto: monto }, token);
             if (credito.ok) {
                 return { success: true, message: 'Credito solicitado correctamente', data: credito }
             } else {
@@ -168,18 +177,19 @@ export const solicitarAcreditamientoPC = async (email: string, pin: string, mont
             return { success: false, message: 'Error al iniciar sesion en el Portal Financiero Tarjetas de Credito: ' + (login.mensaje ?? '') }
         }
     } catch (error: Error | any) {
+        console.log(error);
         return { success: false, message: 'Error al solicitar credito' + error.message }
     }
 }
 
 // Disminucion Saldo Tarjeta de Credito
-export const solicitarDebitoPC = async (email: string, pin: string, monto: number): Promise<ReponseMenajoBancario> => {
+export const solicitarDebitoPC = async (email: string, pin: string, nombre_pasarela: string, monto: number): Promise<ReponseMenajoBancario> => {
     try {
-        const login = await loginPC({ correo: email, pin });
+        const login = await loginPC({ correo_electronico: email, pin });
         if (login.ok) {
             const token = login.token;
             if (!token) return { success: false, message: 'Error al iniciar sesion en el Portal Financiero Tarjetas de Credito: No se recibio token' }
-            const debito = await generarDebitoPC({ saldo_a_comprar: monto }, token);
+            const debito = await generarDebitoPC({ monto: monto, nombre_pasarela: nombre_pasarela }, token);
             if (debito.ok) {
                 return { success: true, message: 'Debito solicitado correctamente', data: debito }
             } else {
