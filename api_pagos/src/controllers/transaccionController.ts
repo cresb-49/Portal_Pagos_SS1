@@ -19,8 +19,9 @@ export const realizarPago = async (req: Request, res: Response): Promise<any> =>
             identificadorTienda
         }
         //El identificado de la tienda solo puede ser a 0 b
-        const pdfBuffer = await makePayment(payload, user);
+        const { pdfBuffer, status } = await makePayment(payload, user);
         const timestamp = new Date().getTime();
+        res.status(status ? HttpStatusCode.OK : HttpStatusCode.BAD_REQUEST);
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `attachment; filename="transaction-${timestamp}.pdf"`);
         res.end(pdfBuffer);
