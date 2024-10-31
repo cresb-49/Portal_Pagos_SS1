@@ -159,7 +159,7 @@ async function obtenerImagenBase64(url: string) {
     if (!url) return '';
     if (url.length === 0) return '';
     try {
-        const response: any = await axios.get(url, { responseType: 'arraybuffer' });
+        const response: any = await axios.get(url, { responseType: 'arraybuffer', timeout: 60000 });
         const imageBase64 = Buffer.from(response.data, 'binary').toString('base64');
         return `data:${response.headers['content-type']};base64,${imageBase64}`;
     } catch (error) {
