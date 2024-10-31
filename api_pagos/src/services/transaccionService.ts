@@ -34,9 +34,13 @@ export const makePayment = async (payload: RealizarPago, usuario_creador: UserTo
         //Si es a tienda de Elvis y b tienda de Alex
         if (identificador_tienda === 'a') {
             console.log("Tienda de Elvis");
-            const data = await dataTiendaElvis();
-            if (!('statusCode' in data)) {
-                imagen = data.image;
+            try {
+                const data = await dataTiendaElvis();
+                if (!('statusCode' in data)) {
+                    imagen = data.image;
+                }
+            } catch (error) {
+                imagen = '';
             }
         } else if (identificador_tienda === 'b') {
             console.log("Tienda de Alex");
