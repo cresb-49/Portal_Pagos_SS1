@@ -9,6 +9,7 @@ import { restarSaldoCuenta, sumarSaldoCuenta } from "../repository/cuentaReposit
 import { EntidadFinancieraType } from "../enums/entidadFinancieraType";
 import { ReponseMenajoBancario, solicitarAcreditamientoPB, solicitarAcreditamientoPC, solicitarCreditoPB, solicitarDebitoPC } from "./bancosService";
 import { decrypt } from "../utils/encryptReversibleUtil";
+import { dataTiendaElvis } from "./tiendaService";
 
 const prisma = new PrismaClient()
 
@@ -27,9 +28,14 @@ export interface Retiro {
 export const makePayment = async (payload: RealizarPago, usuario_creador: UserToken) => {
     return await prisma.$transaction(async (prismaTransaction) => {
         const identificador_tienda = payload.identificadorTienda;
+        let imagen = '';
         //Si es a tienda de Elvis y b tienda de Alex
         if (identificador_tienda === 'a') {
             console.log("Tienda de Elvis");
+            const data = await dataTiendaElvis();
+            if (!('statusCode' in data)) {
+                imagen = data.image;
+            }
         } else if (identificador_tienda === 'b') {
             console.log("Tienda de Alex");
         } else {
@@ -131,6 +137,7 @@ export const makePayment = async (payload: RealizarPago, usuario_creador: UserTo
         }
 
         const transactionData: TransactionData = {
+            image: imagen,
             storeName: payload.nombreTienda,
             amount: payload.cantidad,
             description: payload.concepto,
