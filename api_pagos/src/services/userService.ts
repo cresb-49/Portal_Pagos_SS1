@@ -203,6 +203,14 @@ export const obtenerClientes = async () => {
 
 export const eliminacionUsuario = async (id: number) => {
     return await prisma.$transaction(async (prismaTransaction) => {
+        //Obtenemos el usuario y verificamos que no tenga saldo su cuenta
+        const usuario = await obtenerUsuarioPorId(id, prismaTransaction, true);
+        if (!usuario) {
+            throw new Error('Usuario no encontrado');
+        }
+        if (usuario.cuenta?.saldo && usuario.cuenta.saldo > 0) {
+            throw new Error('El usuario tiene saldo en su cuenta');
+        }
         return await eliminarUsuario(id, prismaTransaction);
     });
 }
