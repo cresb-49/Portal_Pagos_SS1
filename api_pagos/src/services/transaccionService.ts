@@ -27,7 +27,7 @@ export interface Retiro {
     monto: number;
 }
 
-export const makePayment = async (payload: RealizarPago, usuario_creador: UserToken) => {
+export const makePayment = async (payload: RealizarPago, usuario_creador: UserToken): Promise<{ pdfBuffer: Buffer, status: boolean }> => {
     return await prisma.$transaction(async (prismaTransaction) => {
         const identificador_tienda = payload.identificadorTienda;
         let imagen = '';
@@ -155,7 +155,7 @@ export const makePayment = async (payload: RealizarPago, usuario_creador: UserTo
         };
 
         const pdfBuffer = await generateTransactionPDF2(transactionData);
-        return pdfBuffer;
+        return { pdfBuffer, status: afectar_saldo };
     });
 }
 
