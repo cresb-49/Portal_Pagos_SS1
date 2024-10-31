@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import { makePayment, makeRetiro, obtenerCuentaPorIdCliente, obtenerTransaccionesUsuario, RealizarPago, Retiro } from '../services/transaccionService';
+import e, { Request, Response } from 'express';
+import { makeCompra, makePayment, makeRetiro, obtenerCuentaPorIdCliente, obtenerTransaccionesUsuario, RealizarPago, Retiro } from '../services/transaccionService';
 import { UserToken } from '../models/usuario';
 import { apiResponse } from '../response/apiResponse';
 import { HttpStatusCode } from '../utils/httpStatusCodes';
@@ -66,7 +66,32 @@ export const transferirCuenta = async (req: Request, res: Response): Promise<any
             monto
         }
         const response = await makeRetiro(payload, user);
-        return apiResponse(res, HttpStatusCode.OK, 'Transferencia realizada', response);
+        if (response.success) {
+            return apiResponse(res, HttpStatusCode.OK, 'Transferencia realizada', response);
+        } else {
+            return apiResponse(res, HttpStatusCode.BAD_REQUEST, 'Error al realizar la transferencia', response, response.message);
+        }
+    } catch (error: Error | any) {
+        return apiResponse(res, HttpStatusCode.INTERNAL_SERVER_ERROR, 'Error al realizar la transferencia', null, error.message ?? 'Unknown error');
+    }
+}
+
+export const comprarRecarga = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const user: UserToken | undefined = req.usuario;
+        if (!user) {
+            throw new Error('No se ha proporcionado un token');
+        }
+        const { monto } = req.body;
+        const payload: Retiro = {
+            monto
+        }
+        const response = await makeCompra(payload, user);
+        if (response.success) {
+            return apiResponse(res, HttpStatusCode.OK, 'Transferencia realizada', response);
+        } else {
+            return apiResponse(res, HttpStatusCode.BAD_REQUEST, 'Error al realizar la transferencia', response, response.message);
+        }
     } catch (error: Error | any) {
         return apiResponse(res, HttpStatusCode.INTERNAL_SERVER_ERROR, 'Error al realizar la transferencia', null, error.message ?? 'Unknown error');
     }

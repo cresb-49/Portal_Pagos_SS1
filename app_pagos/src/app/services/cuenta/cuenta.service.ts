@@ -50,4 +50,8 @@ export class CuentaService {
     return this.httpService.post<any>('transferencia', data, true);
   }
 
+  realizarCompra(data: any) {
+    return this.httpService.post<any>('comprar-saldo', data, true);
+  }
+
 }
